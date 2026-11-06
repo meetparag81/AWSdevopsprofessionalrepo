@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Certified DevOps Engineer - Professional (DOP-C02) Practice Exam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { aws: { orange: '#FF9900', squid: '#232F3E', dark: '#0F172A', card: '#1E293B', accent: '#38BDF8' } }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        .keyword-highlight { 
+            background-color: rgba(245, 158, 11, 0.2); 
+            color: #fbbf24; 
+            font-weight: 700; 
+            padding: 0.125rem 0.25rem; 
+            border-radius: 0.25rem; 
+            border: 1px solid rgba(245, 158, 11, 0.3); 
+            transition: all 0.3s ease; 
+        }
+        
+        html { scroll-behavior: smooth; }
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* AWS Explanation Accordion Styles */
+        .aws-expl-container { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background-color: #0f172a; 
+            color: #e2e8f0; 
+            padding: 1.5rem; 
+            border-radius: 0.5rem; 
+            line-height: 1.6; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 1.25rem;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+        .aws-expl-summary { 
+            cursor: pointer; 
+            font-size: 1.125rem; 
+            font-weight: 600; 
+            color: #38bdf8; 
+            outline: none; 
+            user-select: none;
+            display: flex;
+            align-items: center;
+        }
+        .aws-expl-summary:hover { color: #7dd3fc; }
+        .aws-expl-summary::before {
+            content: "▶";
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+        details[open] > .aws-expl-summary::before {
+            transform: rotate(90deg);
+        }
+        .aws-expl-correct { 
+            background-color: rgba(2, 44, 34, 0.5); 
+            border-left: 4px solid #10b981; 
+            padding: 1rem; 
+            margin: 1.25rem 0; 
+            border-radius: 0.25rem; 
+        }
+        .aws-expl-incorrect { 
+            background-color: rgba(69, 10, 10, 0.5); 
+            border-left: 4px solid #ef4444; 
+            padding: 1rem; 
+            margin: 1.25rem 0; 
+            border-radius: 0.25rem; 
+        }
+        .aws-keyword { 
+            font-weight: bold; 
+            color: #fbbf24; 
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-amber-500 selection:text-slate-900">
+
+    <!-- Sticky Header -->
+    <header class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-amber-500/10 rounded-lg border border-amber-500/20">
+                        <svg style="width: 28px; height: 28px;" class="text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white tracking-tight">AWS DevOps Engineer Professional</h1>
+                        <p class="text-xs text-slate-400">Domain 1: SDLC Automation • (15 Questions)</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="bg-slate-800 p-1 rounded-lg border border-slate-700 flex items-center">
+                        <button id="btn-practice-mode" onclick="setMode('practice')" class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 bg-amber-500 text-slate-900 shadow">Practice Mode</button>
+                        <button id="btn-exam-mode" onclick="setMode('exam')" class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 text-slate-400 hover:text-slate-200">Exam Mode</button>
+                    </div>
+
+                    <div id="timer-container" class="hidden items-center space-x-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-amber-400 font-mono font-bold text-sm">
+                        <svg style="width: 16px; height: 16px;" class="animate-pulse text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span id="timer-display">180:00</span>
+                    </div>
+
+                    <button onclick="resetQuiz()" class="p-2 text-slate-400 hover:text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition" title="Reset Quiz">
+                        <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progress Tracker -->
+            <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                <div class="flex items-center space-x-2">
+                    <span>Evaluated: <strong id="answered-count" class="text-white">0</strong> / <span id="total-q-count">0</span></span>
+                    <span id="save-indicator" class="ml-4 text-[10px] font-mono text-emerald-400 opacity-0 transition-opacity duration-300">● Progress Saved</span>
+                </div>
+                <div class="w-1/2 bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700">
+                    <div id="progress-bar" class="bg-amber-500 h-full w-0 transition-all duration-300"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
+        
+        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-8 right-8 z-50 p-3 bg-amber-500 text-slate-900 rounded-full shadow-lg hover:bg-amber-400 transition transform hover:scale-105" title="Back to Top">
+            <svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+        </button>
+
+        <!-- HIGH YIELD EXAM CHEAT SHEET -->
+        <div class="mb-8">
+            <button onclick="document.getElementById('cheat-sheet').classList.toggle('hidden')" class="w-full flex items-center justify-between bg-slate-800 hover:bg-slate-700 border border-slate-700 transition rounded-xl p-4 shadow-md group">
+                <div class="flex items-center space-x-3">
+                    <div class="p-1.5 bg-sky-500/10 rounded-lg text-sky-400 group-hover:bg-sky-500/20 transition">
+                        <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h2 class="text-base font-bold text-white tracking-wide">Pre-Exam Cheat Sheet: SDLC Automation</h2>
+                </div>
+                <svg style="width: 20px; height: 20px;" class="text-slate-400 group-hover:text-white transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            
+            <div id="cheat-sheet" class="hidden mt-2 p-6 bg-slate-800/50 border border-slate-700 rounded-xl text-sm text-slate-300 leading-relaxed shadow-inner">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- CodeDeploy Hooks & Pipelines -->
+                    <div>
+                        <h3 class="text-amber-400 font-bold uppercase tracking-wider mb-3 text-xs border-b border-slate-700 pb-1">CodeDeploy & Hooks</h3>
+                        <ul class="space-y-2">
+                            <li><strong class="text-white">Lambda / ECS Hooks:</strong> <code>BeforeAllowTraffic</code> is used to execute tests (e.g., verifying a DB migration or a Step Function) <em>before</em> sending live requests to the new version.</li>
+                            <li><strong class="text-white">Blue/Green Deployments:</strong> Modifies the <span class="keyword-highlight">ECS service definition</span> and shifts traffic via <span class="keyword-highlight">Application Load Balancer</span> target groups (not NLB).</li>
+                            <li><strong class="text-white">Rollback Triggers:</strong> Connect CodeDeploy automatic rollbacks to <span class="keyword-highlight">CloudWatch Alarms</span> (e.g., <code>TargetResponseTime</code> metric) for instant mitigation.</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- CodeBuild & CodeArtifact -->
+                    <div>
+                        <h3 class="text-amber-400 font-bold uppercase tracking-wider mb-3 text-xs border-b border-slate-700 pb-1">Builds & Artifacts</h3>
+                        <ul class="space-y-2">
+                            <li><strong class="text-white">CodeBuild Artifacts:</strong> Save generated output files (JARs, ZIPs) using the <code>artifacts</code> section in buildspec.yml to pass them to downstream Pipeline stages.</li>
+                            <li><strong class="text-white">CodeArtifact:</strong> A fully managed artifact repository. Authenticate EC2 instances via an attached Instance Profile, and run <code>aws codeartifact login</code> in the <code>BeforeInstall</code> hook.</li>
+                            <li><strong class="text-white">Load Testing:</strong> To test massive concurrency, use AWS CodeBuild to run heavy load-testing frameworks (like JMeter/Taurus) instead of provisioning EC2 test instances.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen (Hidden initially) -->
+        <div id="results-screen" class="hidden mb-8 bg-slate-800 border border-slate-700 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden fade-in">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="text-center max-w-xl mx-auto mb-8">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">Exam Results Breakdown</h2>
+                <p class="text-slate-400 text-sm">Target Passing Score: <span class="text-amber-400 font-bold">75%</span></p>
+                
+                <div id="score-badge" class="mt-6 inline-flex flex-col items-center justify-center p-6 rounded-2xl border-2 w-48 h-48 bg-slate-900/50 shadow-inner">
+                    <span id="score-percentage" class="text-4xl font-black tracking-tight">0%</span>
+                    <span id="score-status" class="mt-2 text-xs uppercase tracking-widest font-bold px-3 py-1 rounded-full">FAIL</span>
+                    <span id="score-raw" class="mt-2 text-xs text-slate-400">0 / 0 Correct</span>
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <h3 class="text-lg font-bold text-white mb-4 border-b border-slate-700 pb-2">Domain Performance Summary</h3>
+                <div id="domain-results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-slate-700 flex flex-wrap justify-between items-center gap-4">
+                <p class="text-xs text-slate-400">Scroll down to inspect your answers with full architectural breakdowns.</p>
+                <button onclick="resetQuiz()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold rounded-xl transition shadow-lg text-sm">
+                    Reset & Retake Examination
+                </button>
+            </div>
+        </div>
+
+        <!-- Domain Filters -->
+        <div class="mb-6 overflow-x-auto pb-2">
+            <div id="domain-filters" class="flex space-x-2 min-w-max">
+                <button onclick="filterDomain('all')" class="domain-btn active px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-500 text-slate-900 border border-amber-500 transition shadow">All Domains</button>
+                <button onclick="filterDomain('SDLC Automation')" class="domain-btn px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">SDLC Automation</button>
+            </div>
+        </div>
+
+        <!-- Continuous Scroll Question List -->
+        <div id="questions-list" class="space-y-6 fade-in"></div>
+
+        <!-- Submit Banner -->
+        <div id="submit-container" class="mt-10 p-6 bg-slate-800 border border-slate-700 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+            <div>
+                <h4 class="text-base font-bold text-white">Ready to complete your examination?</h4>
+                <p class="text-xs text-slate-400">Ensure you have thoroughly reviewed all questions before final evaluation.</p>
+            </div>
+            <button onclick="submitExam()" class="w-full sm:w-auto px-8 py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 font-extrabold rounded-xl transition shadow-lg text-sm tracking-wide">
+                Submit Exam
+            </button>
+        </div>
+    </main>
+
+    <footer class="bg-slate-950 border-t border-slate-800 py-6 text-center text-xs text-slate-500 mt-12">
+        <div class="max-w-7xl mx-auto px-4">
+            AWS Certified DevOps Engineer - Professional (DOP-C02) Interactive Examination Portal<br/>
+            Your progress is automatically saved securely to your browser.
+        </div>
+    </footer>
+
+    <script>
+        const rawQuestions = [
+            {
+                id: 1, dom: "SDLC Automation",
+                q: "A company stores application source code in a Git repository that integrates with AWS CodeConnections. The engineering team wants unit tests to run automatically whenever developers open or update pull requests against the main branch. The team also wants developers to see the completed test status directly in the pull request. After each test run finishes, the team must save the output files that the tests generate to an Amazon S3 bucket. Which combination of solutions will meet these requirements? (Select three)",
+                o: [
+                    "Create a buildspec.yml file with an artifacts section that defines the generated test output files as build artifacts so CodeBuild can upload the files to Amazon S3 after the build finishes",
+                    "Create a buildspec.yml file with a reports section that uploads all generated output data files to Amazon S3 after the unit tests finish",
+                    "Create an Amazon EventBridge rule that listens for pull request events from CodeConnections. Configure the rule to start an AWS CodeDeploy deployment that runs the unit tests and stores generated test files in an S3 deployment bucket",
+                    "Create an IAM service role that grants the build process permissions to access the source repository integration, run tests, write logs, and upload generated output files to the target Amazon S3 bucket",
+                    "Create an AWS CodePipeline pipeline with a source stage and a test stage. Configure a pull request trigger for the pipeline and configure the source action to publish detailed unit test status back to the pull request",
+                    "Create an AWS CodeBuild project to run the unit tests. Configure webhook filters for pull request created and pull request updated events. Enable build status reporting for the repository provider"
+                ],
+                c: [0, 3, 5], 
+                x: ["run automatically whenever developers open or update pull requests", "save the output files that the tests generate to an Amazon S3 bucket"],
+                e: "<div class='mb-2'><strong>Architectural Breakdown</strong><ul class='list-disc pl-5 mt-1'><li><strong>Webhook Filters:</strong> AWS CodeBuild integrates directly with external repositories via CodeConnections, allowing webhooks to automatically trigger builds on Pull Request creation/updates.</li><li><strong>Artifacts Section:</strong> The `artifacts` block in the <code>buildspec.yml</code> file dictates exactly which generated files CodeBuild should collect and upload natively to Amazon S3 after execution completes.</li><li><strong>IAM Service Role:</strong> CodeBuild requires a specific IAM Service Role possessing explicit <code>s3:PutObject</code> permissions to upload those test artifacts into the designated bucket securely.</li></ul></div>",
+                w: "<div class='mb-3'><strong>Why Other Options are Incorrect</strong><ul class='list-decimal pl-5 mt-1'><li><strong>Reports section:</strong> The <code>reports</code> section in the buildspec parses structured test formats (like JUnit XML) into visual dashboards within AWS; it does NOT export or upload raw generated output files into Amazon S3.</li><li><strong>CodePipeline source action:</strong> A pipeline source action simply pulls code down. It cannot natively execute unit tests or push execution status checks back into the GitHub/Bitbucket PR UI.</li></ul></div>"
+            },
+            {
+                id: 2, dom: "SDLC Automation",
+                q: "A DevOps team manages a customer portal that runs as a service in an Amazon Elastic Container Service (Amazon ECS) cluster behind an Application Load Balancer. The team uses AWS CodeDeploy to perform blue/green deployments for the ECS service. The current deployment process shifts all production traffic to the replacement task set at once. During the last release, a defect in the new container image caused request latency to increase significantly. The team had to manually roll back the deployment after customers reported slow responses. The DevOps team must use a deployment approach that sends a small amount of traffic to the new version first so the team can observe application behavior before shifting all traffic. If the new version increases response times, CodeDeploy must roll back the deployment as quickly as possible. Which combination of steps will meet these requirements? (Select two)",
+                o: [
+                    "Modify the CodeDeploy deployment group to use the CodeDeployDefault.ECSLinear10PercentEvery3Minutes deployment configuration",
+                    "Modify the CodeDeploy deployment group to use the CodeDeployDefault.ECSCanary10Percent5Minutes deployment configuration",
+                    "Create an Amazon CloudWatch composite alarm that combines CPUUtilization from the ECS tasks, RequestCountPerTarget from the Application Load Balancer, and memory utilization from Container Insights. Associate the composite alarm with the CodeDeploy deployment group and configure a linear deployment to continue if only latency increases",
+                    "Create an Amazon CloudWatch alarm that monitors the TargetResponseTime metric for the Application Load Balancer. Configure the alarm to activate when the value exceeds the required latency threshold. Associate the alarm with the CodeDeploy deployment group and enable rollback when alarm thresholds are met",
+                    "Create an Amazon CloudWatch alarm that monitors the TargetConnectionErrorCount metric for the Application Load Balancer. Configure the alarm to activate when the value exceeds the expected threshold. Associate the alarm with the CodeDeploy deployment group and enable rollback when alarm thresholds are met"
+                ],
+                c: [1, 3], 
+                x: ["sends a small amount of traffic to the new version first so the team can observe application behavior", "CodeDeploy must roll back the deployment as quickly as possible", "new version increases response times"],
+                e: "<div class='mb-2'><strong>Architectural Breakdown</strong><ul class='list-disc pl-5 mt-1'><li><strong>Canary Deployment:</strong> The <code>CodeDeployDefault.ECSCanary10Percent5Minutes</code> strategy explicitly routes exactly 10% of traffic to the new Green tasks, pausing for 5 minutes. This satisfies the requirement to expose only a 'small amount' of traffic initially before a full cutover.</li><li><strong>Latency Rollbacks:</strong> The problem specifies that 'request latency increased significantly'. To detect this mathematically, an alarm tracking the ALB's <code>TargetResponseTime</code> metric must be associated with the CodeDeploy group to trigger an instantaneous rollback.</li></ul></div>",
+                w: "<div class='mb-3'><strong>Why Other Options are Incorrect</strong><ul class='list-decimal pl-5 mt-1'><li><strong>Linear10PercentEvery3Minutes:</strong> A Linear deployment incrementally rolls out traffic in continuous phases, extending the rollback window risk. A Canary strategy exposes the minimum blast radius (10%) and holds it, ensuring the quickest rollback window before the major cutover occurs.</li><li><strong>TargetConnectionErrorCount:</strong> This ALB metric tracks connectivity drops (like TCP connection timeouts), which does not explicitly measure application response latency times.</li></ul></div>"
+            },
+            {
+                id: 3, dom: "SDLC Automation",
+                q: "A telehealth platform uses Amazon API Gateway and AWS Lambda functions to expose its API. The deployment is automated through an AWS CodePipeline pipeline that has a source stage, a build stage, and a deployment stage. The team currently deploys to production without smoke tests. After a recent release, several issues surfaced quickly in production and a follow-up security audit found security vulnerabilities in the Lambda code. The team wants to prevent these problems on future deployments. Which combination of steps will meet this requirement? (Select two)",
+                o: [
+                    "Create an AWS Step Functions workflow that runs a post-deployment API validation task, starts an Amazon Inspector assessment for the Lambda functions, waits for all findings to be reviewed by the security team, and then invokes a Lambda function to approve or reject the CodePipeline execution",
+                    "Add an action to the deployment stage that runs an Amazon CodeGuru Security review of the Lambda function code after deployment; configure the deployment stage to fail when the review returns any security findings",
+                    "Author a smoke test script that returns a non-zero exit code when the API fails the test; add an action to the deployment stage that runs the smoke test after deployment; configure the deployment stage to automatically roll back when the script returns an error code",
+                    "Add an action to the build stage that runs an Amazon CodeGuru Security review of the Lambda function code after it is built; configure the build stage to fail when the review returns any security findings",
+                    "Author a smoke test script that returns a non-zero exit code when the API fails the test; add an action to the deployment stage that runs the smoke test after deployment; configure the deployment stage to fail (without rollback) when the script returns an error code"
+                ],
+                c: [2, 3], 
+                x: ["found security vulnerabilities in the Lambda code", "without smoke tests", "prevent these problems on future deployments"],
+                e: "<div class='mb-2'><strong>Architectural Breakdown</strong><ul class='list-disc pl-5 mt-1'><li><strong>Security Analysis:</strong> Amazon CodeGuru Security performs static application security testing (SAST). Running this inside the <em>Build</em> stage ensures that vulnerable code is blocked and fails the pipeline <em>before</em> it ever reaches production.</li><li><strong>Smoke Testing & Rollback:</strong> Running a smoke test script as an action in the <em>Deployment</em> stage verifies runtime behavior. If the script exits with a non-zero code, CodeDeploy automatically rolls the application back to the previous stable state instantly.</li></ul></div>",
+                w: "<div class='mb-3'><strong>Why Other Options are Incorrect</strong><ul class='list-decimal pl-5 mt-1'><li><strong>Fail (without rollback):</strong> Failing the deployment stage without triggering a rollback leaves the broken, bugged API version live in production indefinitely, exacerbating the outage.</li><li><strong>CodeGuru Security after deployment:</strong> Running security code scans <em>after</em> deployment means the vulnerable code is already live and accessible to attackers, defeating the purpose of pre-release security validation.</li></ul></div>"
+            },
+            {
+                id: 4, dom: "SDLC Automation",
+                q: "A software company is building a shared payments library that several internal application teams use. The development team follows semantic versioning for releases and wants the CI process to compile the library, package the build output, and publish each version so other teams can consume the correct release. The build process must also cache any third-party open source dependencies that the library downloads during compilation. Which solution will meet these requirements?",
+                o: [
+                    "Create an AWS CodeBuild project that compiles the code and enables local dependency caching. Configure the buildspec file to cache open source library directories between builds, store downloaded third-party packages in custom cache paths, upload each compiled artifact to an Amazon S3 bucket, and use S3 object versioning with semantic version labels in object metadata",
+                    "Use AWS CodeDeploy to package the compiled library and upload each semantic version to an Amazon Elastic File System file system. Configure the application teams to mount the file system to retrieve the required library version",
+                    "Create an AWS CodeArtifact repository and configure the required upstream repositories. Create an AWS CodeBuild project that compiles the code, authenticates to CodeArtifact, caches open source packages through the repository, and publishes each semantic versioned package to CodeArtifact",
+                    "Create an AWS CodeBuild project that compiles the library and publishes each semantic version to AWS Artifact. Configure local build caching in CodeBuild to store open source dependencies between builds"
+                ],
+                c: [2], 
+                x: ["publish each version so other teams can consume the correct release", "cache any third-party open source dependencies"],
+                e: "<div class='mb-2'><strong>Architectural Breakdown</strong><ul class='list-disc pl-5 mt-1'><li><strong>AWS CodeArtifact:</strong> This is a fully managed artifact repository service explicitly designed to store, publish, and share software packages (like npm, PyPI, Maven) using semantic versioning.</li><li><strong>Upstream Caching:</strong> By configuring upstream repositories in CodeArtifact, it automatically caches open-source dependencies (e.g., from npmjs or Maven Central) requested during the CodeBuild compilation phase.</li><li><strong>Publishing:</strong> CodeBuild authenticates with CodeArtifact using an IAM role and natively publishes the final, compiled shared library so other internal teams can pull it securely.</li></ul></div>",
+                w: "<div class='mb-3'><strong>Why Other Options are Incorrect</strong><ul class='list-decimal pl-5 mt-1'><li><strong>Upload to Amazon S3 / EFS:</strong> Neither S3 nor EFS provide native package manager integration (like pip or npm endpoints). Forcing internal teams to write custom scripts to mount file systems or download S3 objects bypasses standard CI/CD package management workflows entirely.</li><li><strong>AWS Artifact:</strong> AWS Artifact is a compliance reporting service containing SOC2 and ISO reports; it is completely unrelated to software code packaging or compilation.</li></ul></div>"
+            },
+            {
+                id: 5, dom: "SDLC Automation",
+                q: "A company stores internally developed Node.js packages in an AWS CodeArtifact repository. A DevOps engineer is preparing an AWS CodeDeploy deployment to Amazon EC2 instances that run a backend reporting application. The application depends on a private package in the CodeArtifact repository. The deployment uses a BeforeInstall lifecycle hook to install application dependencies on each EC2 instance before the new revision starts. The DevOps engineer must allow the EC2 instances to authenticate to CodeArtifact and download the private package during the deployment. Which solution will meet this requirement?",
+                o: [
+                    "Create a resource-based policy on the CodeArtifact repository that allows the EC2 instance principal to call the codeartifact:ReadFromRepository action and download the private package",
+                    "Create a service-linked role for AWS CodeArtifact and attach the role directly to the EC2 instances. Run the aws codeartifact get-authorization-token command from the BeforeInstall hook to retrieve repository credentials",
+                    "Create an IAM role that grants the required CodeArtifact permissions. Attach the role to an instance profile, associate the instance profile with the EC2 instances, and run the aws codeartifact login command from the BeforeInstall hook",
+                    "Store a long-lived CodeArtifact authorization token in AWS Systems Manager Parameter Store. Configure the BeforeInstall hook to retrieve the token on each EC2 instance and use the token to install the private package from the repository"
+                ],
+                c: [2], 
+                x: ["allow the EC2 instances to authenticate to CodeArtifact", "download the private package during the deployment"],
+                e: "<div class='mb-2'><strong>Architectural Breakdown</strong><ul class='list-disc pl-5 mt-1'><li><strong>Instance Profile Role:</strong> EC2 instances require an IAM role attached via an Instance Profile to securely request temporary AWS credentials from the metadata service.</li><li><strong>CodeArtifact Login:</strong> Inside the <code>BeforeInstall</code> hook in the <code>appspec.yml</code> file, the instance executes <code>aws codeartifact login</code>. This command automatically requests an authorization token and configures the local package manager (e.g., npm) to authenticate and pull the private dependency securely.</li></ul></div>",
+                w: "<div class='mb-3'><strong>Why Other Options are Incorrect</strong><ul class='list-decimal pl-5 mt-1'><li><strong>Store a long-lived token in Parameter Store:</strong> CodeArtifact authorization tokens have a strict maximum lifetime (12 hours). Storing them permanently in Parameter Store will cause deployments to fail once the token inevitably expires.</li><li><strong>Service-Linked Role:</strong> You cannot attach a Service-Linked Role manually to an EC2 instance. EC2 uses standard customer-managed IAM Roles wrapped in Instance Profiles.</li></ul></div>"
+            },
+            {
+                id: 6, dom: "SDLC Automation",
+                q: "A media analytics company stores uploaded video artifacts in an Amazon S3 bucket. The application has thousands of active users and writes a large number of objects to the bucket throughout the day. The company has enabled Amazon S3 event notifications for object creation events. Whenever the application writes a new object to the S3 bucket, the DevOps team must run several independent processing tasks at the same time, such as metadata extraction, thumbnail generation, and content classification. The team wants to use AWS Step Functions to coordinate these tasks with the least operational overhead. Which combination of steps should the DevOps team take to meet these requirements? (Select two)",
+                o: [
+                    "Create an Amazon EventBridge rule that matches S3 object-created events and configures the rule target to start the Step Functions workflow directly",
+                    "Create an Amazon EventBridge rule that matches S3 object-created events and invokes an AWS Lambda function that starts the Step Functions workflow",
+                    "Create a Synchronous Express Step Functions workflow that uses a Parallel state to define the independent processing tasks",
+                    "Create an Amazon SQS queue to receive S3 object-created events. Configure an AWS Lambda event source mapping to poll the queue and start a Standard Step Functions workflow for each message",
+                    "Create an Asynchronous Express Step Functions workflow that uses a Parallel state to define the independent processing tasks"
+                ],
+                c: [0, 4], 
+                x: ["run several independent processing tasks at the same time", "writes a large number of objects", "least operational overhead"],
+                e: "<div class='mb-2'><strong>Architectural Breakdown</strong><ul class='list-disc pl-5 mt-1'><li><strong>Asynchronous Express Workflow:</strong> Express workflows are explicitly designed for high-volume, short-running event processing (unlike Standard workflows). Making it asynchronous means the S3 trigger doesn't wait for the processing to finish, allowing massive throughput.</li><li><strong>Parallel State:</strong> Utilizing a 'Parallel' state inside the workflow enables the metadata extraction, thumbnailing, and classification tasks to execute concurrently.</li><li><strong>EventBridge Direct Target:</strong> EventBridge can natively route S3 object-created events directly into a Step Functions state machine execution, eliminating the need to write and maintain a custom intermediary Lambda function.</li></ul></div>",
+                w: "<div class='mb-3'><strong>Why Other Options are Incorrect</strong><ul class='list-decimal pl-5 mt-1'><li><strong>Synchronous Express Workflow:</strong> Synchronous workflows require the caller (EventBridge) to maintain an open connection waiting for the response, which is completely unnecessary for background image processing and limits scalability.</li><li><strong>Lambda intermediary:</strong> Invoking a Lambda function just to trigger a Step Function adds unnecessary custom code maintenance, compute costs, and operational overhead when EventBridge can target Step Functions natively.</li></ul></div>"
+            },
+            {
+                id: 7, dom: "SDLC Automation",
+                q: "A software engineering team is building a CI/CD workflow for a Java-based customer portal. The team uses AWS CodeBuild to compile the source code, run unit tests, and package the build output into deployable files. The team must store the build artifacts that the CodeBuild project creates so later pipeline stages can retrieve the artifacts. Which solution will meet this requirement?",
+                o: [
+                    "Create an Amazon S3 bucket. Configure the CodeBuild project to use the S3 bucket as the artifact output location. Add an artifacts section to the buildspec file to identify the generated files, and configure permissions that allow the CodeBuild service role to write to the S3 bucket",
+                    "Create an Amazon S3 bucket. Configure the buildspec file to upload artifacts directly to the S3 bucket by using AWS CLI commands, and configure an S3 bucket policy that allows the CodeBuild build container to access the bucket",
+                    "Create an AWS CodeArtifact repository for the Java build outputs. Configure the buildspec file to publish the compiled application archive to CodeArtifact, and configure the CodeBuild service role to use the repository as the artifact output location",
+                    "Create an Amazon EFS file system and mount the file system in the CodeBuild project. Configure the buildspec file to copy the packaged Java artifacts to the mounted file system, and configure an EFS file system policy that grants CodeBuild access"
+                ],
+                c: [0], 
+                x: ["store the build artifacts that the CodeBuild project creates so later pipeline stages can retrieve the artifacts"],
+                e: "<div class='mb-2'><strong>Architectural Breakdown</strong><ul class='list-disc pl-5 mt-1'><li><strong>S3 Artifact Output Location:</strong> AWS CodeBuild natively supports Amazon S3 as the primary destination for build artifacts, allowing downstream CodePipeline stages to pull those files automatically.</li><li><strong>Buildspec <code>artifacts</code> Section:</strong> Inside the <code>buildspec.yml</code> file, declaring output paths under the <code>artifacts</code> block instructs CodeBuild to automatically compress and upload those compiled files at the end of the run.</li><li><strong>Service Role:</strong> CodeBuild utilizes an attached IAM Service Role, which must be granted explicit <code>s3:PutObject</code> permissions to write the generated ZIP or JAR files into the target bucket.</li></ul></div>",
+                w: "<div class='mb-3'><strong>Why Other Options are Incorrect</strong><ul class='list-decimal pl-5 mt-1'><li><strong>Upload directly using AWS CLI commands:</strong> While using <code>aws s3 cp</code> in a bash script technically works, it completely ignores CodeBuild's native, managed artifact packaging capabilities and breaks seamless integration with downstream CodePipeline stages.</li><li><strong>AWS CodeArtifact:</strong> CodeArtifact is a package manager registry (for npm, Maven dependencies), not a storage location for raw compiled CI pipeline deployment artifacts.</li></ul></div>"
+            },
+            {
+                id: 8, dom: "SDLC Automation",
+                q: "The DevOps team at your company is using CodeDeploy to deploy new versions of a Lambda function after it has passed a CodeBuild check via your CodePipeline. Before deploying, the CodePipeline has a step in which it optionally kickstarts a restructuring of files on an S3 bucket that is forward compatible. That restructuring is done using a Step Function execution which invokes a Fargate task. The new Lambda function cannot work until the restructuring task has fully completed. As a DevOps Engineer, how can you ensure traffic isn't served to your new Lambda function until the task is completed?",
+                o: [
+                    "In your appspec.yml file, include a BeforeAllowTraffic hook that checks on the completion of the Step Function execution",
+                    "In your appspec.yml file, include an AfterAllowTraffic hook that checks on the completion of the Step Function execution",
+                    "Enable Canary Deployment in CodeDeploy so that only a fraction of the service is served by the new Lambda function while the restructuring is happening",
+                    "Include an extra step in the Step Function to signal to CodeDeploy the completion of the restructuring and serve new traffic to the new Lambda function"
+                ],
+                c: [0], 
+                x: ["ensure traffic isn't served to your new Lambda function until the task is completed"],
+                e: "<div class='mb-2'><strong>Architectural Breakdown</strong><ul class='list-disc pl-5 mt-1'><li><strong>CodeDeploy Hooks for Lambda:</strong> When deploying AWS Lambda, CodeDeploy relies on the <code>appspec.yml</code> file to define lifecycle hooks.</li><li><strong>BeforeAllowTraffic:</strong> This specific lifecycle hook executes <em>before</em> any live user traffic is routed to the new Lambda version. Executing a validation script here that polls the Step Function execution ensures the S3 restructuring is 100% complete before a single user hits the new code.</li></ul></div>",
+                w: "<div class='mb-3'><strong>Why Other Options are Incorrect</strong><ul class='list-decimal pl-5 mt-1'><li><strong>AfterAllowTraffic:</strong> Executing logic in this hook means live production traffic is <em>already</em> being served by the new Lambda function, which will cause immediate application crashes if the S3 restructuring isn't finished.</li><li><strong>Canary Deployment:</strong> Shifting even a small fraction of traffic (canary) to the new Lambda version while the S3 files are still restructuring will result in critical errors for those users.</li></ul></div>"
+            },
+            {
+                id: 9, dom: "SDLC Automation",
+                q: "A leading game development company is planning to host its latest video game on AWS. It is expected that there will be millions of users around the globe that will play the game. The architecture should allow players to send or receive data on the backend in real-time for a better gaming experience. The application libraries and user data of the game must also comply with the data residency requirement wherein all files must remain in the same region. GitHub, CodeBuild, CodeDeploy, and CodePipeline should be utilized to build the CI/CD process. As a DevOps Engineer, which of the following is the MOST suitable and efficient solution that you should implement to satisfy this requirement?",
+                o: [
+                    "Create a new pipeline using AWS CodePipeline and a GitHub repository as the source in your primary AWS region. Set a CodeBuild test action to run the automated unit and integration tests. Configure the repository to trigger the build and deployment actions whenever there is a new code update. Using the AWS Management Console, set up the pipeline to use cross-region actions that will run the build and deployment actions to other regions. Manually configure the pipeline to automatically store output files on a single S3 bucket.",
+                    "Create a new pipeline using AWS CodePipeline and a GitHub repository as the source in your primary AWS region. Configure the repository to trigger the build and deployment actions whenever there is a new code update. Using the AWS Management Console, set up the pipeline to use cross-AZ actions that will run the build and deployment actions to other Availability Zones. The pipeline will automatically store output files on a default artifact bucket on each AZ.",
+                    "Create a new pipeline using AWS CodePipeline and a GitHub repository as the source on multiple AWS regions. Configure the repository of the pipeline for each region to trigger the build and deployment actions whenever there is a new code update. The pipeline will automatically store output files on a default artifact bucket on each region.",
+                    "Create a new pipeline using AWS CodePipeline and a GitHub repository as the source in your primary AWS region. Configure the repository to trigger the build and deployment actions whenever there is a new code update. Using the AWS Management Console, set up the pipeline to use cross-region actions that will run the build and deployment actions to other regions. The pipeline will automatically store output files on a default artifact bucket on each region."
+                ],
+                c: [3], 
+                x: ["all files must remain in the same region", "cross-region actions"],
+                e: "<div class='mb-2'><strong>Architectural Breakdown</strong><ul class='list-disc pl-5 mt-1'><li><strong>Cross-Region Actions:</strong> AWS CodePipeline natively supports Cross-Region deployment actions. A single master pipeline in the primary region can orchestrate CodeDeploy jobs launching game servers securely in multiple global regions.</li><li><strong>Data Residency Compliance:</strong> When CodePipeline executes cross-region actions, it automatically provisions and utilizes a default artifact S3 bucket <em>within that specific destination region</em>. This ensures the application binaries and data never cross geopolitical boundaries, strictly adhering to data residency requirements.</li></ul></div>",
+                w: "<div class='mb-3'><strong>Why Other Options are Incorrect</strong><ul class='list-decimal pl-5 mt-1'><li><strong>Manually configure... on a single S3 bucket:</strong> Storing all global deployment artifacts in a single S3 bucket in the primary region forces the data to cross borders during deployment, violating strict data residency requirements.</li><li><strong>Cross-AZ actions:</strong> There is no such feature as \"Cross-AZ actions\" in CodePipeline. Availability Zones reside within the same region naturally.</li></ul></div>"
+            },
+            {
+                id: 10, dom: "SDLC Automation",
+                q: "A leading telecommunications company is using CloudFormation templates to deploy enterprise applications to their production, staging, and development environments in AWS. Their current process involves manual changes to their CloudFormation templates in order to specify the configuration variables and static attributes for each environment. The DevOps Engineer was tasked to set up automated deployments using AWS CodePipeline and ensure that the CloudFormation template is reusable across multiple pipelines. How should the DevOps Engineer satisfy this requirement?",
+                o: [
+                    "Manually configure the CloudFormation templates to use input parameters. Add a configuration that whenever the CloudFormation stack is updated, it will dynamically modify the LaunchConfiguration and UserData sections of the EC2 instances.",
+                    "Set up a Lambda-backed custom resource in the CloudFormation templates. Configure the custom resource to monitor the status of the pipeline in AWS CodePipeline in order to detect which environment was launched. Use the cfn-init helper script to modify the launch template of each application stack based on its environment.",
+                    "Launch a new pipeline using AWS CodePipeline that has multiple stages for each environment and configure it to use input parameters. Switch the associated UserData of the EC2 instances to match the environment where the application stack is being launched using CloudFormation mappings. Specify parameter overrides for AWS CloudFormation actions.",
+                    "Launch a new pipeline using AWS CodePipeline for each environment with multiple stages for each application. Trigger the CloudFormation deployments using a Lambda function to dynamically modify the UserData of the EC2 instances that were launched in each environment."
+                ],
+                c: [2], 
+                x: ["automated deployments using AWS CodePipeline", "ensure that the CloudFormation template is reusable"],
+                e: "<div class='mb-2'><strong>Architectural Breakdown</strong><ul class='list-disc pl-5 mt-1'><li><strong>Template Reusability:</strong> A single, base CloudFormation template can be reused globally by relying on abstract Input Parameters (e.g., <code>EnvironmentType</code>) and internal Mappings.</li><li><strong>Parameter Overrides:</strong> In an AWS CodePipeline workflow, the CloudFormation Deploy Action natively supports \"Parameter Overrides\". The pipeline dynamically passes variables (like \"PROD\" or \"DEV\") directly into the template during execution.</li><li><strong>Dynamic UserData:</strong> Using internal CloudFormation Mappings combined with those parameter overrides ensures the EC2 instances configure themselves perfectly for the specific target environment without touching the source code.</li></ul></div>",
+                w: "<div class='mb-3'><strong>Why Other Options are Incorrect</strong><ul class='list-decimal pl-5 mt-1'><li><strong>Lambda Custom Resource monitoring Pipeline status:</strong> This is a massive anti-pattern. CloudFormation should be purely declarative; having internal resources reach out to check the status of external orchestrators (CodePipeline) breaks Infrastructure as Code decoupling.</li><li><strong>Lambda function to dynamically modify UserData:</strong> Modifying UserData of already running EC2 instances via Lambda post-deployment is highly destructive. UserData only executes on initial instance boot.</li></ul></div>"
+            },
+            {
+                id: 11, dom: "SDLC Automation",
+                q: "A commercial bank has a hybrid cloud architecture in AWS where its online banking platform is hosted. The CTO instructed its Lead DevOps Engineer to implement a suitable deployment set up that minimizes the impact on their production environment. The CI/CD process should be configured as follows:<br/> - A new fleet of Amazon EC2 instances should be automatically launched first before the actual production deployment. The additional instances will serve traffic during the deployment.<br/> - At least half of the incoming traffic must be rerouted to the new application version that is hosted to the new instances.<br/> - All temporary files must be deleted before routing traffic to the new fleet of instances.<br/> - To reduce costs, the EC2 instances that host the old version in the deployment group must be terminated immediately.<br/> What should the Engineer do to satisfy these requirements?",
+                o: [
+                    "Launch an Application Load Balancer and use an in-place deployment for releasing new application versions. Associate the Auto Scaling group and Application Load Balancer target group with the deployment group. In CodeDeploy, use the CodeDeployDefault.AllatOnce as a deployment configuration and add a configuration to terminate the original instances in the Auto Scaling group after the deployment. Use the BlockTraffic hook within appspec.yml to purge the temporary files.",
+                    "Launch an Application Load Balancer and use a blue/green deployment for releasing new application versions. Associate the Auto Scaling group and the Application Load Balancer target group with the deployment group. Create a custom deployment configuration for the deployment group in CodeDeploy with minimum healthy hosts defined as 50% and configure it to also terminate the original instances in the Auto Scaling group after deployment. Use the BeforeAllowTraffic Traffic hook within appspec.yml to purge the temporary files.",
+                    "Launch an Application Load Balancer and use a blue/green deployment for releasing new application versions. Associate the Auto Scaling group and the Application Load Balancer target group with the deployment group. In CodeDeploy, use the CodeDeployDefault.HalfAtAtime as the deployment configuration and configure it to terminate the original instances in the Auto Scaling group after deployment. Use the BlockTraffic hook within appspec.yml to purge the temporary files.",
+                    "Launch an Application Load Balancer and use in-place deployment for releasing new application versions. Use the CodeDeployDefault.OneAtAtime as the deployment configuration and associate the Auto Scaling group with the deployment group. Configure AWS CodeDeploy to terminate all EC2 instances in the original Auto Scaling group and use the AllowTraffic hook within the appspec.yml configuration file to purge the temporary files."
+                ],
+                c: [1], 
+                x: ["new fleet of Amazon EC2 instances should be automatically launched first before the actual production deployment", "At least half of the incoming traffic must be rerouted", "temporary files must be deleted before routing traffic"],
+                e: "<div class='mb-2'><strong>Architectural Breakdown</strong><ul class='list-disc pl-5 mt-1'><li><strong>Blue/Green Deployment:</strong> A Blue/Green deployment satisfies the requirement to provision a completely \"new fleet of instances\" prior to the deployment taking live traffic.</li><li><strong>Custom 50% Configuration:</strong> By creating a custom CodeDeploy configuration requiring 50% minimum healthy hosts, you accurately shift at least half the incoming traffic to the new instances.</li><li><strong>BeforeAllowTraffic Hook:</strong> The <code>BeforeAllowTraffic</code> lifecycle hook inside the <code>appspec.yml</code> executes scripts securely <em>just before</em> the ALB routes live user traffic to the instance, making it the perfect stage to purge sensitive temporary files.</li></ul></div>",
+                w: "<div class='mb-3'><strong>Why Other Options are Incorrect</strong><ul class='list-decimal pl-5 mt-1'><li><strong>In-place deployment:</strong> An in-place deployment overwrites the application code on the *existing* EC2 instances. It does not provision a \"new fleet\" of infrastructure.</li><li><strong>BlockTraffic / AllowTraffic hooks:</strong> The <code>BlockTraffic</code> and <code>AllowTraffic</code> events are exclusively reserved for the CodeDeploy internal agent to manage load balancer registration. You cannot attach custom bash scripts to these specific hooks.</li></ul></div>"
+            },
+            {
+                id: 12, dom: "SDLC Automation",
+                q: "A developer is developing a mobile quiz app hosted on AWS and is using AWS CodeDeploy to deploy the application on a cluster of EC2 instances. A hotfix needs to be applied after the scheduled deployment. These are files not included in the current application revision, so the developer uploaded the files manually to the target instances. On the next application release, the hotfix files were included in the new revision, but the deployment fails, and CodeDeploy auto-rolls back to the previous version. However, it was noticed that the hotfix files that were manually added were missing, and the application was not working properly. Which of the following is the possible cause, and how will it be prevented in the future?",
+                o: [
+                    "By default, CodeDeploy retains all files on the deployment location but the auto rollback will deploy the old revision files cleanly. Choose 'Fail the deployment' option for future deployments so that only the files included in the old app revision will be deployed and the existing contents will be retained.",
+                    "By default, CodeDeploy retains all files on the deployment location but the auto rollback will deploy the old revision files cleanly. Choose 'Overwrite the content' option for future deployments so that only the files included in the old app revision will be overwritten and the existing contents will be retained.",
+                    "By default, CodeDeploy removes all files on the deployment location and the auto rollback will deploy the old revision files cleanly. Choose 'Retain the content' option for future deployments so that only the files included in the old app revision will be deployed and the existing contents will be retained.",
+                    "By default, CodeDeploy removes all files on the deployment location and the auto rollback will deploy the old revision files cleanly. Choose 'Overwrite the content' option for future deployments so that only the files included in the old app revision will be overwritten and the existing contents will be retained."
+                ],
+                c: [2], 
+                x: ["CodeDeploy auto-rolls back", "hotfix files that were manually added were missing"],
+                e: "<div class='mb-2'><strong>Architectural Breakdown</strong><ul class='list-disc pl-5 mt-1'><li><strong>Default CodeDeploy Behavior:</strong> By default, before CodeDeploy installs a new application revision, it strictly <em>deletes all files</em> from the deployment directory that were part of the previous successful deployment. Any manual files added out-of-band are obliterated during rollback or new deployments.</li><li><strong>Retain Content Option:</strong> To prevent this destructive behavior and safely manage out-of-band hotfixes, you must explicitly select the \"Retain the content\" option in the deployment configuration. This forces CodeDeploy to preserve the unmanaged manual files instead of wiping the directory clean.</li></ul></div>",
+                w: "<div class='mb-3'><strong>Why Other Options are Incorrect</strong><ul class='list-decimal pl-5 mt-1'><li><strong>CodeDeploy retains all files on the deployment location by default:</strong> This statement is factually incorrect. CodeDeploy aggressively deletes files from the previous revision by default.</li><li><strong>Overwrite the content:</strong> The \"Overwrite\" option forces CodeDeploy to replace the existing manual files with whatever is inside the incoming deployment package. If the rollback package does not contain the hotfix, it will be destroyed.</li></ul></div>"
+            },
+            {
+                id: 13, dom: "SDLC Automation",
+                q: "The Development team of a leading IT consultancy company would like to add a manual approval action before their new application versions are deployed to their production environment. The approval action must be strictly enforced even if the unit and integration tests are all successful. They have set up a pipeline using CodePipeline to orchestrate the workflow of their continuous integration and continuous delivery processes. The new versions of the application are built using CodeBuild and are deployed to a fleet of Amazon EC2 instances using CodeDeploy. Which of the following provides the SIMPLEST and the MOST cost-effective solution?",
+                o: [
+                    "Add the required action steps to automatically do the unit and integration tests using AWS Step Functions. After the last deploy action of the pipeline, set up a test action to verify the application's functionality. Mark the action as successful if all of the tests have been successfully passed. Create a manual approval action and inform the team of the stage being triggered using SNS. Add a deploy action to deploy the app to the next stage at the end of the pipeline",
+                    "In CodeBuild, add the required actions to automatically do the unit and integration tests. After the last deploy action of the pipeline, set up a manual approval action and inform the team of the stage being triggered using SNS. Add a deploy action to deploy the app to the next stage at the end of the pipeline.",
+                    "In CodeBuild, add the required actions to automatically do the unit and integration tests. After the last deploy action of the pipeline, set up a test action to verify the application's functionality. Mark the action as successful if all of the tests have been successfully passed. Create a custom action with a corresponding custom job worker that performs the approval action. Inform the team of the stage being triggered using SNS. Add a deploy action to deploy the app to the next stage at the end of the pipeline",
+                    "Add the required action steps to automatically do the unit and integration tests using a third-party CI/CD Tool such as GitLab or Jenkins hosted in Amazon EC2. After the last deploy action of the pipeline, set up a test action to verify the application's functionality. Mark the action as successful if all of the tests have been successfully passed. Create a manual approval action and inform the team of the stage being triggered using SNS. Add a deploy action to deploy the app to the next stage at the end of the pipeline"
+                ],
+                c: [1], 
+                x: ["manual approval action before their new application versions are deployed to their production environment", "SIMPLEST and the MOST cost-effective"],
+                e: "<div class='mb-2'><strong>Architectural Breakdown</strong><ul class='list-disc pl-5 mt-1'><li><strong>Native Testing:</strong> AWS CodeBuild is purposefully designed to execute shell commands, making it the native, simplest choice for running automated unit and integration tests directly within the pipeline.</li><li><strong>Native Approval Gate:</strong> AWS CodePipeline possesses a built-in \"Manual Approval\" action. Placing this action precisely between the staging deployment and the production deployment explicitly halts the pipeline execution.</li><li><strong>SNS Notifications:</strong> The manual approval action integrates effortlessly with Amazon SNS, dispatching an immediate email/SMS to leadership requesting authorization to proceed to production.</li></ul></div>",
+                w: "<div class='mb-3'><strong>Why Other Options are Incorrect</strong><ul class='list-decimal pl-5 mt-1'><li><strong>Custom action with a corresponding custom job worker:</strong> Developing a custom manual approval job worker entails massive overhead. CodePipeline's native 'Manual Approval' action eliminates all custom coding.</li><li><strong>Third-party CI/CD Tool (GitLab/Jenkins) hosted on EC2:</strong> Deploying and managing a fleet of EC2 instances merely to run unit tests violates the 'simplest and most cost-effective' requirement when CodeBuild handles this serverlessly.</li></ul></div>"
+            },
+            {
+                id: 14, dom: "SDLC Automation",
+                q: "A software development company has a microservices architecture that consists of several AWS Lambda functions with a DynamoDB table as its data store. The current workflow of the development team is to manually deploy the new version of the Lambda function right after the QA team completed the testing. There is a new requirement to improve the workflow by automating the tests as well as the code deployments. Whenever there is a new release, the application traffic to the new versions of each microservice should be incrementally shifted over time after deployment. This will provide them the option to verify the changes to a subset of users in production and easily rollback the changes if needed. Which of the following solutions will improve the velocity of the company's development workflow?",
+                o: [
+                    "Set up a new pipeline in AWS CodePipeline and configure a new source code step that will automatically trigger whenever a new code is pushed to a GitHub repository. Use AWS CodeBuild for the build step to run the tests automatically then set up an AWS CodeDeploy configuration to deploy the updated Lambda function. Select the predefined CodeDeployDefault.LambdaLinear10PercentEvery3Minutes configuration option for deployment.",
+                    "Develop a custom shell script that utilizes a post-commit hook to upload the latest version of the Lambda function in an S3 bucket. Set up the S3 event trigger which will invoke a Lambda function that deploys the new version. Specify the percentage of traffic that will initially be routed to your updated Lambda as well as the interval to deploy the code over time.",
+                    "Set up an AWS CodeBuild configuration which automatically starts whenever a new code is pushed. Configure CloudFormation to trigger a pipeline in AWS CodePipeline that deploys the new Lambda version. Specify the percentage of traffic that will initially be routed to your updated Lambda function as well as the interval to deploy the code over time in the CloudFormation template.",
+                    "Set up a new pipeline in AWS CodePipeline and configure a post-commit hook to start the pipeline after all the automated tests have passed. Configure AWS CodeDeploy to use an All-at-once deployment configuration for deployments."
+                ],
+                c: [0], 
+                x: ["incrementally shifted over time after deployment", "verify the changes to a subset of users in production"],
+                e: "<div class='mb-2'><strong>Architectural Breakdown</strong><ul class='list-disc pl-5 mt-1'><li><strong>Automated Pipeline:</strong> AWS CodePipeline securely connects to GitHub to establish an automated CI/CD workflow triggered on code commits, utilizing CodeBuild to execute tests natively.</li><li><strong>Incremental Traffic Shifting:</strong> AWS CodeDeploy natively supports advanced traffic shifting for Lambda functions. The <code>CodeDeployDefault.LambdaLinear10PercentEvery3Minutes</code> policy explicitly fulfills the requirement to \"incrementally shift over time\", moving 10% of user traffic to the new microservice every 3 minutes.</li></ul></div>",
+                w: "<div class='mb-3'><strong>Why Other Options are Incorrect</strong><ul class='list-decimal pl-5 mt-1'><li><strong>Develop a custom shell script... post-commit hook:</strong> Developing bash scripts to push deployment zips to S3 and managing custom Lambda deployers completely ignores the existence of CodeDeploy, introducing severe architectural debt.</li><li><strong>All-at-once deployment:</strong> Using an \"All-at-once\" strategy aggressively cuts 100% of production traffic over to the new version instantly, violating the requirement to verify changes against a subset of users safely.</li></ul></div>"
+            },
+            {
+                id: 15, dom: "SDLC Automation",
+                q: "A software development company is using GitHub, AWS CodeBuild, AWS CodeDeploy, and AWS CodePipeline for its CI/CD process. To further improve their systems, they need to implement a solution that automatically detects and reacts to changes in the state of their deployments in AWS CodeDeploy. Any changes must be rolled back automatically if the deployment process fails, and a notification must be sent to the DevOps Team's Slack channel for easy monitoring. Which of the following is the MOST suitable configuration that you should implement to satisfy this requirement?",
+                o: [
+                    "Set up a CloudWatch Alarm that tracks the CloudWatch metrics of the CodeDeploy project. Configure the CloudWatch Alarm to automatically send out a message to the DevOps Team's Slack Channel when the deployment fails. Configure AWS CodeDeploy to use the Roll back when alarm thresholds are met setting.",
+                    "Configure a CodeDeploy agent to send notification to the DevOps Team's Slack Channel when the deployment fails. Configure AWS CodeDeploy to automatically roll back whenever the deployment is not successful.",
+                    "Set up an Amazon EventBridge rule to monitor AWS CodeDeploy operations with a Lambda function as a target. Configure the lambda function to send out a message to the DevOps Team's Slack Channel in the event that the deployment fails. Configure AWS CodeDeploy to use the Roll back when a deployment fails setting.",
+                    "Monitor the API calls in the CodeDeploy project using AWS CloudTrail. Send a message to the DevOps Team's Slack Channel when the PutLifecycleEventHookExecutionStatus API call has been detected. Rollback the changes by using the AWS CLI."
+                ],
+                c: [2], 
+                x: ["automatically detects and reacts to changes in the state of their deployments in AWS CodeDeploy", "notification must be sent to the DevOps Team's Slack channel", "rolled back automatically if the deployment process fails"],
+                e: "<div class='mb-2'><strong>Architectural Breakdown</strong><ul class='list-disc pl-5 mt-1'><li><strong>Event Routing:</strong> AWS CodeDeploy natively emits state-change execution events (like Success or Failure) directly to Amazon EventBridge.</li><li><strong>Slack Integration:</strong> By targeting an AWS Lambda function from that EventBridge rule, the Lambda code can format a JSON payload and post it securely to a 3rd-party Slack webhook endpoint.</li><li><strong>Automatic Rollback:</strong> Within the AWS CodeDeploy Deployment Group settings, explicitly toggling the \"Roll back when a deployment fails\" feature guarantees that if the application crashes during deployment, it will seamlessly revert to the last known good revision.</li></ul></div>",
+                w: "<div class='mb-3'><strong>Why Other Options are Incorrect</strong><ul class='list-decimal pl-5 mt-1'><li><strong>CloudWatch Alarm directly to Slack:</strong> CloudWatch Alarms can trigger an SNS topic, but SNS cannot format and send messages natively to a Slack Webhook URL. It requires an intermediary Lambda function.</li><li><strong>CodeDeploy Agent notification:</strong> The CodeDeploy agent runs locally on the EC2 instance to pull files. It is not designed to execute custom API calls to Slack upon widespread deployment failure.</li></ul></div>"
+            }
+        ];
+
+        const STORAGE_KEY = 'aws_dop_c02_sdlc_pt1_v1';
+
+        let appState = { 
+            answers: {}, 
+            mode: 'practice',
+            activeDomain: 'all',
+            timeRemaining: 180 * 60, 
+            timerInterval: null, 
+            submitted: false,
+            evaluated: {} 
+        };
+
+        function saveState() {
+            const stateToSave = {
+                answers: appState.answers,
+                mode: appState.mode,
+                timeRemaining: appState.timeRemaining,
+                submitted: appState.submitted,
+                evaluated: appState.evaluated
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
+            
+            const indicator = document.getElementById('save-indicator');
+            if(indicator) {
+                indicator.style.opacity = '1';
+                setTimeout(() => { indicator.style.opacity = '0'; }, 1500);
+            }
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    appState.answers = parsed.answers || {};
+                    appState.mode = parsed.mode || 'practice';
+                    appState.timeRemaining = parsed.timeRemaining || 180 * 60;
+                    appState.submitted = parsed.submitted || false;
+                    appState.evaluated = parsed.evaluated || {};
+                } catch (e) {
+                    console.error("Error parsing saved state", e);
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => { 
+            loadState();
+            document.getElementById('total-q-count').textContent = rawQuestions.length;
+            
+            const btnPractice = document.getElementById('btn-practice-mode');
+            const btnExam = document.getElementById('btn-exam-mode');
+            const timerContainer = document.getElementById('timer-container');
+
+            if (appState.mode === 'practice') {
+                btnPractice.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 bg-amber-500 text-slate-900 shadow";
+                btnExam.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 text-slate-400 hover:text-slate-200";
+                timerContainer.classList.add('hidden');
+                stopTimer();
+            } else {
+                btnExam.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 bg-amber-500 text-slate-900 shadow";
+                btnPractice.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 text-slate-400 hover:text-slate-200";
+                timerContainer.classList.remove('hidden');
+                if (!appState.submitted) startTimer();
+            }
+
+            if (appState.submitted) {
+                submitExam(true); 
+            } else {
+                renderQuestions(); 
+                updateProgress(); 
+            }
+        });
+
+        function escapeRegExp(string) { return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+        function highlightText(text, clues) {
+            if (!clues || clues.length === 0) return text;
+            let highlighted = text;
+            clues.forEach(clue => {
+                const regex = new RegExp(`(${escapeRegExp(clue)})`, 'gi');
+                highlighted = highlighted.replace(regex, '<span class="keyword-highlight">$1</span>');
+            });
+            return highlighted;
+        }
+
+        function setMode(mode) {
+            appState.mode = mode;
+            const btnPractice = document.getElementById('btn-practice-mode');
+            const btnExam = document.getElementById('btn-exam-mode');
+            const timerContainer = document.getElementById('timer-container');
+
+            if (mode === 'practice') {
+                btnPractice.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 bg-amber-500 text-slate-900 shadow";
+                btnExam.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 text-slate-400 hover:text-slate-200";
+                timerContainer.classList.add('hidden');
+                stopTimer();
+            } else {
+                btnExam.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 bg-amber-500 text-slate-900 shadow";
+                btnPractice.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 text-slate-400 hover:text-slate-200";
+                timerContainer.classList.remove('hidden');
+                if (!appState.submitted) startTimer();
+            }
+            saveState();
+            renderQuestions();
+        }
+
+        function startTimer() {
+            if (appState.timerInterval) clearInterval(appState.timerInterval);
+            appState.timerInterval = setInterval(() => {
+                if (appState.timeRemaining <= 0) {
+                    clearInterval(appState.timerInterval);
+                    submitExam();
+                } else {
+                    appState.timeRemaining--;
+                    updateTimerDisplay();
+                    if (appState.timeRemaining % 5 === 0) saveState();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (appState.timerInterval) clearInterval(appState.timerInterval);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(appState.timeRemaining / 60);
+            const seconds = appState.timeRemaining % 60;
+            document.getElementById('timer-display').textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function filterDomain(domain) {
+            appState.activeDomain = domain;
+            const buttons = document.querySelectorAll('.domain-btn');
+            buttons.forEach(btn => {
+                if ((domain === 'all' && btn.textContent.includes('All Domains')) || (domain !== 'all' && btn.textContent.includes(domain))) {
+                    btn.className = "domain-btn active px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-500 text-slate-900 border border-amber-500 transition shadow";
+                } else {
+                    btn.className = "domain-btn px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition";
+                }
+            });
+            renderQuestions();
+        }
+
+        function handleSelectOption(qId, optIdx, isMulti) {
+            if (appState.submitted && appState.mode === 'exam') return;
+            if (appState.mode === 'practice' && appState.evaluated[qId]) return;
+
+            const q = rawQuestions.find(item => item.id === qId);
+            if (!appState.answers[qId]) appState.answers[qId] = [];
+
+            const userSelected = appState.answers[qId];
+            const requiredSelections = q.c.length;
+
+            if (isMulti) {
+                const idx = userSelected.indexOf(optIdx);
+                if (idx > -1) {
+                    userSelected.splice(idx, 1);
+                } else {
+                    if (userSelected.length < requiredSelections) {
+                        userSelected.push(optIdx);
+                    }
+                }
+            } else {
+                appState.answers[qId] = [optIdx];
+            }
+
+            saveState();
+            updateProgress();
+            renderQuestionCard(qId);
+        }
+
+        function checkAnswer(qId) {
+            appState.evaluated[qId] = true;
+            saveState();
+            updateProgress();
+            renderQuestionCard(qId);
+        }
+
+        function updateProgress() {
+            let answeredCount = 0;
+            if (appState.mode === 'practice') {
+                answeredCount = Object.keys(appState.evaluated).length;
+            } else {
+                answeredCount = Object.keys(appState.answers).filter(k => {
+                    const q = rawQuestions.find(item => item.id == k);
+                    return appState.answers[k] && appState.answers[k].length === q.c.length;
+                }).length;
+            }
+            
+            document.getElementById('answered-count').textContent = answeredCount;
+            const pct = Math.round((answeredCount / rawQuestions.length) * 100);
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-list');
+            container.innerHTML = '';
+            
+            const cheatSheet = document.getElementById('cheat-sheet');
+            if (cheatSheet) {
+                if (appState.activeDomain === 'all' || appState.activeDomain === 'SDLC Automation') {
+                    cheatSheet.parentElement.classList.remove('hidden');
+                } else {
+                    cheatSheet.parentElement.classList.add('hidden');
+                }
+            }
+            
+            const filtered = rawQuestions.filter(q => appState.activeDomain === 'all' || q.dom.includes(appState.activeDomain));
+            filtered.forEach(q => container.appendChild(createQuestionCardHtml(q)));
+        }
+
+        function renderQuestionCard(qId) {
+            const existingCard = document.getElementById(`question-card-${qId}`);
+            if (existingCard) {
+                const newCard = createQuestionCardHtml(rawQuestions.find(q => q.id === qId));
+                existingCard.replaceWith(newCard);
+            }
+        }
+
+        function createQuestionCardHtml(q) {
+            const card = document.createElement('div');
+            card.id = `question-card-${q.id}`;
+            card.className = "bg-slate-800/90 border border-slate-700/80 rounded-2xl p-5 sm:p-6 shadow-lg transition-all duration-200 hover:border-slate-600";
+
+            const userSelected = appState.answers[q.id] || [];
+            const isMulti = q.c.length > 1;
+            const requiredSelections = q.c.length;
+            
+            const isPracticeEvaluated = appState.mode === 'practice' && appState.evaluated[q.id];
+            const isExamEvaluated = appState.submitted;
+
+            let displayQuestion = q.q;
+            if ((isPracticeEvaluated || isExamEvaluated) && q.x && q.x.length > 0) {
+                displayQuestion = highlightText(q.q, q.x);
+            }
+
+            let html = `
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2.5 py-1 text-xs font-extrabold rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">Question ${q.id}</span>
+                        ${isMulti ? `<span class="px-2 py-0.5 text-[10px] font-semibold uppercase bg-sky-500/10 text-sky-400 border border-sky-500/20 rounded">Select ${requiredSelections}</span>` : ''}
+                    </div>
+                    <span class="text-xs font-medium text-slate-400 bg-slate-900/60 px-3 py-1 rounded-full border border-slate-700/50">${q.dom}</span>
+                </div>
+                <p class="text-slate-100 font-medium text-sm sm:text-base leading-relaxed mb-5">${displayQuestion}</p>
+                <div class="space-y-2.5">
+            `;
+
+            q.o.forEach((optText, optIdx) => {
+                const isSelected = userSelected.includes(optIdx);
+                const isCorrect = q.c.includes(optIdx);
+
+                let optClass = "border-slate-700 bg-slate-900/40 hover:bg-slate-700/50 text-slate-200";
+                
+                let indicatorHtml = `<div style="width: 16px; height: 16px; min-width: 16px;" class="rounded-full border border-slate-500 flex items-center justify-center mr-3 mt-0.5 shrink-0 ${isSelected ? 'border-amber-500 bg-amber-500' : ''}">${isSelected ? '<div style="width: 6px; height: 6px;" class="rounded-full bg-slate-900"></div>' : ''}</div>`;
+                if (isMulti) {
+                    indicatorHtml = `<div style="width: 16px; height: 16px; min-width: 16px;" class="rounded border border-slate-500 flex items-center justify-center mr-3 mt-0.5 shrink-0 ${isSelected ? 'border-amber-500 bg-amber-500' : ''}">${isSelected ? '<svg style="width: 12px; height: 12px;" class="text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>' : ''}</div>`;
+                }
+
+                if (isPracticeEvaluated || isExamEvaluated) {
+                    if (isCorrect) {
+                        optClass = "border-emerald-500/60 bg-emerald-950/30 text-emerald-200 font-medium";
+                        indicatorHtml = `<div style="width: 16px; height: 16px; min-width: 16px;" class="rounded-full bg-emerald-500 text-slate-900 flex items-center justify-center mr-3 mt-0.5 shrink-0 font-bold text-xs">✓</div>`;
+                    } else if (isSelected && !isCorrect) {
+                        optClass = "border-rose-500/60 bg-rose-950/30 text-rose-200 font-medium";
+                        indicatorHtml = `<div style="width: 16px; height: 16px; min-width: 16px;" class="rounded-full bg-rose-500 text-white flex items-center justify-center mr-3 mt-0.5 shrink-0 font-bold text-xs">✕</div>`;
+                    }
+                } else if (isSelected) {
+                    optClass = "border-amber-500/80 bg-amber-500/10 text-amber-200 font-medium shadow-sm";
+                }
+
+                const pointerEvent = (isPracticeEvaluated || isExamEvaluated) ? 'pointer-events-none' : 'cursor-pointer';
+
+                html += `
+                    <label onclick="handleSelectOption(${q.id}, ${optIdx}, ${isMulti})" class="flex items-start p-3.5 rounded-xl border transition-all duration-150 select-none ${optClass} ${pointerEvent}">
+                        ${indicatorHtml}
+                        <span class="text-xs sm:text-sm leading-snug">${optText}</span>
+                    </label>
+                `;
+            });
+
+            html += `</div>`;
+
+            if (appState.mode === 'practice' && !isPracticeEvaluated) {
+                const btnDisabled = userSelected.length !== requiredSelections ? 'opacity-50 cursor-not-allowed' : 'hover:bg-amber-400';
+                html += `<button ${userSelected.length !== requiredSelections ? 'disabled' : ''} onclick="checkAnswer(${q.id})" class="mt-5 px-5 py-2 bg-amber-500 text-slate-900 font-bold text-sm rounded-lg transition ${btnDisabled}">Check Answer</button>`;
+            }
+
+            if (isPracticeEvaluated || isExamEvaluated) {
+                const userCorrect = isQuestionCorrect(q.id);
+                const cluesHtml = q.x && q.x.length > 0 
+                    ? q.x.map(clue => `<span class="inline-block bg-yellow-500/10 text-amber-400 border border-yellow-500/20 px-2 py-1 rounded text-xs font-mono mr-1.5 mb-1.5">"${clue}"</span>`).join('')
+                    : '<span class="text-xs text-slate-500">No explicit clues extracted for this question</span>';
+
+                html += `
+                    <details class="aws-expl-container" open>
+                        <summary class="aws-expl-summary">Show/Hide Explanation</summary>
+                        <div class="mt-4 border-t border-slate-700/80 fade-in">
+                            <div class="flex items-center space-x-2 mb-3 mt-3">
+                                <span class="text-xs font-bold uppercase tracking-wider ${userCorrect ? 'text-emerald-400' : 'text-rose-400'}">
+                                    ${userCorrect ? '✓ Correct Answer' : '✕ Incorrect'}
+                                </span>
+                            </div>
+                            ${q.x && q.x.length > 0 ? `
+                            <div class="mb-3 p-3.5 rounded-xl bg-slate-900/60 border border-amber-500/30">
+                                <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-400 block mb-2">Exam Clues (Keyword Indicators):</span>
+                                <div class="flex flex-wrap">${cluesHtml}</div>
+                            </div>` : ''}
+                            
+                            ${q.customHtml ? q.customHtml : `
+                            <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-700/60 text-xs sm:text-sm text-slate-300 leading-relaxed mb-3">
+                                <strong class="text-slate-100 block mb-1">Architectural Breakdown:</strong>
+                                ${q.e}
+                            </div>
+                            ${q.w ? `
+                            <div class="p-4 rounded-xl bg-rose-950/20 border border-rose-900/40 text-xs sm:text-sm text-slate-400 leading-relaxed">
+                                <strong class="text-rose-400 block mb-2">Why Incorrect Options Fail:</strong>
+                                ${q.w}
+                            </div>
+                            ` : ''}
+                            `}
+                        </div>
+                    </details>
+                `;
+            }
+            card.innerHTML = html;
+            return card;
+        }
+
+        function isQuestionCorrect(qId) {
+            const q = rawQuestions.find(item => item.id === qId);
+            const userAns = appState.answers[qId] || [];
+            if (userAns.length !== q.c.length) return false;
+            return q.c.every(val => userAns.includes(val));
+        }
+
+        function submitExam(skipSave = false) {
+            appState.submitted = true;
+            stopTimer();
+            if(!skipSave) {
+                saveState();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            let correctCount = 0;
+            rawQuestions.forEach(q => { if (isQuestionCorrect(q.id)) correctCount++; });
+
+            const percentage = Math.round((correctCount / rawQuestions.length) * 100);
+            const isPass = percentage >= 75;
+
+            document.getElementById('results-screen').classList.remove('hidden');
+            document.getElementById('submit-container').classList.add('hidden');
+
+            const scoreBadge = document.getElementById('score-badge');
+            document.getElementById('score-percentage').textContent = `${percentage}%`;
+            document.getElementById('score-raw').textContent = `${correctCount} / ${rawQuestions.length} Correct`;
+            
+            const scoreStatus = document.getElementById('score-status');
+            if (isPass) {
+                scoreBadge.className = "mt-6 inline-flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-emerald-500/50 bg-emerald-950/20 shadow-inner text-emerald-400";
+                scoreStatus.textContent = "PASS";
+                scoreStatus.className = "mt-2 text-xs uppercase tracking-widest font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+            } else {
+                scoreBadge.className = "mt-6 inline-flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-rose-500/50 bg-rose-950/20 shadow-inner text-rose-400";
+                scoreStatus.textContent = "FAIL";
+                scoreStatus.className = "mt-2 text-xs uppercase tracking-widest font-bold px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30";
+            }
+
+            const domains = ["SDLC Automation"];
+            const domainGrid = document.getElementById('domain-results-grid');
+            domainGrid.innerHTML = '';
+
+            domains.forEach(dName => {
+                const domainQuestions = rawQuestions.filter(q => q.dom === dName);
+                if(domainQuestions.length === 0) return;
+                
+                let dCorrect = 0;
+                domainQuestions.forEach(dq => { if (isQuestionCorrect(dq.id)) dCorrect++; });
+                const dPct = Math.round((dCorrect / domainQuestions.length) * 100);
+
+                domainGrid.innerHTML += `
+                    <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-700/60 flex flex-col justify-between">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-semibold text-slate-200">${dName}</span>
+                            <span class="text-xs font-extrabold ${dPct >= 75 ? 'text-emerald-400' : 'text-amber-400'}">${dPct}%</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700">
+                            <div class="h-full ${dPct >= 75 ? 'bg-emerald-500' : 'bg-amber-500'}" style="width: ${dPct}%"></div>
+                        </div>
+                        <span class="text-[10px] text-slate-400 mt-2 block">${dCorrect} of ${domainQuestions.length} correct</span>
+                    </div>
+                `;
+            });
+            renderQuestions(); 
+        }
+
+        function resetQuiz() {
+            if(confirm("Are you sure you want to reset the quiz? This will clear all your saved progress.")) {
+                localStorage.removeItem(STORAGE_KEY);
+                appState.answers = {};
+                appState.evaluated = {};
+                appState.submitted = false;
+                appState.timeRemaining = 180 * 60;
+                document.getElementById('results-screen').classList.add('hidden');
+                document.getElementById('submit-container').classList.remove('hidden');
+                if (appState.mode === 'exam') startTimer();
+                updateProgress();
+                renderQuestions();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+</html>

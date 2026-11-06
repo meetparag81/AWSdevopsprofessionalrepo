@@ -1,0 +1,25 @@
+#cloud-panel {
+    width: calc(100% - 2rem);
+    max-width: 76rem;
+    margin: 1rem auto 0;
+    padding: 1rem;
+    border: 1px solid #334155;
+    border-radius: .75rem;
+    background: #1e293b;
+    font: .875rem/1.5 system-ui, sans-serif;
+}
+#cloud-panel h2 { font-size: 1rem; font-weight: 700; }
+#cloud-panel p { margin: .4rem 0; overflow-wrap: anywhere; }
+#cloud-panel form, #cloud-actions, #cloud-conflict { display: flex; flex-wrap: wrap; gap: .75rem; align-items: end; margin-top: .75rem; }
+#cloud-panel label { display: flex; flex-direction: column; gap: .25rem; flex: 1 1 12rem; min-width: 0; }
+#cloud-panel input { width: 100%; padding: .5rem; border: 1px solid #64748b; border-radius: .375rem; background: #0f172a; color: #f1f5f9; }
+#cloud-panel button { padding: .5rem .75rem; border: 1px solid #64748b; border-radius: .375rem; background: #334155; color: #f1f5f9; font-weight: 600; }
+#cloud-panel button[type=submit] { background: #f59e0b; color: #0f172a; border-color: #f59e0b; }
+#cloud-panel button:disabled { opacity: .5; cursor: wait; }
+#cloud-panel :focus-visible { outline: 2px solid #38bdf8; outline-offset: 3px; }
+#cloud-panel [hidden] { display: none !important; }
+#cloud-status[data-kind=error] { color: #fda4af; }
+#cloud-status[data-kind=saved] { color: #6ee7b7; }
+#cloud-status[data-kind=pending] { color: #fcd34d; }
+#cloud-conflict { padding: .75rem; border: 1px solid #f59e0b; border-radius: .375rem; }
+#cloud-conflict p { flex-basis: 100%; }

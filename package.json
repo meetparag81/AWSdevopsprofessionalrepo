@@ -1,0 +1,14 @@
+{
+  "name": "aws-sdlc-quiz-cloud",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "esbuild cloud-client.js --bundle --format=iife --target=es2020 --outfile=quiz-cloud.js --minify"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}
