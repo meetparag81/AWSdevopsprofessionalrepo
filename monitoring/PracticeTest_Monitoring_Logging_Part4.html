@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en" class="dark" data-quiz-id="aws-dop-c02-monitoring-practice-part4-v1" data-quiz-layout="classic">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS DOP-C02: Practice Test - Part 4</title>
+    <link rel="stylesheet" href="monitoring.css">
+    <link rel="stylesheet" href="quiz-cloud.css">
+    <script defer src="supabase-config.js"></script>
+    <script defer src="monitoring-adapter.js"></script>
+    <script defer src="quiz-cloud.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        .keyword-highlight { 
+            background-color: rgba(245, 158, 11, 0.2); 
+            color: #fbbf24; 
+            font-weight: 700; 
+            padding: 0.125rem 0.25rem; 
+            border-radius: 0.25rem; 
+            border: 1px solid rgba(245, 158, 11, 0.3); 
+            transition: all 0.3s ease; 
+        }
+        
+        html { scroll-behavior: smooth; }
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* AWS Explanation Accordion Styles */
+        .aws-expl-container { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background-color: #0f172a; 
+            color: #e2e8f0; 
+            padding: 1.5rem; 
+            border-radius: 0.5rem; 
+            line-height: 1.6; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 1.25rem;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+        .aws-expl-summary { 
+            cursor: pointer; 
+            font-size: 1.125rem; 
+            font-weight: 600; 
+            color: #38bdf8; 
+            outline: none; 
+            user-select: none;
+            display: flex;
+            align-items: center;
+        }
+        .aws-expl-summary:hover { color: #7dd3fc; }
+        .aws-expl-summary::before {
+            content: "▶";
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+        details[open] > .aws-expl-summary::before {
+            transform: rotate(90deg);
+        }
+        .aws-expl-correct { 
+            background-color: rgba(2, 44, 34, 0.5); 
+            border-left: 4px solid #10b981; 
+            padding: 1rem; 
+            margin: 1.25rem 0; 
+            border-radius: 0.25rem; 
+        }
+        .aws-expl-incorrect { 
+            background-color: rgba(69, 10, 10, 0.5); 
+            border-left: 4px solid #ef4444; 
+            padding: 1rem; 
+            margin: 1.25rem 0; 
+            border-radius: 0.25rem; 
+        }
+        .aws-keyword { 
+            font-weight: bold; 
+            color: #fbbf24; 
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-amber-500 selection:text-slate-900">
+
+    <!-- Sticky Header -->
+    <header class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-amber-500/10 rounded-lg border border-amber-500/20">
+                        <svg style="width: 28px; height: 28px;" class="text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white tracking-tight">AWS DevOps Engineer Professional</h1>
+                        <p class="text-xs text-slate-400">Monitoring and Logging • Part 4 (Questions 41 - 50)</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="bg-slate-800 p-1 rounded-lg border border-slate-700 flex items-center">
+                        <button id="btn-practice-mode" onclick="setMode('practice')" class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 bg-amber-500 text-slate-900 shadow">Practice Mode</button>
+                        <button id="btn-exam-mode" onclick="setMode('exam')" class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 text-slate-400 hover:text-slate-200">Exam Mode</button>
+                    </div>
+
+                    <div id="timer-container" class="hidden items-center space-x-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-amber-400 font-mono font-bold text-sm">
+                        <svg style="width: 16px; height: 16px;" class="animate-pulse text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span id="timer-display">180:00</span>
+                    </div>
+
+                    <button onclick="resetQuiz()" class="p-2 text-slate-400 hover:text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition" title="Reset Quiz">
+                        <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progress Tracker -->
+            <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                <div class="flex items-center space-x-2">
+                    <span>Evaluated: <strong id="answered-count" class="text-white">0</strong> / <span id="total-q-count">0</span></span>
+                    <span id="save-indicator" class="ml-4 text-[10px] font-mono text-emerald-400 opacity-0 transition-opacity duration-300">● Progress Saved</span>
+                </div>
+                <div class="w-1/2 bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700">
+                    <div id="progress-bar" class="bg-amber-500 h-full w-0 transition-all duration-300"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <nav class="monitoring-nav" aria-label="Quiz navigation"><a href="../index.html">Study portal home</a>
+        <a href="index.html">All Monitoring and Logging quizzes</a>
+        <a href="../SDLC35%20questionsnew.html">SDLC quiz</a></nav>
+    <section id="cloud-panel" aria-labelledby="cloud-heading">
+        <h2 id="cloud-heading">Save and resume across devices</h2>
+        <p>Sign in with the same account on your phone or another PC. Wait for "Saved to cloud" before closing.
+            Guest progress stays only in this browser. Each quiz keeps its latest attempt, not a history of attempts.</p>
+        <p id="cloud-status" role="status" aria-live="polite">Starting cloud connection...</p>
+        <form id="cloud-login">
+            <label>Email <input id="cloud-email" type="email" autocomplete="username" required></label>
+            <label>Password <input id="cloud-password" type="password" autocomplete="current-password" required></label>
+            <button type="submit">Sign in</button>
+        </form>
+        <p id="cloud-account" hidden></p>
+        <div id="cloud-actions" hidden>
+            <button id="cloud-sync" type="button">Sync now</button>
+            <button id="cloud-signout" type="button">Sign out</button>
+        </div>
+        <div id="cloud-conflict" hidden>
+            <p>A different device has a newer save. Choose which progress to keep. Replacing a save cannot be undone.</p>
+            <button id="cloud-use-remote" type="button">Use cloud save</button>
+            <button id="cloud-use-local" type="button">Replace cloud with this device</button>
+        </div>
+        <p>First use: create your login in Supabase Authentication &gt; Users. No password is stored in this HTML.</p>
+    </section>
+
+    <!-- Main Workspace -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
+        
+        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-8 right-8 z-50 p-3 bg-amber-500 text-slate-900 rounded-full shadow-lg hover:bg-amber-400 transition transform hover:scale-105" title="Back to Top">
+            <svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+        </button>
+
+        <!-- HIGH YIELD EXAM CHEAT SHEET -->
+        <div class="mb-8">
+            <button onclick="document.getElementById('cheat-sheet').classList.toggle('hidden')" class="w-full flex items-center justify-between bg-slate-800 hover:bg-slate-700 border border-slate-700 transition rounded-xl p-4 shadow-md group">
+                <div class="flex items-center space-x-3">
+                    <div class="p-1.5 bg-sky-500/10 rounded-lg text-sky-400 group-hover:bg-sky-500/20 transition">
+                        <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h2 class="text-base font-bold text-white tracking-wide">Pre-Exam Cheat Sheet: Monitoring and Logging (Part 4)</h2>
+                </div>
+                <svg style="width: 20px; height: 20px;" class="text-slate-400 group-hover:text-white transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            
+            <div id="cheat-sheet" class="hidden mt-2 p-6 bg-slate-800/50 border border-slate-700 rounded-xl text-sm text-slate-300 leading-relaxed shadow-inner">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Advanced Logging -->
+                    <div>
+                        <h3 class="text-amber-400 font-bold uppercase tracking-wider mb-3 text-xs border-b border-slate-700 pb-1">Enterprise Analytics & Logging</h3>
+                        <ul class="space-y-2">
+                            <li><strong class="text-white">Organization Trails:</strong> To force CloudTrail compliance across all member accounts simultaneously, create an <span class="keyword-highlight">Organization Trail</span> from the AWS Organizations Management account. Member accounts cannot disable it.</li>
+                            <li><strong class="text-white">VPC Flow Logs & Athena:</strong> For highly cost-effective analysis of massive flow log volumes, output the VPC Flow Logs in <span class="keyword-highlight">Parquet format</span> with Hive-compatible S3 prefixes, and query via Athena.</li>
+                            <li><strong class="text-white">High-Resolution Custom Metrics:</strong> Default CloudWatch custom metrics are stored at 1-minute resolution. Specify <code>StorageResolution=1</code> in the <code>PutMetricData</code> API call to achieve sub-minute (down to 1-second) resolution.</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Advanced Monitoring -->
+                    <div>
+                        <h3 class="text-amber-400 font-bold uppercase tracking-wider mb-3 text-xs border-b border-slate-700 pb-1">Automated Monitoring & Compliance</h3>
+                        <ul class="space-y-2">
+                            <li><strong class="text-white">AWS Config Aggregators:</strong> Use an Aggregator to collect configuration and compliance data from multiple accounts and regions into a single, centralized view.</li>
+                            <li><strong class="text-white">CloudWatch Synthetics:</strong> Create <span class="keyword-highlight">Canaries</span> (Node.js/Puppeteer scripts) to simulate complex user flows, monitor API endpoint health 24/7, and generate screenshots of broken UI flows.</li>
+                            <li><strong class="text-white">EventBridge Cross-Account:</strong> EventBridge can natively route events to another AWS account's event bus. Ensure the target event bus has a resource-based policy granting <code>events:PutEvents</code> to the source account.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen (Hidden initially) -->
+        <div id="results-screen" class="hidden mb-8 bg-slate-800 border border-slate-700 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden fade-in">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="text-center max-w-xl mx-auto mb-8">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">Exam Results Breakdown</h2>
+                <p class="text-slate-400 text-sm">Target Passing Score: <span class="text-amber-400 font-bold">75%</span></p>
+                
+                <div id="score-badge" class="mt-6 inline-flex flex-col items-center justify-center p-6 rounded-2xl border-2 w-48 h-48 bg-slate-900/50 shadow-inner">
+                    <span id="score-percentage" class="text-4xl font-black tracking-tight">0%</span>
+                    <span id="score-status" class="mt-2 text-xs uppercase tracking-widest font-bold px-3 py-1 rounded-full">FAIL</span>
+                    <span id="score-raw" class="mt-2 text-xs text-slate-400">0 / 0 Correct</span>
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <h3 class="text-lg font-bold text-white mb-4 border-b border-slate-700 pb-2">Domain Performance Summary</h3>
+                <div id="domain-results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-slate-700 flex flex-wrap justify-between items-center gap-4">
+                <p class="text-xs text-slate-400">Scroll down to inspect your answers with full architectural breakdowns.</p>
+                <button onclick="resetQuiz()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold rounded-xl transition shadow-lg text-sm">
+                    Reset & Retake Examination
+                </button>
+            </div>
+        </div>
+
+        <!-- Domain Filters -->
+        <div class="mb-6 overflow-x-auto pb-2">
+            <div id="domain-filters" class="flex space-x-2 min-w-max">
+                <button onclick="filterDomain('all')" class="domain-btn active px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-500 text-slate-900 border border-amber-500 transition shadow">All Domains</button>
+                <button onclick="filterDomain('Monitoring and Logging')" class="domain-btn px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">Monitoring & Logging</button>
+            </div>
+        </div>
+
+        <!-- Continuous Scroll Question List -->
+        <div id="questions-list" class="space-y-6 fade-in"></div>
+
+        <!-- Submit Banner -->
+        <div id="submit-container" class="mt-10 p-6 bg-slate-800 border border-slate-700 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+            <div>
+                <h4 class="text-base font-bold text-white">Ready to complete your examination?</h4>
+                <p class="text-xs text-slate-400">Ensure you have thoroughly reviewed all questions before final evaluation.</p>
+            </div>
+            <button onclick="submitExam()" class="w-full sm:w-auto px-8 py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 font-extrabold rounded-xl transition shadow-lg text-sm tracking-wide">
+                Submit Exam
+            </button>
+        </div>
+    </main>
+
+    <footer class="bg-slate-950 border-t border-slate-800 py-6 text-center text-xs text-slate-500 mt-12">
+        <div class="max-w-7xl mx-auto px-4">
+            AWS Certified DevOps Engineer - Professional (DOP-C02) Interactive Examination Portal<br/>
+            Your progress is automatically saved securely to your browser.
+        </div>
+    </footer>
+
+    <script>
+        const rawQuestions = [
+            {
+                id: 41, dom: "Monitoring and Logging",
+                q: "A large enterprise manages 50 AWS accounts using AWS Organizations. The Chief Information Security Officer (CISO) requires that AWS CloudTrail must be enabled on every account across all regions to log management and data events. Local administrators in the member accounts must not be able to disable the trails or modify the logging configurations. What is the MOST operationally efficient solution to meet these requirements?",
+                o: [
+                    "Deploy an AWS CloudFormation StackSet from the management account that creates a CloudTrail trail in each member account. Use a Service Control Policy (SCP) to deny the cloudtrail:StopLogging action for all member accounts.",
+                    "Log into the AWS Organizations management account and create an organization trail in CloudTrail. Configure the trail to log all events and store the logs in a centralized Amazon S3 bucket.",
+                    "Create an AWS Config rule in the management account to detect missing CloudTrail configurations. Use an AWS Systems Manager Automation document as a remediation action to re-enable CloudTrail automatically.",
+                    "Use AWS Control Tower to enroll all accounts. Create a custom Lambda function that triggers daily to iterate through all 50 accounts and verify that CloudTrail is active."
+                ],
+                c: [1], 
+                x: ["AWS Organizations", "CloudTrail must be enabled on every account", "Local administrators in the member accounts must not be able to disable"],
+                e: "", // Custom HTML breakdown added below
+                w: "", // Custom HTML breakdown added below
+                customHtml: `
+<details class="aws-expl-container" open>
+  <summary class="aws-expl-summary">Show/Hide Explanation</summary>
+  
+  <div class="aws-expl-correct">
+    <h3 style="color: #10b981; margin-top: 0; font-size: 1.1rem;">Why "Create an organization trail" is Correct</h3>
+    <p style="margin-bottom: 0.5rem;">An <strong>Organization Trail</strong> is a native feature of AWS CloudTrail specifically designed for AWS Organizations. It provides the following critical benefits:</p>
+    <ul style="margin-bottom: 0; padding-left: 1.25rem; list-style-type: disc;">
+      <li><strong>Automatic Deployment:</strong> When created in the management account, it automatically applies to all current and future member accounts in the organization.</li>
+      <li><strong>Immutable Enforcement:</strong> By design, local administrators in member accounts <em>cannot</em> modify or delete an organization trail, completely satisfying the CISO's security requirement without needing complex SCPs.</li>
+      <li><strong>Centralized Storage:</strong> All logs are automatically routed to a single, centralized Amazon S3 bucket owned by the management or delegated security account.</li>
+    </ul>
+  </div>
+
+  <div class="aws-expl-incorrect">
+    <h3 style="color: #ef4444; margin-top: 0; font-size: 1.1rem;">Why Other Options are Incorrect</h3>
+    <ol style="margin-bottom: 0; padding-left: 1.25rem;">
+      <li><strong>Deploy an AWS CloudFormation StackSet + SCP:</strong> While StackSets and SCPs can technically force this behavior, building custom templates, managing SCP JSON logic, and deploying across 50 accounts introduces massive operational overhead when a native 1-click feature (Organization Trails) exists.</li>
+      <li><strong>AWS Config rule with Automation:</strong> This is a reactive approach. An administrator could turn off the trail, and the Config rule would take time to detect and remediate it. An organization trail proactively prevents it from being turned off in the first place.</li>
+    </ol>
+  </div>
+</details>
+`
+            },
+            {
+                id: 42, dom: "Monitoring and Logging",
+                q: "A gaming company runs a real-time multiplayer backend on Amazon EC2 instances. The DevOps team needs to publish a custom application metric tracking 'ConcurrentPlayers' to Amazon CloudWatch. Because the player count fluctuates rapidly, the team must be able to view metric data points in the CloudWatch console at a 1-second resolution to accurately trigger Auto Scaling actions. How should the team configure the custom metric publication?",
+                o: [
+                    "Modify the CloudWatch agent configuration file on the EC2 instance to set the metrics_collection_interval to 1 second.",
+                    "Use the AWS SDK to call the PutMetricData API and include the StorageResolution parameter set to 1.",
+                    "Configure the Auto Scaling group to enable Detailed Monitoring, which automatically increases metric resolution to 1 second.",
+                    "Use the AWS SDK to call the PutMetricData API and set the HighResolution parameter to true."
+                ],
+                c: [1], 
+                x: ["custom application metric", "1-second resolution", "configure the custom metric publication"],
+                e: "",
+                w: "",
+                customHtml: `
+<details class="aws-expl-container" open>
+  <summary class="aws-expl-summary">Show/Hide Explanation</summary>
+  
+  <div class="aws-expl-correct">
+    <h3 style="color: #10b981; margin-top: 0; font-size: 1.1rem;">Why "StorageResolution parameter set to 1" is Correct</h3>
+    <ul style="margin-bottom: 0; padding-left: 1.25rem; list-style-type: disc;">
+      <li><strong>Standard vs. High-Resolution:</strong> By default, custom metrics published via the <code>PutMetricData</code> API are stored at a standard 1-minute (60 seconds) resolution.</li>
+      <li><strong>Enabling High-Resolution:</strong> To publish and store metrics at a sub-minute granularity (down to 1 second), you must explicitly set the <code>StorageResolution</code> parameter to <code>1</code> in your API call payload.</li>
+      <li><strong>Sub-Minute Alarms:</strong> Only high-resolution metrics can trigger High-Resolution CloudWatch Alarms (which can evaluate conditions in 10-second or 30-second periods).</li>
+    </ul>
+  </div>
+
+  <div class="aws-expl-incorrect">
+    <h3 style="color: #ef4444; margin-top: 0; font-size: 1.1rem;">Why Other Options are Incorrect</h3>
+    <ol style="margin-bottom: 0; padding-left: 1.25rem;">
+      <li><strong>Enable Detailed Monitoring:</strong> Detailed Monitoring is an EC2-specific feature that increases native infrastructure metrics (like CPUUtilization) from 5-minute to 1-minute intervals. It does not apply to <em>custom</em> application metrics, nor does it provide 1-second resolution.</li>
+      <li><strong>Set the HighResolution parameter to true:</strong> There is no parameter named <code>HighResolution</code> in the <code>PutMetricData</code> API. The correct parameter is <code>StorageResolution</code>.</li>
+    </ol>
+  </div>
+</details>
+`
+            },
+            {
+                id: 43, dom: "Monitoring and Logging",
+                q: "A DevOps engineer needs to analyze massive amounts of VPC Flow Logs using Amazon Athena to troubleshoot network connectivity issues. Currently, the VPC Flow Logs are delivered to an Amazon S3 bucket in their default text format. Querying the raw text logs in Athena has become extremely slow and highly expensive due to the volume of data scanned per query. What should the engineer do to optimize query performance and reduce costs with the LEAST operational overhead?",
+                o: [
+                    "Modify the VPC Flow Logs configuration to publish logs to Amazon CloudWatch Logs. Use CloudWatch Logs Insights to query the data instead of Athena.",
+                    "Modify the VPC Flow Logs configuration to deliver logs directly to S3 in Parquet format with Hive-compatible S3 prefixes.",
+                    "Create an AWS Glue ETL job that runs nightly to convert the existing raw text logs in S3 into Parquet format.",
+                    "Use Amazon Kinesis Data Firehose with a Lambda transformation function to convert the flow logs to JSON format before delivering them to S3."
+                ],
+                c: [1], 
+                x: ["optimize query performance and reduce costs", "VPC Flow Logs", "Amazon Athena", "LEAST operational overhead"],
+                e: "",
+                w: "",
+                customHtml: `
+<details class="aws-expl-container" open>
+  <summary class="aws-expl-summary">Show/Hide Explanation</summary>
+  
+  <div class="aws-expl-correct">
+    <h3 style="color: #10b981; margin-top: 0; font-size: 1.1rem;">Why "Parquet format with Hive-compatible S3 prefixes" is Correct</h3>
+    <ul style="margin-bottom: 0; padding-left: 1.25rem; list-style-type: disc;">
+      <li><strong>Native Capability:</strong> Amazon VPC Flow Logs natively support delivering logs directly to Amazon S3 in Apache Parquet format.</li>
+      <li><strong>Cost & Performance Optimization:</strong> Parquet is a highly compressed, columnar storage format. Athena charges based on data scanned. Because Parquet is columnar, Athena only scans the specific columns requested in the <code>SELECT</code> query, drastically reducing both execution time and query costs.</li>
+      <li><strong>Hive Partitioning:</strong> Enabling Hive-compatible S3 prefixes (e.g., <code>year=2023/month=10/...</code>) allows Athena to natively understand the partition structure, further restricting the amount of data scanned without manual partition management.</li>
+    </ul>
+  </div>
+
+  <div class="aws-expl-incorrect">
+    <h3 style="color: #ef4444; margin-top: 0; font-size: 1.1rem;">Why Other Options are Incorrect</h3>
+    <ol style="margin-bottom: 0; padding-left: 1.25rem;">
+      <li><strong>AWS Glue ETL job:</strong> While an ETL job can convert text to Parquet, building, scheduling, and maintaining a custom Glue pipeline introduces massive operational overhead when VPC Flow Logs can output Parquet natively.</li>
+      <li><strong>Lambda transformation to JSON:</strong> Converting text to JSON does not solve the Athena scanning issue. JSON is a row-based format; Athena would still scan the entire JSON document, offering little to no cost reduction compared to a columnar format like Parquet.</li>
+    </ol>
+  </div>
+</details>
+`
+            },
+            {
+                id: 44, dom: "Monitoring and Logging",
+                q: "An application hosted in Account A generates specific operational events that are captured by Amazon EventBridge. A central security team requires that these specific events be routed to a centralized EventBridge event bus located in Account B for organization-wide security analysis. How should a DevOps engineer securely configure the cross-account event routing?",
+                o: [
+                    "In Account A, create an EventBridge rule with the Account B event bus as the target. In Account B, attach a resource-based policy to the centralized event bus granting the Account A ID permission to use the events:PutEvents action.",
+                    "In Account A, create an IAM role with events:PutEvents permissions and attach it to the event bus. In Account B, configure an EventBridge rule that pulls events from the Account A event bus using STS cross-account assumption.",
+                    "In Account A, configure EventBridge to send events to an Amazon SQS queue. In Account B, configure an EventBridge rule to poll the SQS queue in Account A.",
+                    "In Account B, create an IAM user and generate access keys. In Account A, configure the EventBridge target to authenticate with the Account B access keys to push events."
+                ],
+                c: [0], 
+                x: ["Account A", "routed to a centralized EventBridge event bus located in Account B", "cross-account event routing"],
+                e: "",
+                w: "",
+                customHtml: `
+<details class="aws-expl-container" open>
+  <summary class="aws-expl-summary">Show/Hide Explanation</summary>
+  
+  <div class="aws-expl-correct">
+    <h3 style="color: #10b981; margin-top: 0; font-size: 1.1rem;">Why the Target/Resource-Policy Option is Correct</h3>
+    <ul style="margin-bottom: 0; padding-left: 1.25rem; list-style-type: disc;">
+      <li><strong>Cross-Account Event Routing:</strong> Amazon EventBridge supports native cross-account event routing. You simply specify an external account's event bus ARN as the <em>Target</em> of a rule in the source account (Account A).</li>
+      <li><strong>Resource-Based Policies:</strong> To allow Account A to inject events into Account B, Account B must authorize it. You do this by attaching a resource-based policy to the target Event Bus in Account B, explicitly granting Account A's root ID the <code>events:PutEvents</code> permission.</li>
+    </ul>
+  </div>
+
+  <div class="aws-expl-incorrect">
+    <h3 style="color: #ef4444; margin-top: 0; font-size: 1.1rem;">Why Other Options are Incorrect</h3>
+    <ol style="margin-bottom: 0; padding-left: 1.25rem;">
+      <li><strong>Pull events using STS cross-account assumption:</strong> EventBridge is a push-based system. An event bus in Account B cannot actively "pull" or poll events from Account A. The source must push them.</li>
+      <li><strong>Create an IAM user and generate access keys:</strong> AWS managed services (like EventBridge) rely on IAM roles and resource policies for authentication. You never hardcode or use long-lived IAM User Access Keys to authenticate inter-service communication within AWS.</li>
+    </ol>
+  </div>
+</details>
+`
+            },
+            {
+                id: 45, dom: "Monitoring and Logging",
+                q: "A large organization has mandated that all Amazon CloudWatch Logs log groups across hundreds of AWS accounts must have a strict 365-day retention policy applied. Currently, many application teams create log groups with the default retention setting of 'Never expire', resulting in massive storage costs. What is the MOST automated and scalable way to enforce the 365-day retention policy across all existing and future log groups organization-wide?",
+                o: [
+                    "Use AWS Systems Manager Automation to run a document that enumerates all log groups and sets the retention policy. Schedule this document to run daily using Amazon EventBridge.",
+                    "Use AWS CloudFormation StackSets to deploy an AWS Lambda function and an EventBridge rule in all member accounts. Configure the rule to trigger the Lambda function on 'CreateLogGroup' API calls to set the retention period.",
+                    "Enable AWS Config across the organization and deploy a custom Config rule that detects log groups without a 365-day retention policy. Attach an SSM Automation remediation document to the rule to automatically set the retention to 365 days.",
+                    "Modify the organization's Service Control Policy (SCP) to explicitly deny the logs:CreateLogGroup action unless the request includes a condition key setting the retention period to 365 days."
+                ],
+                c: [2], 
+                x: ["enforce the 365-day retention policy across all existing and future log groups organization-wide", "MOST automated and scalable"],
+                e: "",
+                w: "",
+                customHtml: `
+<details class="aws-expl-container" open>
+  <summary class="aws-expl-summary">Show/Hide Explanation</summary>
+  
+  <div class="aws-expl-correct">
+    <h3 style="color: #10b981; margin-top: 0; font-size: 1.1rem;">Why the Config Auto-Remediation Option is Correct</h3>
+    <ul style="margin-bottom: 0; padding-left: 1.25rem; list-style-type: disc;">
+      <li><strong>Continuous Compliance:</strong> AWS Config continuously evaluates resource configurations. A custom rule can easily flag any log group that does not have a 365-day retention policy.</li>
+      <li><strong>Targeting Existing Resources:</strong> Unlike event-driven Lambda triggers (which only fire on <em>new</em> creations), AWS Config will scan and flag all <em>existing</em> non-compliant log groups immediately upon deployment.</li>
+      <li><strong>Automated Remediation:</strong> AWS Config natively supports attaching an AWS Systems Manager (SSM) Automation document as a remediation action. When a non-compliant log group is flagged, Config automatically runs the SSM document (which executes the <code>PutRetentionPolicy</code> API) to fix it without manual intervention.</li>
+    </ul>
+  </div>
+
+  <div class="aws-expl-incorrect">
+    <h3 style="color: #ef4444; margin-top: 0; font-size: 1.1rem;">Why Other Options are Incorrect</h3>
+    <ol style="margin-bottom: 0; padding-left: 1.25rem;">
+      <li><strong>EventBridge Rule on 'CreateLogGroup':</strong> While this works for newly created log groups, it will completely ignore the thousands of <em>existing</em> log groups that are already costing the company money.</li>
+      <li><strong>Service Control Policy (SCP):</strong> The <code>logs:CreateLogGroup</code> API does not currently support a condition key to evaluate the retention period payload during the creation request. Furthermore, an SCP would block creation but would not fix existing non-compliant groups.</li>
+    </ol>
+  </div>
+</details>
+`
+            },
+            {
+                id: 46, dom: "Monitoring and Logging",
+                q: "A DevOps engineer is tasked with monitoring the performance of a public-facing REST API. The team wants to proactively simulate complex user behaviors—such as logging in, navigating the portal, and adding items to a cart—every 5 minutes from multiple AWS regions. If a simulated flow fails or latency spikes, the team needs an alarm triggered and a screenshot of the failure state captured. Which AWS service provides this functionality natively?",
+                o: [
+                    "AWS CloudTrail",
+                    "AWS X-Ray",
+                    "Amazon CloudWatch Synthetics",
+                    "Amazon Macie"
+                ],
+                c: [2], 
+                x: ["simulate complex user behaviors", "screenshot of the failure state captured"],
+                e: "",
+                w: "",
+                customHtml: `
+<details class="aws-expl-container" open>
+  <summary class="aws-expl-summary">Show/Hide Explanation</summary>
+  
+  <div class="aws-expl-correct">
+    <h3 style="color: #10b981; margin-top: 0; font-size: 1.1rem;">Why Amazon CloudWatch Synthetics is Correct</h3>
+    <ul style="margin-bottom: 0; padding-left: 1.25rem; list-style-type: disc;">
+      <li><strong>Synthetic Canaries:</strong> CloudWatch Synthetics allows you to create "canaries"—configurable Node.js or Python scripts that use headless browsers (like Puppeteer) to simulate real user interactions and flows on web applications.</li>
+      <li><strong>Proactive Monitoring:</strong> Because canaries run on a schedule (e.g., every 5 minutes) from outside your application architecture, they detect downtime or latency <em>before</em> real users experience it.</li>
+      <li><strong>Visual Debugging:</strong> When a UI-based canary script fails, CloudWatch Synthetics natively captures screenshots, HAR (HTTP Archive) files, and detailed execution logs to aid immediate troubleshooting.</li>
+    </ul>
+  </div>
+
+  <div class="aws-expl-incorrect">
+    <h3 style="color: #ef4444; margin-top: 0; font-size: 1.1rem;">Why Other Options are Incorrect</h3>
+    <ul style="margin-bottom: 0; padding-left: 1.25rem; list-style-type: disc;">
+      <li><strong>AWS X-Ray:</strong> X-Ray traces live user requests traveling through internal microservices. It does not actively generate simulated traffic or capture UI screenshots.</li>
+      <li><strong>AWS CloudTrail:</strong> CloudTrail logs AWS Management API calls. It has no capability to simulate REST API traffic or interact with web portals.</li>
+    </ul>
+  </div>
+</details>
+`
+            },
+            {
+                id: 47, dom: "Monitoring and Logging",
+                q: "A company's security team is utilizing AWS Config across multiple AWS accounts and regions. The Chief Information Security Officer (CISO) wants a single, unified dashboard to view the overall compliance status of all resources organization-wide, rather than logging into dozens of individual AWS accounts to check compliance metrics. What AWS feature should the DevOps engineer implement to provide this unified view?",
+                o: [
+                    "AWS Config Aggregator",
+                    "Amazon CloudWatch Composite Alarms",
+                    "AWS Security Hub Centralized Logging",
+                    "Amazon Macie Organization Integration"
+                ],
+                c: [0], 
+                x: ["unified dashboard to view the overall compliance status of all resources organization-wide", "AWS Config"],
+                e: "",
+                w: "",
+                customHtml: `
+<details class="aws-expl-container" open>
+  <summary class="aws-expl-summary">Show/Hide Explanation</summary>
+  
+  <div class="aws-expl-correct">
+    <h3 style="color: #10b981; margin-top: 0; font-size: 1.1rem;">Why "AWS Config Aggregator" is Correct</h3>
+    <ul style="margin-bottom: 0; padding-left: 1.25rem; list-style-type: disc;">
+      <li><strong>Centralized View:</strong> An AWS Config Aggregator is specifically designed to collect configuration and compliance data from multiple AWS accounts and multiple AWS Regions into a single, unified dashboard.</li>
+      <li><strong>Organization Integration:</strong> When integrated with AWS Organizations, an Aggregator automatically discovers and pulls data from all current and future member accounts without requiring manual invitation handshakes.</li>
+      <li><strong>CISO Requirement:</strong> This fulfills the exact requirement of providing a top-down, organization-wide compliance posture view in one place.</li>
+    </ul>
+  </div>
+
+  <div class="aws-expl-incorrect">
+    <h3 style="color: #ef4444; margin-top: 0; font-size: 1.1rem;">Why Other Options are Incorrect</h3>
+    <ul style="margin-bottom: 0; padding-left: 1.25rem; list-style-type: disc;">
+      <li><strong>Amazon CloudWatch Composite Alarms:</strong> Composite alarms are used to logically combine multiple CloudWatch metric alarms (using AND/OR logic) to reduce alert fatigue. They do not aggregate AWS Config compliance data across accounts.</li>
+      <li><strong>AWS Security Hub Centralized Logging:</strong> While Security Hub provides a centralized security posture view, it aggregates security *findings* (from GuardDuty, Inspector, etc.). AWS Config Aggregator is the specific native feature used to aggregate Config *compliance rules*.</li>
+    </ul>
+  </div>
+</details>
+`
+            },
+            {
+                id: 48, dom: "Monitoring and Logging",
+                q: "A developer implemented an Amazon OpenSearch Service (Elasticsearch) cluster to index application data. Recently, complex queries have started timing out, and the cluster's CPU utilization is spiking. The DevOps engineer needs to identify the exact queries causing the performance degradation without negatively impacting cluster performance further. How can the engineer achieve this natively?",
+                o: [
+                    "Install the Amazon CloudWatch agent on the OpenSearch instances to stream application logs.",
+                    "Enable slow log and error log publishing for the OpenSearch Service domain to Amazon CloudWatch Logs.",
+                    "Use AWS X-Ray to trace the Elasticsearch REST API calls inside the cluster.",
+                    "Enable VPC Flow Logs on the subnet hosting the OpenSearch cluster and filter for large payload transfers."
+                ],
+                c: [1], 
+                x: ["Amazon OpenSearch Service", "identify the exact queries causing the performance degradation"],
+                e: "",
+                w: "",
+                customHtml: `
+<details class="aws-expl-container" open>
+  <summary class="aws-expl-summary">Show/Hide Explanation</summary>
+  
+  <div class="aws-expl-correct">
+    <h3 style="color: #10b981; margin-top: 0; font-size: 1.1rem;">Why "Enable slow log and error log publishing" is Correct</h3>
+    <ul style="margin-bottom: 0; padding-left: 1.25rem; list-style-type: disc;">
+      <li><strong>Native Integration:</strong> Amazon OpenSearch Service natively supports publishing execution logs directly to Amazon CloudWatch Logs without requiring any agent installation.</li>
+      <li><strong>Slow Logs:</strong> "Search Slow Logs" and "Index Slow Logs" capture the exact JSON queries that exceed defined execution time thresholds. Analyzing these logs reveals exactly which complex queries are bottlenecking the cluster CPU.</li>
+      <li><strong>Low Overhead:</strong> Publishing these logs natively via the AWS console/API does not degrade cluster performance like running intrusive manual packet captures would.</li>
+    </ul>
+  </div>
+
+  <div class="aws-expl-incorrect">
+    <h3 style="color: #ef4444; margin-top: 0; font-size: 1.1rem;">Why Other Options are Incorrect</h3>
+    <ul style="margin-bottom: 0; padding-left: 1.25rem; list-style-type: disc;">
+      <li><strong>Install the CloudWatch agent:</strong> Amazon OpenSearch Service is a fully managed service. You do not have OS-level SSH access to the underlying instances, meaning you cannot manually install the unified CloudWatch agent.</li>
+      <li><strong>VPC Flow Logs:</strong> Flow logs only capture network metadata (Source IP, Destination IP, Port, Bytes transferred). They do *not* capture the Layer 7 HTTP payload containing the actual Elasticsearch query syntax.</li>
+    </ul>
+  </div>
+</details>
+`
+            },
+            {
+                id: 49, dom: "Monitoring and Logging",
+                q: "A company deployed a highly available application using AWS Fargate. During peak hours, an unknown error occasionally causes a specific microservice container to exit unexpectedly. Because Fargate tasks are ephemeral, the container is destroyed immediately after exiting, preventing the team from SSHing into the host to read the error logs. What is the MOST reliable way to capture these container error logs for debugging?",
+                o: [
+                    "Mount an Amazon EFS file system to the Fargate task and configure the application to write logs to the EFS mount.",
+                    "Use the awslogs log driver in the Fargate task definition to stream standard output (stdout) and standard error (stderr) to Amazon CloudWatch Logs.",
+                    "Configure an EventBridge rule to intercept the ECS Task State Change event and trigger a Lambda function to scrape the local container storage.",
+                    "Install the Amazon Inspector agent as a sidecar container in the Fargate task definition to monitor unexpected exits."
+                ],
+                c: [1], 
+                x: ["container is destroyed immediately after exiting", "capture these container error logs for debugging", "AWS Fargate"],
+                e: "",
+                w: "",
+                customHtml: `
+<details class="aws-expl-container" open>
+  <summary class="aws-expl-summary">Show/Hide Explanation</summary>
+  
+  <div class="aws-expl-correct">
+    <h3 style="color: #10b981; margin-top: 0; font-size: 1.1rem;">Why the "awslogs log driver" Option is Correct</h3>
+    <ul style="margin-bottom: 0; padding-left: 1.25rem; list-style-type: disc;">
+      <li><strong>Ephemeral Storage:</strong> Containers in Fargate (and ECS) have ephemeral storage. When a container crashes or stops, its local disk is completely destroyed.</li>
+      <li><strong>Native Log Streaming:</strong> By configuring the <code>awslogs</code> log driver in the ECS task definition, the Docker daemon automatically intercepts everything the application prints to <code>stdout</code> and <code>stderr</code> (including stack traces and crash errors).</li>
+      <li><strong>Durable Storage:</strong> These logs are streamed continuously to Amazon CloudWatch Logs. Even if the container crashes and vanishes instantly, the crash logs are securely preserved in CloudWatch for debugging.</li>
+    </ul>
+  </div>
+
+  <div class="aws-expl-incorrect">
+    <h3 style="color: #ef4444; margin-top: 0; font-size: 1.1rem;">Why Other Options are Incorrect</h3>
+    <ul style="margin-bottom: 0; padding-left: 1.25rem; list-style-type: disc;">
+      <li><strong>Lambda function to scrape local storage:</strong> When a Fargate task exits, the underlying compute resources are immediately reclaimed by AWS. A triggered Lambda function cannot reach into a terminated Fargate container's local disk to pull files.</li>
+      <li><strong>Amazon Inspector agent sidecar:</strong> Amazon Inspector is used for vulnerability and network exposure scanning, not for scraping and exporting application crash logs.</li>
+    </ul>
+  </div>
+</details>
+`
+            },
+            {
+                id: 50, dom: "Monitoring and Logging",
+                q: "A security team relies on Amazon GuardDuty to detect unauthorized access to the company's AWS environments. The team uses a third-party ticketing system with a REST API to manage incidents. The DevOps engineer must implement an automated integration that creates a high-priority ticket in the external system ONLY when GuardDuty generates a finding with a severity level of 'High'. Which serverless architecture fulfills this requirement?",
+                o: [
+                    "Configure GuardDuty to publish directly to an Amazon SNS topic. Subscribe an AWS Lambda function to the SNS topic. In the Lambda code, filter for High severity findings and execute the REST API call to the ticketing system.",
+                    "Create an Amazon EventBridge rule with an event pattern matching the GuardDuty finding source and a severity of 7.0 to 8.9 (High). Set the rule target to an AWS Lambda function that makes the REST API call to the ticketing system.",
+                    "Create an AWS Config rule to monitor GuardDuty findings. Use an AWS Systems Manager Automation document to parse the severity and invoke the third-party REST API.",
+                    "Configure AWS CloudTrail to stream GuardDuty API events to Amazon Kinesis Data Firehose. Use a Lambda transformation function in Firehose to filter for High severity findings and push them to the third-party API."
+                ],
+                c: [1], 
+                x: ["creates a high-priority ticket in the external system ONLY when GuardDuty generates a finding with a severity level of 'High'"],
+                e: "",
+                w: "",
+                customHtml: `
+<details class="aws-expl-container" open>
+  <summary class="aws-expl-summary">Show/Hide Explanation</summary>
+  
+  <div class="aws-expl-correct">
+    <h3 style="color: #10b981; margin-top: 0; font-size: 1.1rem;">Why the EventBridge Pattern Matching Option is Correct</h3>
+    <ul style="margin-bottom: 0; padding-left: 1.25rem; list-style-type: disc;">
+      <li><strong>Native Event Emission:</strong> Amazon GuardDuty automatically publishes all security findings to Amazon EventBridge as standard JSON events.</li>
+      <li><strong>Precise Filtering:</strong> EventBridge rules support complex Event Patterns. You can configure the pattern to strictly match the <code>source: aws.guardduty</code> and filter explicitly for a <code>severity</code> array containing values between 7.0 and 8.9 (which translates to 'High' severity in GuardDuty).</li>
+      <li><strong>Serverless Routing:</strong> The rule triggers an AWS Lambda function only for matching High-severity events, minimizing Lambda invocations and executing the REST API call to the ticketing system perfectly.</li>
+    </ul>
+  </div>
+
+  <div class="aws-expl-incorrect">
+    <h3 style="color: #ef4444; margin-top: 0; font-size: 1.1rem;">Why Other Options are Incorrect</h3>
+    <ul style="margin-bottom: 0; padding-left: 1.25rem; list-style-type: disc;">
+      <li><strong>Configure GuardDuty to publish directly to SNS:</strong> GuardDuty does not have a native feature to filter and push findings directly to SNS from within its own console. It relies entirely on Amazon EventBridge to route findings.</li>
+      <li><strong>AWS CloudTrail to Kinesis:</strong> CloudTrail captures AWS API calls (e.g., someone calling <code>GetFindings</code>). It does not natively stream the actual underlying threat findings detected by the GuardDuty engine.</li>
+    </ul>
+  </div>
+</details>
+`
+            }
+        ];
+
+        let appState = {
+            answers: {}, mode: 'practice', activeDomain: 'all', timeRemaining: 180 * 60,
+            timerInterval: null, submitted: false, evaluated: {}
+        };
+
+        function escapeRegExp(string) { return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+        function highlightText(text, clues) {
+            if (!clues || clues.length === 0) return text;
+            let highlighted = text;
+            clues.forEach(clue => {
+                const regex = new RegExp(`(${escapeRegExp(clue)})`, 'gi');
+                highlighted = highlighted.replace(regex, '<span class="keyword-highlight">$1</span>');
+            });
+            return highlighted;
+        }
+
+        function setMode(mode) {
+            appState.mode = mode;
+            const btnPractice = document.getElementById('btn-practice-mode');
+            const btnExam = document.getElementById('btn-exam-mode');
+            const timerContainer = document.getElementById('timer-container');
+
+            if (mode === 'practice') {
+                btnPractice.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 bg-amber-500 text-slate-900 shadow";
+                btnExam.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 text-slate-400 hover:text-slate-200";
+                timerContainer.classList.add('hidden');
+                stopTimer();
+            } else {
+                btnExam.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 bg-amber-500 text-slate-900 shadow";
+                btnPractice.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 text-slate-400 hover:text-slate-200";
+                timerContainer.classList.remove('hidden');
+                if (!appState.submitted) startTimer();
+            }
+            saveState();
+            renderQuestions();
+        }
+
+        function startTimer() {
+            if (appState.timerInterval) clearInterval(appState.timerInterval);
+            appState.timerInterval = setInterval(() => {
+                if (appState.timeRemaining <= 0) {
+                    clearInterval(appState.timerInterval);
+                    submitExam();
+                } else {
+                    appState.timeRemaining--;
+                    updateTimerDisplay();
+                    if (appState.timeRemaining % 5 === 0) saveState();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (appState.timerInterval) clearInterval(appState.timerInterval);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(appState.timeRemaining / 60);
+            const seconds = appState.timeRemaining % 60;
+            document.getElementById('timer-display').textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function filterDomain(domain) {
+            appState.activeDomain = domain;
+            const buttons = document.querySelectorAll('.domain-btn');
+            buttons.forEach(btn => {
+                if ((domain === 'all' && btn.textContent.includes('All Domains')) || (domain !== 'all' && btn.textContent.includes(domain))) {
+                    btn.className = "domain-btn active px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-500 text-slate-900 border border-amber-500 transition shadow";
+                } else {
+                    btn.className = "domain-btn px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition";
+                }
+            });
+            renderQuestions();
+        }
+
+        function handleSelectOption(qId, optIdx, isMulti) {
+            if (appState.submitted && appState.mode === 'exam') return;
+            if (appState.mode === 'practice' && appState.evaluated[qId]) return;
+
+            const q = rawQuestions.find(item => item.id === qId);
+            if (!appState.answers[qId]) appState.answers[qId] = [];
+
+            const userSelected = appState.answers[qId];
+            const requiredSelections = q.c.length;
+
+            if (isMulti) {
+                const idx = userSelected.indexOf(optIdx);
+                if (idx > -1) {
+                    userSelected.splice(idx, 1);
+                } else {
+                    if (userSelected.length < requiredSelections) {
+                        userSelected.push(optIdx);
+                    }
+                }
+            } else {
+                appState.answers[qId] = [optIdx];
+            }
+
+            saveState();
+            updateProgress();
+            renderQuestionCard(qId);
+        }
+
+        function checkAnswer(qId) {
+            appState.evaluated[qId] = true;
+            saveState();
+            updateProgress();
+            renderQuestionCard(qId);
+        }
+
+        function updateProgress() {
+            let answeredCount = 0;
+            if (appState.mode === 'practice') {
+                answeredCount = Object.keys(appState.evaluated).length;
+            } else {
+                answeredCount = Object.keys(appState.answers).filter(k => {
+                    const q = rawQuestions.find(item => item.id == k);
+                    return appState.answers[k] && appState.answers[k].length === q.c.length;
+                }).length;
+            }
+            
+            document.getElementById('answered-count').textContent = answeredCount;
+            const pct = Math.round((answeredCount / rawQuestions.length) * 100);
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-list');
+            container.innerHTML = '';
+            
+            const cheatSheet = document.getElementById('cheat-sheet');
+            if (cheatSheet) {
+                if (appState.activeDomain === 'all' || appState.activeDomain === 'Monitoring and Logging') {
+                    cheatSheet.parentElement.classList.remove('hidden');
+                } else {
+                    cheatSheet.parentElement.classList.add('hidden');
+                }
+            }
+            
+            const filtered = rawQuestions.filter(q => appState.activeDomain === 'all' || q.dom.includes(appState.activeDomain));
+            filtered.forEach(q => container.appendChild(createQuestionCardHtml(q)));
+        }
+
+        function renderQuestionCard(qId) {
+            const existingCard = document.getElementById(`question-card-${qId}`);
+            if (existingCard) {
+                const newCard = createQuestionCardHtml(rawQuestions.find(q => q.id === qId));
+                existingCard.replaceWith(newCard);
+            }
+        }
+
+        function createQuestionCardHtml(q) {
+            const card = document.createElement('div');
+            card.id = `question-card-${q.id}`;
+            card.className = "bg-slate-800/90 border border-slate-700/80 rounded-2xl p-5 sm:p-6 shadow-lg transition-all duration-200 hover:border-slate-600";
+
+            const userSelected = appState.answers[q.id] || [];
+            const isMulti = q.c.length > 1;
+            const requiredSelections = q.c.length;
+            
+            const isPracticeEvaluated = appState.mode === 'practice' && appState.evaluated[q.id];
+            const isExamEvaluated = appState.submitted;
+
+            let displayQuestion = q.q;
+            if ((isPracticeEvaluated || isExamEvaluated) && q.x && q.x.length > 0) {
+                displayQuestion = highlightText(q.q, q.x);
+            }
+
+            let html = `
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2.5 py-1 text-xs font-extrabold rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">Question ${q.id}</span>
+                        ${isMulti ? `<span class="px-2 py-0.5 text-[10px] font-semibold uppercase bg-sky-500/10 text-sky-400 border border-sky-500/20 rounded">Select ${requiredSelections}</span>` : ''}
+                    </div>
+                    <span class="text-xs font-medium text-slate-400 bg-slate-900/60 px-3 py-1 rounded-full border border-slate-700/50">${q.dom}</span>
+                </div>
+                <p class="text-slate-100 font-medium text-sm sm:text-base leading-relaxed mb-5">${displayQuestion}</p>
+                <div class="space-y-2.5">
+            `;
+
+            q.o.forEach((optText, optIdx) => {
+                const isSelected = userSelected.includes(optIdx);
+                const isCorrect = q.c.includes(optIdx);
+
+                let optClass = "border-slate-700 bg-slate-900/40 hover:bg-slate-700/50 text-slate-200";
+                
+                let indicatorHtml = `<div style="width: 16px; height: 16px; min-width: 16px;" class="rounded-full border border-slate-500 flex items-center justify-center mr-3 mt-0.5 shrink-0 ${isSelected ? 'border-amber-500 bg-amber-500' : ''}">${isSelected ? '<div style="width: 6px; height: 6px;" class="rounded-full bg-slate-900"></div>' : ''}</div>`;
+                if (isMulti) {
+                    indicatorHtml = `<div style="width: 16px; height: 16px; min-width: 16px;" class="rounded border border-slate-500 flex items-center justify-center mr-3 mt-0.5 shrink-0 ${isSelected ? 'border-amber-500 bg-amber-500' : ''}">${isSelected ? '<svg style="width: 12px; height: 12px;" class="text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>' : ''}</div>`;
+                }
+
+                if (isPracticeEvaluated || isExamEvaluated) {
+                    if (isCorrect) {
+                        optClass = "border-emerald-500/60 bg-emerald-950/30 text-emerald-200 font-medium";
+                        indicatorHtml = `<div style="width: 16px; height: 16px; min-width: 16px;" class="rounded-full bg-emerald-500 text-slate-900 flex items-center justify-center mr-3 mt-0.5 shrink-0 font-bold text-xs">✓</div>`;
+                    } else if (isSelected && !isCorrect) {
+                        optClass = "border-rose-500/60 bg-rose-950/30 text-rose-200 font-medium";
+                        indicatorHtml = `<div style="width: 16px; height: 16px; min-width: 16px;" class="rounded-full bg-rose-500 text-white flex items-center justify-center mr-3 mt-0.5 shrink-0 font-bold text-xs">✕</div>`;
+                    }
+                } else if (isSelected) {
+                    optClass = "border-amber-500/80 bg-amber-500/10 text-amber-200 font-medium shadow-sm";
+                }
+
+                const pointerEvent = (isPracticeEvaluated || isExamEvaluated) ? 'pointer-events-none' : 'cursor-pointer';
+
+                html += `
+                    <label onclick="handleSelectOption(${q.id}, ${optIdx}, ${isMulti})" class="flex items-start p-3.5 rounded-xl border transition-all duration-150 select-none ${optClass} ${pointerEvent}">
+                        ${indicatorHtml}
+                        <span class="text-xs sm:text-sm leading-snug">${optText}</span>
+                    </label>
+                `;
+            });
+
+            html += `</div>`;
+
+            if (appState.mode === 'practice' && !isPracticeEvaluated) {
+                const btnDisabled = userSelected.length !== requiredSelections ? 'opacity-50 cursor-not-allowed' : 'hover:bg-amber-400';
+                html += `<button ${userSelected.length !== requiredSelections ? 'disabled' : ''} onclick="checkAnswer(${q.id})" class="mt-5 px-5 py-2 bg-amber-500 text-slate-900 font-bold text-sm rounded-lg transition ${btnDisabled}">Check Answer</button>`;
+            }
+
+            if (isPracticeEvaluated || isExamEvaluated) {
+                const userCorrect = isQuestionCorrect(q.id);
+                const cluesHtml = q.x && q.x.length > 0 
+                    ? q.x.map(clue => `<span class="inline-block bg-yellow-500/10 text-amber-400 border border-yellow-500/20 px-2 py-1 rounded text-xs font-mono mr-1.5 mb-1.5">"${clue}"</span>`).join('')
+                    : '<span class="text-xs text-slate-500">No explicit clues extracted for this question</span>';
+
+                html += `
+                    <div class="mt-5 pt-4 border-t border-slate-700/80 fade-in">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <span class="text-xs font-bold uppercase tracking-wider ${userCorrect ? 'text-emerald-400' : 'text-rose-400'}">
+                                ${userCorrect ? '✓ Correct Answer' : '✕ Incorrect'}
+                            </span>
+                        </div>
+                        ${q.x && q.x.length > 0 ? `
+                        <div class="mb-3 p-3.5 rounded-xl bg-slate-900/60 border border-amber-500/30">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-400 block mb-2">Exam Clues (Keyword Indicators):</span>
+                            <div class="flex flex-wrap">${cluesHtml}</div>
+                        </div>` : ''}
+                        
+                        ${q.customHtml ? q.customHtml : `
+                        <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-700/60 text-xs sm:text-sm text-slate-300 leading-relaxed mb-3">
+                            <strong class="text-slate-100 block mb-1">Architectural Breakdown:</strong>
+                            ${q.e}
+                        </div>
+                        ${q.w ? `
+                        <div class="p-4 rounded-xl bg-rose-950/20 border border-rose-900/40 text-xs sm:text-sm text-slate-400 leading-relaxed">
+                            <strong class="text-rose-400 block mb-2">Why Incorrect Options Fail:</strong>
+                            ${q.w}
+                        </div>
+                        ` : ''}
+                        `}
+                    </div>
+                `;
+            }
+            card.innerHTML = html;
+            return card;
+        }
+
+        function isQuestionCorrect(qId) {
+            const q = rawQuestions.find(item => item.id === qId);
+            const userAns = appState.answers[qId] || [];
+            if (userAns.length !== q.c.length) return false;
+            return q.c.every(val => userAns.includes(val));
+        }
+
+        function submitExam(skipSave = false) {
+            appState.submitted = true;
+            stopTimer();
+            if(!skipSave) {
+                saveState();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            let correctCount = 0;
+            rawQuestions.forEach(q => { if (isQuestionCorrect(q.id)) correctCount++; });
+
+            const percentage = Math.round((correctCount / rawQuestions.length) * 100);
+            const isPass = percentage >= 75;
+
+            document.getElementById('results-screen').classList.remove('hidden');
+            document.getElementById('submit-container').classList.add('hidden');
+
+            const scoreBadge = document.getElementById('score-badge');
+            document.getElementById('score-percentage').textContent = `${percentage}%`;
+            document.getElementById('score-raw').textContent = `${correctCount} / ${rawQuestions.length} Correct`;
+            
+            const scoreStatus = document.getElementById('score-status');
+            if (isPass) {
+                scoreBadge.className = "mt-6 inline-flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-emerald-500/50 bg-emerald-950/20 shadow-inner text-emerald-400";
+                scoreStatus.textContent = "PASS";
+                scoreStatus.className = "mt-2 text-xs uppercase tracking-widest font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+            } else {
+                scoreBadge.className = "mt-6 inline-flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-rose-500/50 bg-rose-950/20 shadow-inner text-rose-400";
+                scoreStatus.textContent = "FAIL";
+                scoreStatus.className = "mt-2 text-xs uppercase tracking-widest font-bold px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30";
+            }
+
+            const domains = ["Monitoring and Logging"];
+            const domainGrid = document.getElementById('domain-results-grid');
+            domainGrid.innerHTML = '';
+
+            domains.forEach(dName => {
+                const domainQuestions = rawQuestions.filter(q => q.dom === dName);
+                if(domainQuestions.length === 0) return;
+                
+                let dCorrect = 0;
+                domainQuestions.forEach(dq => { if (isQuestionCorrect(dq.id)) dCorrect++; });
+                const dPct = Math.round((dCorrect / domainQuestions.length) * 100);
+
+                domainGrid.innerHTML += `
+                    <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-700/60 flex flex-col justify-between">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-semibold text-slate-200">${dName}</span>
+                            <span class="text-xs font-extrabold ${dPct >= 75 ? 'text-emerald-400' : 'text-amber-400'}">${dPct}%</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700">
+                            <div class="h-full ${dPct >= 75 ? 'bg-emerald-500' : 'bg-amber-500'}" style="width: ${dPct}%"></div>
+                        </div>
+                        <span class="text-[10px] text-slate-400 mt-2 block">${dCorrect} of ${domainQuestions.length} correct</span>
+                    </div>
+                `;
+            });
+            renderQuestions(); 
+        }
+
+        function resetQuiz() {
+            if(confirm("Are you sure you want to reset the quiz? This will clear all your saved progress.")) {
+                
+                appState.answers = {};
+                appState.evaluated = {};
+                appState.submitted = false;
+                appState.timeRemaining = 180 * 60;
+                document.getElementById('results-screen').classList.add('hidden');
+                document.getElementById('submit-container').classList.remove('hidden');
+                if (appState.mode === 'exam') startTimer();
+                updateProgress();
+                renderQuestions();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+</html>

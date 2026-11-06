@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en" class="dark" data-quiz-id="aws-dop-c02-monitoring-master-part-a-v1" data-quiz-layout="compact">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AWS DOP-C02: Master Exam - Part A</title>
+    <link rel="stylesheet" href="monitoring.css">
+    <link rel="stylesheet" href="quiz-cloud.css">
+    <script defer src="supabase-config.js"></script>
+    <script defer src="monitoring-adapter.js"></script>
+    <script defer src="quiz-cloud.js"></script>
+    <style>
+        html { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; font-size: 16px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        .keyword-highlight { background-color: rgba(245, 158, 11, 0.2); color: #fbbf24; font-weight: 700; padding: 0.125rem 0.25rem; border-radius: 0.25rem; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .aws-expl-container { font-family: system-ui, -apple-system, sans-serif; background-color: #0f172a; color: #e2e8f0; padding: 1.25rem; border-radius: 0.5rem; line-height: 1.6; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); margin-top: 1.25rem; border: 1px solid rgba(56, 189, 248, 0.2); }
+        .aws-expl-summary { cursor: pointer; font-size: 1.05rem; font-weight: 600; color: #38bdf8; outline: none; user-select: none; display: flex; align-items: center; list-style: none; }
+        .aws-expl-summary::-webkit-details-marker { display: none; }
+        .aws-expl-summary:hover { color: #7dd3fc; }
+        .aws-expl-summary::before { content: "▶"; font-size: 0.8rem; margin-right: 0.5rem; transition: transform 0.2s ease; }
+        details[open] > .aws-expl-summary::before { transform: rotate(90deg); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-amber-500 selection:text-slate-900 pb-12">
+
+    <!-- Sticky Header -->
+    <header class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                <div class="flex items-center space-x-3">
+                    <div class="p-1.5 bg-amber-500/10 rounded-lg border border-amber-500/20 shrink-0">
+                        <svg class="w-6 h-6 sm:w-8 sm:h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                    </div>
+                    <div>
+                        <h1 class="text-sm sm:text-lg font-bold text-white tracking-tight leading-tight">Monitoring & Logging (Part A)</h1>
+                        <p class="text-[10px] sm:text-xs text-slate-400">AWS DOP-C02 Domain 4 • (Questions 1-25)</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <div class="bg-slate-800 p-1 rounded-lg border border-slate-700 flex items-center">
+                        <button id="btn-practice-mode" onclick="setMode('practice')" class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all duration-200 bg-amber-500 text-slate-900 shadow">Practice</button>
+                        <button id="btn-exam-mode" onclick="setMode('exam')" class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all duration-200 text-slate-400 hover:text-slate-200">Exam</button>
+                    </div>
+                    <div id="timer-container" class="hidden items-center space-x-1.5 bg-slate-800 border border-slate-700 px-2 py-1 rounded-lg text-amber-400 font-mono font-bold text-xs sm:text-sm">
+                        <svg class="w-3 h-3 sm:w-4 sm:h-4 animate-pulse text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span id="timer-display">180:00</span>
+                    </div>
+                    <button onclick="resetQuiz()" class="p-1.5 text-slate-400 hover:text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition" title="Reset Quiz">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-[10px] sm:text-xs text-slate-400">
+                <div class="flex items-center space-x-2">
+                    <span>Evaluated: <strong id="answered-count" class="text-white">0</strong> / <span id="total-q-count">0</span></span>
+                    <span id="save-indicator" class="ml-2 text-[9px] sm:text-[10px] font-mono text-emerald-400 opacity-0 transition-opacity duration-300">● Saved</span>
+                </div>
+                <div class="w-1/3 sm:w-1/2 bg-slate-800 rounded-full h-1.5 overflow-hidden border border-slate-700">
+                    <div id="progress-bar" class="bg-amber-500 h-full w-0 transition-all duration-300"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <nav class="monitoring-nav" aria-label="Quiz navigation"><a href="../index.html">Study portal home</a>
+        <a href="index.html">All Monitoring and Logging quizzes</a>
+        <a href="../SDLC35%20questionsnew.html">SDLC quiz</a></nav>
+    <section id="cloud-panel" aria-labelledby="cloud-heading">
+        <h2 id="cloud-heading">Save and resume across devices</h2>
+        <p>Sign in with the same account on your phone or another PC. Wait for "Saved to cloud" before closing.
+            Guest progress stays only in this browser. Each quiz keeps its latest attempt, not a history of attempts.</p>
+        <p id="cloud-status" role="status" aria-live="polite">Starting cloud connection...</p>
+        <form id="cloud-login">
+            <label>Email <input id="cloud-email" type="email" autocomplete="username" required></label>
+            <label>Password <input id="cloud-password" type="password" autocomplete="current-password" required></label>
+            <button type="submit">Sign in</button>
+        </form>
+        <p id="cloud-account" hidden></p>
+        <div id="cloud-actions" hidden>
+            <button id="cloud-sync" type="button">Sync now</button>
+            <button id="cloud-signout" type="button">Sign out</button>
+        </div>
+        <div id="cloud-conflict" hidden>
+            <p>A different device has a newer save. Choose which progress to keep. Replacing a save cannot be undone.</p>
+            <button id="cloud-use-remote" type="button">Use cloud save</button>
+            <button id="cloud-use-local" type="button">Replace cloud with this device</button>
+        </div>
+        <p>First use: create your login in Supabase Authentication &gt; Users. No password is stored in this HTML.</p>
+    </section>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 relative">
+        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-6 right-6 z-50 p-2.5 sm:p-3 bg-amber-500 text-slate-900 rounded-full shadow-lg hover:bg-amber-400 transition transform hover:scale-105" title="Back to Top">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+        </button>
+
+        <div class="mb-6 sm:mb-8">
+            <button onclick="document.getElementById('cheat-sheet').classList.toggle('hidden')" class="w-full flex items-center justify-between bg-slate-800 hover:bg-slate-700 border border-slate-700 transition rounded-xl p-3 sm:p-4 shadow-md group">
+                <div class="flex items-center space-x-3">
+                    <div class="p-1.5 bg-sky-500/10 rounded-lg text-sky-400 group-hover:bg-sky-500/20 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h2 class="text-sm sm:text-base font-bold text-white tracking-wide text-left">Master Pre-Exam Cheat Sheet: Monitoring & Logging</h2>
+                </div>
+                <svg class="w-5 h-5 text-slate-400 group-hover:text-white transition shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            
+            <div id="cheat-sheet" class="hidden mt-2 p-4 sm:p-6 bg-slate-800/50 border border-slate-700 rounded-xl text-xs sm:text-sm text-slate-300 leading-relaxed shadow-inner overflow-x-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-amber-400 font-bold uppercase tracking-wider mb-2 text-[11px] border-b border-slate-700 pb-1">Tracing & Logging</h3>
+                        <ul class="space-y-1.5 list-disc pl-4">
+                            <li><strong class="text-white">CloudWatch Logs Insights:</strong> Query up to 50 log groups simultaneously to trace cross-service requests.</li>
+                            <li><strong class="text-white">CloudWatch Metric Filters:</strong> Turns raw text patterns (or structured JSON) into numerical metrics.</li>
+                            <li><strong class="text-white">AWS X-Ray:</strong> Visualizes end-to-end request paths (Service Map). ECS sidecar listens on <span class="keyword-highlight">UDP Port 2000</span>.</li>
+                            <li><strong class="text-white">Metric Archival:</strong> Export metrics to S3 via <span class="keyword-highlight">Metric Streams + Firehose</span> to retain for 7 years.</li>
+                            <li><strong class="text-white">Athena & Flow Logs:</strong> Export VPC Flow Logs as <span class="keyword-highlight">Parquet with Hive-prefixes</span> to S3 to reduce Athena scan costs.</li>
+                            <li><strong class="text-white">Container Insights:</strong> Natively collects CPU/Mem/Network utilization per task on ECS/EKS.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-amber-400 font-bold uppercase tracking-wider mb-2 text-[11px] border-b border-slate-700 pb-1">Security & Governance</h3>
+                        <ul class="space-y-1.5 list-disc pl-4">
+                            <li><strong class="text-white">Organization Trails:</strong> Enforce CloudTrail across all accounts so local admins cannot disable it. Validate using <code>validate-logs</code>.</li>
+                            <li><strong class="text-white">Config Auto-Remediation:</strong> Use Config rules (e.g., <code>encrypted-volumes</code>) tied to SSM Automation for automatic fixes.</li>
+                            <li><strong class="text-white">GuardDuty to Slack:</strong> Emits findings to EventBridge -> Lambda -> Slack. (Cannot publish complex JSON to SNS directly).</li>
+                            <li><strong class="text-white">S3 Auditing:</strong> Track PUT/GET/DELETE cost-effectively via CloudTrail <span class="keyword-highlight">Data Events</span>.</li>
+                            <li><strong class="text-white">Event Routing:</strong> Route events cross-account via a <span class="keyword-highlight">Resource-based policy</span> on the target bus.</li>
+                            <li><strong class="text-white">CloudWatch Synthetics:</strong> Create Canaries to simulate user flows; captures UI screenshots if it breaks.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="results-screen" class="hidden mb-8 bg-slate-800 border border-slate-700 rounded-2xl p-5 sm:p-8 shadow-2xl relative overflow-hidden fade-in">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="text-center max-w-xl mx-auto mb-6 sm:mb-8">
+                <h2 class="text-xl sm:text-3xl font-extrabold text-white mb-1">Exam Results Breakdown</h2>
+                <p class="text-slate-400 text-xs sm:text-sm">Target Passing Score: <span class="text-amber-400 font-bold">75%</span></p>
+                
+                <div id="score-badge" class="mt-4 sm:mt-6 inline-flex flex-col items-center justify-center p-4 sm:p-6 rounded-2xl border-2 w-40 h-40 sm:w-48 sm:h-48 bg-slate-900/50 shadow-inner">
+                    <span id="score-percentage" class="text-3xl sm:text-4xl font-black tracking-tight">0%</span>
+                    <span id="score-status" class="mt-2 text-[10px] sm:text-xs uppercase tracking-widest font-bold px-3 py-1 rounded-full">FAIL</span>
+                    <span id="score-raw" class="mt-2 text-[10px] sm:text-xs text-slate-400">0 / 0 Correct</span>
+                </div>
+            </div>
+            <div class="mt-6 sm:mt-8">
+                <h3 class="text-base sm:text-lg font-bold text-white mb-3 border-b border-slate-700 pb-2">Domain Performance</h3>
+                <div id="domain-results-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4"></div>
+            </div>
+            <div class="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-slate-700 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <p class="text-[10px] sm:text-xs text-slate-400 text-center sm:text-left">Scroll down to review full architectural breakdowns.</p>
+                <button onclick="resetQuiz()" class="w-full sm:w-auto px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold rounded-xl transition shadow-lg text-xs sm:text-sm">
+                    Retake Examination
+                </button>
+            </div>
+        </div>
+
+        <div class="mb-4 sm:mb-6 overflow-x-auto pb-2 scrollbar-hide">
+            <div id="domain-filters" class="flex space-x-2 min-w-max">
+                <button onclick="filterDomain('all')" class="domain-btn active px-3 py-1.5 text-xs font-semibold rounded-lg bg-amber-500 text-slate-900 border border-amber-500 transition shadow">Monitoring (Part A)</button>
+            </div>
+        </div>
+
+        <div id="questions-list" class="space-y-5 sm:space-y-6 fade-in"></div>
+
+        <div id="submit-container" class="mt-8 sm:mt-10 p-5 sm:p-6 bg-slate-800 border border-slate-700 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+            <div class="text-center sm:text-left">
+                <h4 class="text-sm sm:text-base font-bold text-white">Ready to complete Part A?</h4>
+                <p class="text-[10px] sm:text-xs text-slate-400 mt-1">Review all questions before final evaluation.</p>
+            </div>
+            <button onclick="submitExam()" class="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 font-extrabold rounded-xl transition shadow-lg text-xs sm:text-sm tracking-wide">
+                Submit Exam
+            </button>
+        </div>
+    </main>
+
+    <script>
+        const rawQuestions = [
+            {
+                id: 1, dom: "Monitoring and Logging",
+                q: "A fast-growing company has multiple AWS accounts consolidated using AWS Organizations, and expects to add new accounts soon. The DevOps engineer was instructed to design a centralized logging solution to deliver all Amazon VPC Flow Logs and Amazon CloudWatch Logs across all sub-accounts to its dedicated Audit account for compliance purposes. The logs should also be properly indexed to perform search, retrieval, and analysis. Which of the following is the MOST suitable solution?",
+                o: [
+                    "In the Audit account, create a new stream in Amazon Kinesis Data Streams and an AWS Lambda function that acts as an event handler to send all of the logs to the Amazon OpenSearch cluster. Create a CloudWatch subscription filter and use Amazon Kinesis Data Streams to stream all of the VPC Flow Logs and CloudWatch Logs from the sub-accounts to the Amazon Kinesis data stream in the Audit account.",
+                    "In the Audit account, launch a new AWS Lambda function that will send all VPC Flow Logs and CloudWatch Logs to an Amazon OpenSearch cluster. Use a CloudWatch subscription filter in the sub-accounts to stream all of the logs to the AWS Lambda function in the Audit account.",
+                    "In the Audit account, launch a new AWS Lambda function, which will push all of the required logs to a self-hosted Amazon OpenSearch cluster in a large Amazon EC2 instance. Integrate the AWS Lambda function to a CloudWatch subscription filter to collect all of the logs from the sub-accounts.",
+                    "In the Audit account, create an Amazon Simple Queue Service (Amazon SQS) FIFO queue that will push all logs to an Amazon OpenSearch cluster. Use a CloudWatch subscription filter to stream both VPC Flow Logs and CloudWatch Logs from their sub-accounts to the Amazon SQS queue in the Audit account."
+                ],
+                c: [0], 
+                x: ["centralized logging solution to deliver all Amazon VPC Flow Logs and Amazon CloudWatch Logs across all sub-accounts"],
+                e: "<ul class='list-disc pl-5 mt-1'><li><strong>Native Cross-Account Delivery:</strong> CloudWatch Logs cross-account subscription filters strictly require Amazon Kinesis Data Streams (or Firehose via Kinesis) as the recipient target in the centralized account.</li><li><strong>Buffering & Indexing:</strong> The centralized stream safely buffers high volumes of data and triggers a consumer (like AWS Lambda) to ingest and index it reliably into Amazon OpenSearch Service.</li></ul>",
+                w: "<ul class='list-decimal pl-5 mt-1'><li><strong>Direct Lambda across sub-accounts:</strong> Pointing dozens of high-volume sub-accounts directly to a single Lambda function runs a massive risk of hitting concurrency throttling limits, resulting in dropped logs.</li><li><strong>SQS as a target:</strong> Amazon SQS is natively *not supported* as a direct destination for CloudWatch Logs subscription filters.</li></ul>"
+            },
+            {
+                id: 2, dom: "Monitoring and Logging",
+                q: "A company has a hybrid cloud architecture where its on-premises data center is connected to multiple VPCs in AWS using an AWS Transit Gateway. Gathering logs from each service takes a significant amount of time during outages. To rectify this issue, aggregating the system logs from on-premises servers and Amazon EC2 instances should be implemented. There should also be a way to analyze the logs for audit and review purposes. Which option is the MOST cost-effective solution with the LEAST amount of effort?",
+                o: [
+                    "Install the Unified CloudWatch agent on all on-premises servers and EC2 instances to collect system and application logs. Configure a Firehose stream to deliver the collected data from CloudWatch logs to an S3 bucket in a central account. Set up an Amazon S3 trigger that invokes an AWS Lambda function to analyze the logs as well as to detect any irregularities. Analyze the log data using Amazon Athena.",
+                    "Install the Unified CloudWatch agent on all EC2 instances to collect system and application logs. Use batch export from the CloudWatch console to store the collected data in an Amazon S3 bucket in a central account. Analyze the log data using a custom-made Amazon EMR cluster.",
+                    "Develop a shell script that collects and uploads on-premises logs to an S3 bucket. Analyze the log data using Amazon Macie.",
+                    "Install the Unified CloudWatch Logs agent on all on-premises servers and EC2 instances. Consolidate all collected logs on your on-premises file server and run an open-source ELK stack."
+                ],
+                c: [0], 
+                x: ["aggregating the system logs from on-premises servers and Amazon EC2 instances", "MOST cost-effective solution with the LEAST amount of effort"],
+                e: "<ul class='list-disc pl-5 mt-1'><li><strong>Hybrid Support:</strong> The Unified CloudWatch Agent supports both EC2 instances and on-premises hybrid servers out of the box.</li><li><strong>Cost-Effective Storage:</strong> CloudWatch Logs can stream data seamlessly via Amazon Data Firehose into an S3 data lake for low-cost long-term storage.</li><li><strong>Serverless Analytics:</strong> Amazon Athena provides a serverless SQL query engine directly on S3 data, eliminating the costs of dedicated EMR/ELK clusters.</li></ul>",
+                w: "EMR clusters and on-prem ELK stacks are highly expensive and require massive effort to maintain. Amazon Macie is a data security tool for PII discovery, not general log analytics."
+            },
+            {
+                id: 3, dom: "Monitoring and Logging",
+                q: "A production incident caused a data breach in an application hosted in an Auto Scaling group of EC2 instances. To prevent recurrences, a DevOps engineer must implement an automated solution that immediately terminates any production instance that was manually logged into via SSH. All EC2 instances already have the CloudWatch Logs agent installed. Which of the following is the MOST automated solution?",
+                o: [
+                    "Set up a CloudWatch Logs subscription with an AWS Lambda function which is configured to add a FOR_DELETION tag to the EC2 instance that produced the SSH login event. Run another Lambda function every day using the Amazon EventBridge rule to terminate all EC2 instances with the custom tag for deletion.",
+                    "Set up and integrate a CloudWatch Logs subscription with AWS Step Functions to add a special FOR_DELETION tag to the specific EC2 instance that had an SSH login event. Create an EventBridge rule to trigger a second Lambda function at 12 PM to terminate the instances.",
+                    "Set up a CloudWatch Alarm that will be triggered when an SSH login event occurs and configure it to send a notification to an Amazon SNS topic, then have support manually terminate the instance.",
+                    "Set up a CloudWatch Alarm that will be triggered when there is an SSH login event and configure it to send a notification to Amazon SQS, and launch EC2 worker instances to consume messages and terminate the instances."
+                ],
+                c: [0], 
+                x: ["immediately terminates any production instance that was manually logged into via SSH", "MOST automated solution"],
+                e: "<ul class='list-disc pl-5 mt-1'><li><strong>Real-Time Reaction:</strong> CloudWatch Logs subscription filters deliver log events in near real-time directly to AWS Lambda.</li><li><strong>Automated Tagging:</strong> The Lambda parses the event, identifies the instance ID, and automatically tags the instance. Scheduled EventBridge rules then trigger cleanup tasks to terminate marked instances without human intervention.</li></ul>",
+                w: "SNS requires manual support intervention. Subscription filters cannot directly target Step Functions without an intermediary compute resource. Dedicated worker EC2s polling SQS is an overly complex, non-serverless anti-pattern."
+            },
+            {
+                id: 4, dom: "Monitoring and Logging",
+                q: "A company is migrating its Docker-based application to Amazon ECS with multiple ECS services behind an Application Load Balancer. The DevOps Engineer must configure the cluster to automatically collect logs from all services and upload them to an S3 bucket for near-real-time analysis. How should the engineer configure the ECS setup? (Select THREE)",
+                o: [
+                    "Create the required IAM Policy and attach it to the ecsInstanceRole. Install the Amazon CloudWatch Logs agent on the Amazon ECS instances. Use the awslogs Log Driver in the Amazon ECS task definition.",
+                    "Capture detailed information about requests sent to your load balancer by enabling access logging on the Application Load Balancer. Configure it to store the logs to the S3 bucket.",
+                    "Create a CloudWatch Logs subscription filter integrated with Amazon Kinesis to analyze the logs. Configure the CloudWatch Logs to export the logs to an S3 bucket.",
+                    "Set up Amazon Macie to analyze the access logs in the S3 bucket.",
+                    "Capture detailed information about requests sent to your load balancer by using Detailed Monitoring in CloudWatch. Configure it to store the logs to the S3 bucket.",
+                    "Integrate a Lambda function with CloudWatch Events to run a process every minute that invokes CreateExportTask to push logs to S3."
+                ],
+                c: [0, 1, 2], 
+                x: ["automatically collect logs from all services", "Application Load Balancer", "upload them to an S3 bucket for near-real-time analysis"],
+                e: "<ul class='list-disc pl-5 mt-1'><li><strong>Container Logs:</strong> ECS natively streams container output using the <code>awslogs</code> log driver. Instances require IAM permissions on their <code>ecsInstanceRole</code> to push these streams.</li><li><strong>Web Traffic Logs:</strong> ALBs provide native ALB Access Logging directly into an S3 bucket.</li><li><strong>Near Real-Time S3 Delivery:</strong> Use CloudWatch Logs subscription filters integrated with Kinesis (or Firehose) for continuous streaming delivery to S3.</li></ul>",
+                w: "Macie is for PII discovery. Detailed Monitoring upgrades EC2 metrics to 1-minute, it doesn't capture ALB access logs. <code>CreateExportTask</code> is a batch process taking hours to run, failing the 'near-real-time' constraint."
+            },
+            {
+                id: 5, dom: "Monitoring and Logging",
+                q: "A digital payments company uses AWS CloudTrail to log all API actions. To maintain PCI DSS compliance, a solution must be implemented that allows the tracing of the integrity of each file and ensures log files have not been tampered with or modified. Which is the MOST suitable solution with the LEAST amount of effort?",
+                o: [
+                    "In CloudTrail, enable the log file integrity feature on the trail that will automatically generate a digest file for every log file that CloudTrail delivers. Verify the integrity of the delivered CloudTrail files using the generated digest files.",
+                    "In the Amazon S3 bucket of the trail, enable the log file integrity feature that will automatically generate a digest file for every log file that CloudTrail delivers. Use an IAM policy to grant PowerUserAccess.",
+                    "Use AWS Systems Manager State Manager to directly enable the log file integrity feature in CloudTrail.",
+                    "Use AWS Config to directly enable the log file integrity feature in CloudTrail."
+                ],
+                c: [0], 
+                x: ["tracing of the integrity of each file", "log files have not been tampered with", "LEAST amount of effort"],
+                e: "<ul class='list-disc pl-5 mt-1'><li><strong>Native Feature:</strong> AWS CloudTrail includes a built-in log file integrity validation toggle right on the trail configuration settings.</li><li><strong>Tamper-Evident:</strong> It creates a SHA-256 hash for each log file and signs hourly digest files with RSA private keys. Validate files quickly using <code>aws cloudtrail validate-logs</code>.</li></ul>",
+                w: "S3 buckets do not possess a native 'log file integrity feature' button for CloudTrail. Neither SSM State Manager nor AWS Config have direct capabilities to toggle the cryptographic signing feature of CloudTrail logs."
+            },
+            {
+                id: 6, dom: "Monitoring and Logging",
+                q: "A company has a Docker application hosted on an Amazon ECS cluster in their VPC. It has encountered intermittent latency issues and timeouts. A DevOps engineer must instrument the application with AWS X-Ray to detect where high latencies are occurring and determine specific services and paths impacting performance. Which steps should the engineer take?",
+                o: [
+                    "Produce a Docker image that runs the X-Ray daemon. Upload the image to a Docker image repository, and then deploy it to your Amazon ECS cluster. Configure the network mode settings and port mappings in your task definition file to allow traffic on UDP port 2000.",
+                    "Produce a Docker image that runs the X-Ray daemon. Upload the image to a Docker image repository and then deploy it to your Amazon ECS cluster. Configure the network mode settings and port mappings in the container agent to allow traffic on TCP port 2000.",
+                    "In the Amazon ECS container agent configuration, pass a user data script in /etc/ecs/ecs.config that installs the X-Ray daemon. Configure port mappings to allow traffic on TCP port 3000.",
+                    "Add the xray-daemon.config configuration file in your Docker image. Set up port mappings and network mode settings in your task definition to allow traffic on UDP port 2000."
+                ],
+                c: [0], 
+                x: ["instrument the application with AWS X-Ray", "determine specific services and paths impacting performance"],
+                e: "<ul class='list-disc pl-5 mt-1'><li><strong>UDP Protocol:</strong> The AWS X-Ray SDK passes tracing segments to the X-Ray daemon exclusively over UDP port 2000 (not TCP).</li><li><strong>ECS Sidecar Pattern:</strong> Deploy the X-Ray daemon as a sidecar container directly inside your task definition, mapping UDP port 2000 so the primary application container can communicate locally.</li></ul>",
+                w: "TCP port 2000/3000 are incorrect. Adding an <code>xray-daemon.config</code> file directly to the Docker image is a pattern used for AWS Elastic Beanstalk, not Amazon ECS."
+            },
+            {
+                id: 7, dom: "Monitoring and Logging",
+                q: "A company needs to transform AWS Network Firewall flow logs and add extra metadata before storing the flow logs in an existing Amazon S3 bucket. Currently, flow logs go directly to S3. The goal is to process the logs BEFORE delivering the processed logs to the S3 bucket. How can the company achieve this?",
+                o: [
+                    "Set up an Amazon Data Firehose delivery stream with an AWS Lambda transformer. Designate the current S3 bucket as the destination. Modify the Network Firewall logging to use Data Firehose instead of Amazon S3.",
+                    "Use Amazon S3 Event Notifications to trigger an AWS Glue job. Configure the job to transform the logs and write the processed data back to the existing S3 bucket.",
+                    "Set up Amazon SQS to queue the logs before processing. Use a Lambda function triggered by SQS to transform the logs and save the results to the S3 bucket.",
+                    "Develop an AWS Lambda function to transform the data and save a new object in the existing S3 bucket. Set up an S3 trigger on this bucket to activate the Lambda function on object creation."
+                ],
+                c: [0], 
+                x: ["transform AWS Network Firewall flow logs", "process the logs BEFORE delivering the processed logs to the S3 bucket"],
+                e: "<ul class='list-disc pl-5 mt-1'><li><strong>Native Integration:</strong> AWS Network Firewall natively supports Amazon Data Firehose as a direct logging destination.</li><li><strong>In-Flight Transformation:</strong> Data Firehose features built-in inline data transformation capabilities using AWS Lambda. This processes and enriches records in-flight, perfectly formatted <em>before</em> hitting final S3 storage.</li></ul>",
+                w: "Triggering a Glue job or Lambda via an S3 event means the raw logs have <em>already</em> been written to S3, completely violating the requirement to transform data BEFORE it hits S3. Network Firewall cannot send logs natively to SQS."
+            },
+            {
+                id: 8, dom: "Monitoring and Logging",
+                q: "A company stores confidential files in an S3 bucket. Actions need to be monitored on the objects, such as PUT, GET, and DELETE operations, to easily search and review these actions for auditing purposes. Which solution will meet this requirement MOST cost-effectively?",
+                o: [
+                    "Create an AWS CloudTrail trail to track and store your S3 API call logs in an S3 bucket. Create an AWS Lambda function that logs data events of your S3 bucket. Trigger this Lambda function using the Amazon EventBridge rule for every action taken on your S3 objects. View the logs on the Amazon CloudWatch Logs group.",
+                    "Enable logging on your Amazon S3 bucket to save the access logs on a separate S3 bucket. Import logs to Amazon OpenSearch service to easily search and query the logs.",
+                    "Enable logging on your S3 bucket. Create an Amazon EventBridge rule that watches object-level events. Send logs to a CloudWatch Log group.",
+                    "Create an Amazon CloudWatch Log group and configure S3 logging to send object-level events directly to this log group."
+                ],
+                c: [0], 
+                x: ["monitored on the objects, such as PUT, GET, and DELETE", "MOST cost-effectively"],
+                e: "<ul class='list-disc pl-5 mt-1'><li><strong>CloudTrail Data Events:</strong> S3 object-level actions (GET, PUT, DELETE) are natively classified as CloudTrail Data Events.</li><li><strong>Event Routing:</strong> By configuring a trail for S3 data events, EventBridge can instantly intercept these events and trigger a Lambda function logging directly to CloudWatch Logs for highly efficient, cheap search (via Logs Insights).</li></ul>",
+                w: "Spinning up a dedicated OpenSearch cluster is extremely cost-prohibitive for occasional audit logging. Amazon S3 Server Access Logs natively write to another S3 bucket; they *cannot* natively write directly into a CloudWatch Log group."
+            },
+            {
+                id: 9, dom: "Monitoring and Logging",
+                q: "A company wants to enforce regulations to prevent frequent logins by DevOps engineers to Amazon EC2 instances, with the condition that immediate notification must be sent to the security team if any login occurs. What solution would you suggest to meet these requirements?",
+                o: [
+                    "Set up the Amazon CloudWatch Agent on each Amazon EC2 instance with the configuration to push all logs to Amazon CloudWatch Logs. Create a CloudWatch metric filter to detect user logins. Use Amazon SNS to notify the security team when a login is detected.",
+                    "Set up the Amazon CloudWatch Agent on each Amazon EC2 instance with the configuration to push all logs to Amazon CloudWatch Logs. Create a CloudWatch subscription filter to detect user logins. Use Amazon SNS to notify the security team when a login is detected.",
+                    "Configure AWS CloudTrail to track AWS API calls and log them to Amazon CloudWatch Logs. Subscribe CloudWatch Logs to Amazon Kinesis. Set up a Lambda function as consumer to detect logins and send SNS notifications.",
+                    "Set up the Amazon Inspector Agent on each EC2 instance with the configuration to push all logs to CloudWatch Logs. Create a CloudWatch metric filter to detect user logins and use SNS."
+                ],
+                c: [0], 
+                x: ["prevent frequent logins", "immediate notification must be sent to the security team if any login occurs"],
+                e: "<ul class='list-disc pl-5 mt-1'><li><strong>OS-Level Logging:</strong> The unified CloudWatch Agent actively monitors OS-level authentication logs inside the instance (e.g., <code>/var/log/secure</code>).</li><li><strong>Pattern Matching:</strong> A CloudWatch Metric Filter scans incoming log text for login patterns, generating a continuous numerical metric. An associated CloudWatch Alarm monitors this metric and triggers an Amazon SNS notification immediately when breached.</li></ul>",
+                w: "CloudWatch Subscription Filters *cannot* target Amazon SNS directly. CloudTrail strictly monitors AWS API calls; it has zero visibility into OS-level SSH guest logins. Inspector is a vulnerability scanner, not a log streamer."
+            },
+            {
+                id: 10, dom: "Monitoring and Logging",
+                q: "A SaaS company runs a transaction-processing web application that emits structured JSON logs to an Amazon CloudWatch Logs log group. Each log line contains metadata along with a status field ('success' or 'failure'). The company wants to build a dashboard that displays the count of successful transactions over time with the LEAST operational overhead. Which solution will meet this requirement?",
+                o: [
+                    "Create a CloudWatch Logs metric filter on the log group whose filter pattern matches the JSON property transaction status equals success; emit a metric on each match; add a CloudWatch dashboard widget that graphs the resulting metric.",
+                    "Create a CloudWatch Logs subscription filter on the log group that invokes an AWS Lambda function; have the function parse the JSON logs and publish a custom CloudWatch metric; build a CloudWatch dashboard with a metric graph.",
+                    "Stream the log group to Amazon S3 through Amazon Data Firehose; run an hourly Amazon Athena query that counts entries; render the results in an Amazon QuickSight visualization embedded in a CloudWatch dashboard widget.",
+                    "Stand up an Amazon OpenSearch Service cluster; configure a CloudWatch Logs subscription filter to forward log group data to the cluster; build a dashboard in OpenSearch Dashboards."
+                ],
+                c: [0], 
+                x: ["emits structured JSON logs", "dashboard that displays the count of successful transactions over time", "LEAST operational overhead"],
+                e: "<ul class='list-disc pl-5 mt-1'><li><strong>Native JSON Parsing:</strong> CloudWatch Logs Metric Filters natively support parsing structured JSON pattern syntax (e.g., <code>{ $.status = \"success\" }</code>).</li><li><strong>Zero Compute Overhead:</strong> When matched, it seamlessly increments a custom CloudWatch metric without requiring you to write, maintain, or pay for custom Lambda execution code. That metric graphs instantly on a CloudWatch dashboard widget.</li></ul>",
+                w: "While writing a Lambda to parse JSON logs works, it introduces unnecessary custom code maintenance. Provisioning OpenSearch introduces massive operational and financial overhead. Hourly Athena queries introduce a 60-minute data lag, failing real-time dashboarding."
+            },
+            {
+                id: 11, dom: "Monitoring and Logging",
+                q: "A company runs an order management platform that uses several microservices on Amazon Elastic Container Service (Amazon ECS). Users report intermittent slow responses during checkout, but operations cannot determine which service in the request path is causing the delay. A DevOps engineer must implement a solution that shows request flow across microservices and identifies services with high latency or elevated error rates with the least operational overhead. Which solution will provide this?",
+                o: [
+                    "Configure AWS X-Ray for each ECS task. Use the X-Ray service map to visualize the application architecture and request path. Filter traces by response time and error rate, and analyze individual traces to identify slow microservices and requests.",
+                    "Configure AWS Distro for OpenTelemetry as a sidecar container for each ECS task. Export all traces to an Amazon S3 bucket, run scheduled Amazon Athena queries to calculate service latency, and build an Amazon QuickSight dashboard.",
+                    "Configure Amazon CloudWatch Container Insights for each ECS task. Use the CloudWatch automatic dashboard for Amazon ECS to identify slow microservices, and use CloudWatch Logs Insights to analyze Container Insights performance logs.",
+                    "Configure AWS X-Ray for each ECS task. Create a separate X-Ray group for every microservice, add custom X-Ray subsegments throughout each service, and use the X-Ray service map to identify slow requests."
+                ],
+                c: [0], 
+                x: ["shows request flow across microservices", "identifies services with high latency or elevated error rates", "least operational overhead"],
+                e: "<ul class='list-disc pl-5 mt-1'><li><strong>Purpose-Built Tracing:</strong> AWS X-Ray is the premier native distributed tracing service explicitly designed to map microservice communications.</li><li><strong>Visual Topography:</strong> The X-Ray service map automatically generates an end-to-end topological visual graph of downstream requests. You can click into nodes to filter traces by response time and fault rates, perfectly isolating latency bottlenecks with zero custom dashboarding.</li></ul>",
+                w: "Container Insights is fantastic for infrastructural metrics (CPU/Memory per container) but absolutely cannot trace end-to-end user request flows. Exporting traces to S3 + Athena queries introduces immense operational overhead. Creating manual X-Ray subsegments everywhere creates unnecessary development overhead."
+            },
+            {
+                id: 12, dom: "Monitoring and Logging",
+                q: "A company runs multiple internal applications in a single AWS account. Each application writes logs to a separate CloudWatch Logs log group. During the last 3 weeks, the operations team noticed a sharp increase in CloudWatch Logs ingestion charges. A DevOps engineer must determine which application log groups are contributing the most ingested log volume in the MOST operationally efficient way. Which solution meets this?",
+                o: [
+                    "Use Amazon CloudWatch metrics to graph the IncomingBytes metric with the LogGroupName dimension and identify the log groups that received the highest volume of ingested log data.",
+                    "Enable Amazon CloudWatch Contributor Insights rules for each application log group. Configure each rule to analyze log events by application identifier, then review the Contributor Insights dashboard.",
+                    "Use Amazon CloudWatch Logs Insights to query all application log groups and count how many log groups received log events during the billing period.",
+                    "Use AWS Cost Explorer to create a CloudWatch cost report grouped by service and usage type, then manually map the CloudWatch usage charges back to the applications."
+                ],
+                c: [0], 
+                x: ["sharp increase in CloudWatch Logs ingestion charges", "which application log groups are contributing the most ingested log volume", "MOST operationally efficient way"],
+                e: "<ul class='list-disc pl-5 mt-1'><li><strong>Native Metrics:</strong> CloudWatch Logs automatically and natively emits the metric <code>IncomingBytes</code> under the <code>AWS/Logs</code> namespace.</li><li><strong>Granular Dimensions:</strong> By looking at this metric using the <code>LogGroupName</code> dimension, you can instantly see the exact byte volume ingested by every specific application log group with zero overhead.</li></ul>",
+                w: "CloudWatch Logs Insights queries incur heavy scanning charges and counting events doesn't reveal actual *byte volume*. Contributor Insights finds 'Top N' offenders *inside* a log file, not the total volume of the group itself. Cost Explorer cannot natively break down charges by <code>LogGroupName</code> without complex manual tagging."
+            },
+            {
+                id: 13, dom: "Monitoring and Logging",
+                q: "A company operates multiple customer-facing services in one AWS account. Each service publishes performance metrics and custom application metrics to Amazon CloudWatch. A data engineering team needs to continuously export the metrics, transform the metric records, and store the transformed output in an Amazon S3 bucket for downstream analytics. The team must ensure that the solution automatically includes newly created metrics in the CloudWatch namespace without requiring updates to filters or collectors. Which solution meets this with LEAST operational overhead?",
+                o: [
+                    "Configure a CloudWatch metric stream to include all metrics from the required CloudWatch namespace. Deliver the metric stream to an Amazon Data Firehose delivery stream, configure Firehose to invoke an AWS Lambda function for transformation, and deliver the transformed records to the Amazon S3 bucket.",
+                    "Configure a CloudWatch metric stream to include all metrics from the required CloudWatch namespace. Deliver the metric stream to an Amazon Data Firehose delivery stream that writes records to S3. Configure Lambda to read delivered objects, transform them, and write back to S3.",
+                    "Configure a CloudWatch metric stream to include only existing application metrics. Deliver the metric stream to an Amazon Data Firehose delivery stream, transform with Lambda, and deliver to S3.",
+                    "Configure CloudWatch Logs subscription filters on all application log groups. Send log events to Amazon Data Firehose, invoke Lambda for transformation, and deliver to S3."
+                ],
+                c: [0], 
+                x: ["continuously export the metrics, transform the metric records", "automatically includes newly created metrics in the CloudWatch namespace", "LEAST operational overhead"],
+                e: "<ul class='list-disc pl-5 mt-1'><li><strong>Continuous Low-Latency:</strong> CloudWatch Metric Streams provide near real-time streaming of metrics to Amazon Data Firehose. Including an entire namespace ensures newly published metrics are streamed automatically without manual filter updates.</li><li><strong>In-Flight Transformation:</strong> Data Firehose natively supports invoking an AWS Lambda function to transform data records in-line <em>before</em> persisting them to their final destination in S3.</li></ul>",
+                w: "Writing raw metrics to S3 first, triggering Lambda, and writing them back to S3 doubles storage operations. Configuring the stream to explicitly name 'existing' metrics misses new metrics. Subscription filters stream log string events, not numeric metrics."
+            },
+            {
+                id: 14, dom: "Monitoring and Logging",
+                q: "A multi-national retail company is operating a multi-account strategy using AWS Organizations. Each account produces logs to CloudWatch Logs and the company would like to aggregate these logs under a single centralized account for archiving purposes. The solution must be secure and centralized, and the target destination should have little to no provisioning on the storage side. How would you implement this?",
+                o: [
+                    "Create a log destination in the centralized account, and create a log subscription on that destination. Create a Kinesis Firehose delivery stream and subscribe it to the log destination. The target of Kinesis Firehose should be Amazon S3.",
+                    "Create a log destination in the centralized account, and create a log subscription on that destination. Create a Kinesis Streams and subscribe it to the destination. Create a Kinesis Firehose delivery stream and subscribe it to the Kinesis Stream. The target of the Kinesis Firehose should be Amazon ES.",
+                    "Create a log destination in the centralized account... The target of the Kinesis Firehose should be Amazon Redshift.",
+                    "Create a log destination in the centralized account, and create a log subscription on that destination. Create a Lambda function on that log subscription, and implement a script to send the data to Amazon ES."
+                ],
+                c: [0], 
+                x: ["aggregate these logs under a single centralized account", "little to no provisioning on the storage side"],
+                e: "<ul class='list-disc pl-5 mt-1'><li><strong>Cross-Account Destination:</strong> For cross-account log sharing, CloudWatch Logs uses a 'destination' in the centralized account. A Kinesis Data Firehose stream actively pulls the logs.</li><li><strong>Zero Provisioning:</strong> Firehose dumps data directly into Amazon S3. S3 is completely serverless and requires zero capacity provisioning or cluster sizing.</li></ul>",
+                w: "Amazon ES (OpenSearch) and Redshift require explicitly provisioning clusters, node sizes, and storage capacities, completely violating the 'little to no provisioning' requirement. Using Lambda scripts to buffer logs to ES introduces massive scalability risks."
+            },
+            {
+                id: 15, dom: "Monitoring and Logging",
+                q: "An analytics company is capturing metrics for its AWS services and applications using CloudWatch metrics. It needs to be able to go back up to 7 years in time for visualizing these metrics due to regulatory requirements. Which of the following options requires the minimum development effort?",
+                o: [
+                    "Create a CloudWatch metrics stream and direct it to Kinesis Firehose delivery stream. Send all the metrics data into S3 using Firehose, and create a QuickSight dashboard to visualize the metrics. Use Athena to query for specific time ranges.",
+                    "Create a CloudWatch event rule to trigger every 15 minutes. The target of the rule should be a Lambda Function that will run an API call to export the metrics and put them in Amazon ES...",
+                    "Create a CloudWatch event rule to trigger every 15 minutes. The target of the rule should be a Lambda Function that will run an API call to export the metrics and put them in S3...",
+                    "Create a CloudWatch dashboard on top of CloudWatch metrics. Enable 'Extended Retention' on CloudWatch metrics..."
+                ],
+                c: [0], 
+                x: ["go back up to 7 years in time for visualizing these metrics", "minimum development effort"],
+                e: "<ul class='list-disc pl-5 mt-1'><li><strong>Metric Expiration:</strong> Amazon CloudWatch metrics retain data for a maximum of 15 months (455 days) natively. They vanish after this period.</li><li><strong>Automated Export:</strong> To retain metrics for 7 years, stream them out continuously. CloudWatch Metric Streams integrate directly with Kinesis Data Firehose to deliver metrics straight into an Amazon S3 data lake. Athena and QuickSight query/visualize this seamlessly.</li></ul>",
+                w: "There is no 'extended retention' toggle in CloudWatch Metrics. Building custom API polling scripts in Lambda every 15 minutes requires significant development effort, error handling, and timeout management."
+            },
+            
+            // PART 2 (Questions 16 - 25)
+            {
+                id: 16, dom: "Monitoring and Logging",
+                q: "A company plans to implement a monitoring system to track the cost-effectiveness of its Amazon EC2 resources across multiple AWS accounts. All existing resources are appropriately tagged to reflect the corresponding environment, department, and business unit for cost allocation purposes. The company has instructed its DevOps engineer to automate infrastructure cost optimization across various shared environments and accounts, including detecting EC2 instances with low utilization. Which is the MOST suitable solution that the DevOps engineer should implement in this scenario?",
+                o: [
+                    "Set up an AWS Systems Manager to track the utilization of all of your EC2 instances and report underutilized instances to Amazon CloudWatch.",
+                    "Utilize AWS Trusted Advisor through a Business Support plan and integrate it with Amazon EventBridge to detect EC2 instances with low utilization. Set up an AWS Lambda function to filter the Trusted Advisor data using environment, department, and business unit tags. Create another Lambda trigger to terminate the underutilized instances.",
+                    "Develop a custom shell script on an EC2 instance that runs periodically to report the instance utilization of all instances and store the result in an Amazon DynamoDB table.",
+                    "Set up an Amazon CloudWatch dashboard for EC2 instance tags based on the environment, department, and business unit to track the instance utilization. Create a trigger using an Amazon EventBridge rule and AWS Lambda to terminate the underutilized EC2 instances."
+                ],
+                c: [1], 
+                x: ["track the cost-effectiveness of its Amazon EC2 resources", "automate infrastructure cost optimization", "detecting EC2 instances with low utilization"],
+                e: "<ul class='list-disc pl-5 mt-1'><li><strong>Cost Optimization Engine:</strong> AWS Trusted Advisor inherently provides cost optimization checks, specifically scanning the fleet for underutilized Amazon EC2 instances.</li><li><strong>Event-Driven Reaction:</strong> Trusted Advisor integrates seamlessly with Amazon EventBridge. When an instance is flagged as underutilized, EventBridge intercepts this state change and triggers an AWS Lambda function.</li><li><strong>Custom Tag Logic:</strong> The Lambda function programmatically inspects the specific cost allocation tags required by the business before deciding whether to terminate the instance.</li></ul>",
+                w: "Building custom shell scripts to monitor utilization adds immense, unnecessary custom development overhead compared to managed Trusted Advisor checks. CloudWatch alone cannot automatically provide a definitive list of underutilized EC2 instances natively without complex composite logic."
+            },
+            {
+                id: 17, dom: "Monitoring and Logging",
+                q: "A DevOps engineer has been tasked with implementing configuration management for the company's infrastructure in AWS. To adhere to the company's strict security policies, the solution must include a near real-time dashboard that displays the compliance status of the systems and can detect any violations.",
+                o: [
+                    "Tag all the resources and use Trusted Advisor to monitor both the compliant and non-compliant resources. Use the AWS Management Console to monitor the status of the compliance posture.",
+                    "Use Amazon Inspector to monitor the compliance posture of the systems and store the reports in Amazon CloudWatch Logs. Use a CloudWatch dashboard with a custom metric filter to monitor and view all of the specific compliance requirements.",
+                    "Use AWS Service Catalog to create the required resource configurations for its compliance posture. Monitor the compliance and violations of its cloud resources using a custom CloudWatch dashboard with an integrated Amazon SNS to send notifications.",
+                    "Use AWS Config to record all configuration changes and store the data reports to Amazon S3. Use Amazon QuickSight to analyze the dataset."
+                ],
+                c: [3], 
+                x: ["dashboard that displays the compliance status of the systems", "detect any violations"],
+                e: "AWS Config continuously monitors resource configurations against desired compliance rules. Delivering this data to Amazon S3 allows Amazon QuickSight to build near real-time visualization dashboards for security and compliance posture.",
+                w: "AWS Service Catalog is used for provisioning approved product templates, not for continuous detection of compliance violations across running cloud resources. Trusted Advisor does not offer customizable violation detection rules for specific infrastructure policies."
+            },
+            {
+                id: 18, dom: "Monitoring and Logging",
+                q: "You are working as a DevOps engineer for a company that has hundreds of Amazon EC2 instances in their AWS account which runs their enterprise web applications. The company is using Slack, which is a cloud-based proprietary instant messaging platform, for updates and system alerts. There is a new requirement to create a system that should automatically send all AWS-scheduled maintenance notifications to the Slack channel of the company. This will easily notify their IT Operations team if there are any AWS-initiated changes to their EC2 instances and other resources. Which of the following is the EASIEST method that you should implement in order to meet the above requirement?",
+                o: [
+                    "Use a combination of AWS Personal Health Dashboard and Amazon CloudWatch Events to track the AWS-initiated activities to your resources. Create an event using CloudWatch Events which can invoke an AWS Lambda function to send notifications to the company's Slack channel.",
+                    "Use a combination of AWS Config and AWS Trusted Advisor to track any AWS-initiated changes. Create rules in AWS Config which can trigger an event that invokes an AWS Lambda function to send notifications to the company's Slack channel.",
+                    "Use a combination of Amazon EC2 Events and Amazon CloudWatch to track and monitor the AWS-initiated activities to your resources. Create an alarm using CloudWatch Alarms which can invoke an AWS Lambda function to send notifications to the company's Slack channel.",
+                    "Use a combination of AWS Support APIs and AWS CloudTrail to track and monitor the AWS-initiated activities to your resources. Create a new trail using AWS CloudTrail which can invoke an AWS Lambda function to send notifications to the company's Slack channel."
+                ],
+                c: [0], 
+                x: ["automatically send all AWS-scheduled maintenance notifications", "AWS-initiated changes"],
+                e: "AWS Personal Health Dashboard publishes events to Amazon EventBridge (CloudWatch Events) for AWS-initiated maintenance and service disruptions. An EventBridge rule can trigger an AWS Lambda function to format and send the alert to a Slack webhook.",
+                w: "AWS Config tracks customer configuration changes, not AWS-initiated hardware maintenance events. CloudTrail logs customer API calls, it does not log AWS-initiated hardware deprecation or maintenance events affecting your EC2 instances."
+            },
+            {
+                id: 19, dom: "Monitoring and Logging",
+                q: "A software development company is using GitHub, AWS CodeBuild, AWS CodeDeploy, and AWS CodePipeline for its CI/CD process. To further improve their systems, they need to implement a solution that automatically detects and reacts to changes in the state of their deployments in AWS CodeDeploy. Any changes must be rolled back automatically if the deployment process fails, and a notification must be sent to the DevOps Team's Slack channel for easy monitoring. Which of the following is the MOST suitable configuration that you should implement to satisfy this requirement?",
+                o: [
+                    "Set up a CloudWatch Alarm that tracks the CloudWatch metrics of the CodeDeploy project. Configure the CloudWatch Alarm to automatically send out a message to the DevOps Team's Slack Channel when the deployment fails. Configure AWS CodeDeploy to use the Roll back when alarm thresholds are met setting.",
+                    "Configure a CodeDeploy agent to send notification to the DevOps Team's Slack Channel when the deployment fails. Configure AWS CodeDeploy to automatically roll back whenever the deployment is not successful.",
+                    "Set up an Amazon EventBridge rule to monitor AWS CodeDeploy operations with a Lambda function as a target. Configure the lambda function to send out a message to the DevOps Team's Slack Channel in the event that the deployment fails. Configure AWS CodeDeploy to use the Roll back when a deployment fails setting.",
+                    "Monitor the API calls in the CodeDeploy project using AWS CloudTrail. Send a message to the DevOps Team's Slack Channel when the PutLifecycleEventHookExecutionStatus API call has been detected. Rollback the changes by using the AWS CLI."
+                ],
+                c: [2], 
+                x: ["automatically detects and reacts to changes in the state of their deployments in AWS CodeDeploy", "notification must be sent to the DevOps Team's Slack channel"],
+                e: "AWS CodeDeploy natively emits state-change events to Amazon EventBridge. By targeting a Lambda function from an EventBridge rule, you can send custom Slack notifications. Configuring CodeDeploy to 'Roll back when a deployment fails' automates the rollback process natively.",
+                w: "CloudWatch Alarms can trigger an SNS topic, but SNS cannot format and send messages natively to a Slack Webhook URL (requires an intermediary Lambda). The CodeDeploy agent runs locally on the EC2 instance to pull files; it is not designed to execute custom API calls to Slack."
+            },
+            {
+                id: 20, dom: "Monitoring and Logging",
+                q: "An analytics web portal processes data using an Amazon EMR cluster with an Auto Scaling group of EC2 instances. After three months, AWS Trusted Advisor recommended terminating underutilized EMR instances. It was found that no scale-down parameters were set, resulting in high billing costs. To prevent this issue, frequent notifications of AWS Trusted Advisor recommendations are required for timely action. Which of the following solutions can help achieve this? (Select THREE.)",
+                o: [
+                    "Enable the built-in Amazon EventBridge notification feature that scans changes in the Trusted Advisor check result. Send notifications automatically to the account owner.",
+                    "Create an Amazon EventBridge to monitor changes in Trusted Advisor checks. Set a trigger in Amazon SES for sending email notifications.",
+                    "Write a Lambda function that runs daily to refresh AWS Trusted Advisor via API and then publish a message to an SNS Topic to notify the subscribers based on the results.",
+                    "Enable the built-in Trusted Advisor notification feature to automatically receive notification emails, which include the summary of savings estimates along with Trusted Advisor check results.",
+                    "Write a Lambda function that runs daily to refresh AWS Trusted Advisor changes via API and send results to CloudWatch Logs. Create a CloudWatch Log metric and have it send an alarm notification when it is triggered.",
+                    "Create an Amazon EventBridge rule that monitors changes in the Trusted Advisor check status. Set a trigger in Amazon SNS for sending email notifications."
+                ],
+                c: [2, 4, 5], 
+                x: ["frequent notifications of AWS Trusted Advisor recommendations are required for timely action"],
+                e: "You can create an EventBridge rule that monitors Trusted Advisor checks and triggers SNS directly. If checks are not updated frequently enough, you can write a scheduled Lambda function to refresh them via the Support API and publish to SNS, or send results to CloudWatch Logs where a metric filter and alarm trigger the notification.",
+                w: "The built-in email notification feature only sends emails on a weekly basis, which delays timely action and does not meet the 'frequent notifications' requirement. EventBridge rules target Amazon SNS for broadcast notifications, not Amazon SES directly."
+            },
+            {
+                id: 21, dom: "Monitoring and Logging",
+                q: "A company uses multiple AWS accounts to help isolate and manage business applications. This multi-account environment consists of an AWS Transit Gateway to route all outbound traffic through a common network account. A firewall appliance inspects all traffic before it is forwarded to an internet gateway. The firewall appliance is configured to send logs to Amazon CloudWatch Logs for all events generated. Recently, the security team has advised about probable illegal access of resources. As DevOps Engineer, you have been advised to configure an alert to the security team if the firewall appliance generates an event of Critical severity. How should a DevOps engineer configure this requirement?",
+                o: [
+                    "Create a metric filter on Amazon CloudWatch by filtering the log data to match the term Critical from log events. Publish a custom metric for the finding. Use CloudWatch Lambda Insights to filter out the Critical event and send a notification using an Amazon Simple Notification Service (Amazon SNS) topic. Subscribe the email address of the security team to the SNS topic.",
+                    "Create a Transit Gateway Flow Log to capture all the information sent by the firewall appliance. Publish the flow log data to Amazon CloudWatch logs. Create a metric filter on Amazon CloudWatch by filtering the log data to match the term Critical from log events. Publish a custom metric for the finding and configure a CloudWatch alarm on this custom metric to publish a notification to an Amazon Simple Notification Service (Amazon SNS) topic.",
+                    "Create a metric filter on Amazon CloudWatch by filtering the log data to match the term Critical from log events. Publish a custom metric for the finding and configure a CloudWatch alarm on this custom metric to publish a notification to an Amazon Simple Notification Service (Amazon SNS) topic. Subscribe the email address of the security team to the SNS topic.",
+                    "Create a metric filter on Amazon CloudWatch by filtering the log data to match the term Critical from log events. Configure a metric stream using Kinesis Data Firehose delivery stream and AWS Lambda as the destination. Process the stream data with Lambda and send notification to an Amazon Simple Notification Service (Amazon SNS) topic if Critical event is detected."
+                ],
+                c: [2], 
+                x: ["configure an alert to the security team if the firewall appliance generates an event of Critical severity"],
+                e: "CloudWatch Metric Filters analyze log events for specific text patterns (like 'Critical') and publish a custom numerical metric. A CloudWatch Alarm can monitor this metric and trigger an SNS notification immediately to the security team.",
+                w: "The firewall appliance is already sending application-level logs to CloudWatch. TGW Flow Logs capture raw IP connection records, which likely do not contain high-level firewall strings like 'Critical'. CloudWatch Lambda Insights monitors execution metrics for Lambda, it is not used for routing custom alerts."
+            },
+            {
+                id: 22, dom: "Monitoring and Logging",
+                q: "A company has an application hosted in an Auto Scaling group of EC2 instances which calls an external API with a URL of http://api.tutorialsdojo.com as part of its processing. There was a recent deployment that changed the protocol of the URL from HTTP to HTTPS but after that, the application has stopped working properly. The DevOps engineer has verified using his POSTMAN tool that the external API works without any issues and the VPC being utilized is still using the default network ACL. Which of the following is the MOST appropriate course of action that the engineer should take to determine the root cause of this problem?",
+                o: [
+                    "Log in to the AWS Management Console and look for REJECT records in the VPC flow logs which originated from the Auto Scaling group. Verify that the egress security group rules of the Auto Scaling Group allow the outgoing traffic to the external API.",
+                    "Log in to the AWS Management Console and view the application logs in Amazon CloudWatch Logs to troubleshoot the issue. Verify that the ingress security group rules of the Auto Scaling Group, as well as the network ACL, allow the incoming traffic from the external API.",
+                    "Log in to the AWS Management Console and view the application logs in Amazon CloudWatch Logs to troubleshoot the issue. Verify that the existing egress security group rules of the Auto Scaling Group, as well as the network ACL, allow the outgoing traffic to the external API.",
+                    "Log in to the AWS Management Console and then in the VPC flow logs, look for ACCEPT records which were originated from the Auto Scaling group. Verify that the ingress security group rules of the Auto Scaling Group allow the incoming traffic from the external API."
+                ],
+                c: [0], 
+                x: ["changed the protocol of the URL from HTTP to HTTPS", "application has stopped working properly", "MOST appropriate course of action"],
+                e: "Because the instances are initiating the HTTPS (port 443) connection outward to the external API, the most likely culprit is a restrictive outbound (egress) security group rule blocking port 443. Checking VPC Flow Logs for REJECT records originating from the ASG instances' ENIs will confirm if the traffic is being blocked at the security group boundary.",
+                w: "The EC2 instance is making an outbound client request to the API, meaning the egress rules dictate the connection. Security groups are stateful, so if the egress request is allowed, the ingress response is automatically permitted. You must look for REJECT records, not ACCEPT."
+            },
+            {
+                id: 23, dom: "Monitoring and Logging",
+                q: "The compliance department at a Wall Street trading firm has asked you to regularly generate the list of all the software packages installed on the EC2 instances. The solution needs to be able to extend to future instances in the AWS account and send notifications if the instances are not set up correctly to track their software. Which of the following options are the best-fit solutions that require the least effort to meet the given requirements? (Select two)",
+                o: [
+                    "Create a CloudWatch Event rule to trigger a Lambda function on an hourly basis. Do a comparison of the instances that are running in EC2 and those tracked by SSM",
+                    "Use AWS Inspector to track the installed package list on your EC2 instances. Visualize the metadata directly in the AWS Inspector Insights console",
+                    "Use an SSM Run Command to have the SSM service find which instances are not currently tracked by SSM",
+                    "Install the SSM agent on the instances. Run an SSM Automation during maintenance windows to get the list of all the packages using yum list installed. Write the output to Amazon S3",
+                    "Install the SSM agent on the instances. Run an SSM Inventory to collect the metadata and send them to Amazon S3"
+                ],
+                c: [0, 4], 
+                x: ["generate the list of all the software packages installed", "send notifications if the instances are not set up correctly to track their software", "least effort"],
+                e: "AWS Systems Manager (SSM) Inventory automatically collects metadata, including installed software packages, from managed instances and securely syncs the data to Amazon S3 without requiring custom scripts. Since SSM doesn't natively alert on unmanaged instances, a scheduled Lambda function can easily compare the list of running EC2 instances against the list of SSM-managed instances and notify the team if any are missing.",
+                w: "Building custom automation scripts to run <code>yum</code> commands requires significant ongoing maintenance and scripting effort when SSM Inventory natively handles package discovery out-of-the-box. Amazon Inspector scans for security vulnerabilities; it is not designed to export a generic list of installed software packages."
+            },
+            {
+                id: 24, dom: "Monitoring and Logging",
+                q: "A video-sharing application stores its files on an Amazon S3 bucket. During the last year, the user traffic has multiplied by thousands and the company is planning on introducing subscription services. The company needs the access pattern of the video files to identify the most viewed and downloaded videos. Which of the following would you identify as the MOST cost-effective solution that can be implemented at the earliest?",
+                o: [
+                    "Enable server access logging on the S3 bucket. Configure file create event notification on Access log S3 bucket to trigger an AWS Lambda function. Configure Lambda to write the data to Kinesis Firehose which then writes the log data to Amazon OpenSearch Service.",
+                    "Enable server access logging on the S3 bucket. Configure Amazon Athena to create an external table with the log files. Use SQL query to analyze the access patterns from Athena",
+                    "Enable server access logging on the S3 bucket. Use Amazon Redshift Spectrum to efficiently query large datasets leveraging the massive parallelism offered by dedicated Amazon Redshift servers",
+                    "Leverage Amazon S3 request metrics from CloudWatch for analysis via an AWS Lambda function. The AWS/S3 namespace includes the request metrics GetRequests and BytesDownloaded that can be passed to the Lambda function."
+                ],
+                c: [1], 
+                x: ["access pattern of the video files to identify the most viewed and downloaded videos", "MOST cost-effective solution"],
+                e: "Amazon S3 Server Access Logs automatically capture all requests (GET, PUT, DELETE) made to the bucket and stores them in another bucket. Using Amazon Athena allows you to run serverless SQL queries directly against those raw access logs stored in S3 to find the most downloaded files. This completely eliminates the need to provision external databases or expensive OpenSearch clusters, making it highly cost-effective.",
+                w: "Redshift requires provisioning a dedicated data warehouse cluster which is incredibly expensive and overkill for running occasional log queries. CloudWatch metrics (like <code>GetRequests</code>) show aggregate data for the entire bucket; they do not break down metrics on a per-object basis."
+            },
+            {
+                id: 25, dom: "Monitoring and Logging",
+                q: "A company has confidential files containing patent information stored in an Amazon S3 bucket. Actions need to be monitored on the objects, such as PUT, GET, and DELETE operations. The goal is to search and review these actions for auditing purposes easily. Which solution will meet this requirement MOST cost-effectively?",
+                o: [
+                    "Enable logging on your Amazon S3 bucket to save the access logs on a separate S3 bucket. Import logs to Amazon OpenSearch service to easily search and query the logs.",
+                    "Create an AWS CloudTrail trail to track and store your S3 API call logs in an S3 bucket. Create an AWS Lambda function that logs data events of your S3 bucket. Trigger this Lambda function using the Amazon EventBridge rule for every action taken on your S3 objects. View the logs on the Amazon CloudWatch Logs group.",
+                    "Enable logging on your S3 bucket. Create an Amazon EventBridge rule that watches the object-level events of your S3 bucket. Create a target on the rule to send the event logs to an Amazon CloudWatch Log group. View and search the logs on CloudWatch Logs.",
+                    "Create an Amazon CloudWatch Log group and configure S3 logging to send object-level events to this log group. View and search the event logs on the created CloudWatch log group."
+                ],
+                c: [1], 
+                x: ["monitored on the objects, such as PUT, GET, and DELETE operations", "search and review these actions for auditing purposes easily"],
+                e: "S3 object-level actions (GET, PUT, DELETE) are classified as CloudTrail Data Events. By configuring a CloudTrail trail to capture data events, Amazon EventBridge can instantly intercept these events and trigger a Lambda function to log them into CloudWatch Logs for cost-effective, real-time querying via Logs Insights. S3 cannot send access logs directly to CloudWatch natively.",
+                w: "Amazon S3 Server Access Logging can only deliver logs to another Amazon S3 bucket natively; it cannot stream directly to a CloudWatch Logs log group. Provisioning a dedicated OpenSearch cluster incurs significant hourly infrastructure costs, failing the 'most cost-effectively' requirement."
+            }
+        ];
+
+        let appState = {
+            answers: {}, mode: 'practice', activeDomain: 'all', timeRemaining: 180 * 60,
+            timerInterval: null, submitted: false, evaluated: {}
+        };
+
+        function escapeRegExp(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+        function highlightText(text, clues) {
+            if (!clues || !clues.length) return text;
+            let h = text;
+            clues.forEach(c => h = h.replace(new RegExp(`(${escapeRegExp(c)})`, 'gi'), '<span class="keyword-highlight">$1</span>'));
+            return h;
+        }
+
+        function setMode(m) {
+            appState.mode = m;
+            document.getElementById('btn-practice-mode').className = m === 'practice' ? "px-2.5 py-1 text-xs font-semibold rounded-md transition-all duration-200 bg-amber-500 text-slate-900 shadow" : "px-2.5 py-1 text-xs font-semibold rounded-md transition-all duration-200 text-slate-400 hover:text-slate-200";
+            document.getElementById('btn-exam-mode').className = m === 'exam' ? "px-2.5 py-1 text-xs font-semibold rounded-md transition-all duration-200 bg-amber-500 text-slate-900 shadow" : "px-2.5 py-1 text-xs font-semibold rounded-md transition-all duration-200 text-slate-400 hover:text-slate-200";
+            if (m === 'practice') { document.getElementById('timer-container').classList.add('hidden'); stopTimer(); } 
+            else { document.getElementById('timer-container').classList.remove('hidden'); if (!appState.submitted) startTimer(); }
+            saveState(); renderQuestions();
+        }
+
+        function startTimer() {
+            if (appState.timerInterval) clearInterval(appState.timerInterval);
+            appState.timerInterval = setInterval(() => {
+                if (appState.timeRemaining <= 0) { clearInterval(appState.timerInterval); submitExam(); } 
+                else { appState.timeRemaining--; document.getElementById('timer-display').textContent = `${String(Math.floor(appState.timeRemaining / 60)).padStart(2, '0')}:${String(appState.timeRemaining % 60).padStart(2, '0')}`; if(appState.timeRemaining % 5 === 0) saveState(); }
+            }, 1000);
+        }
+
+        function stopTimer() { if (appState.timerInterval) clearInterval(appState.timerInterval); }
+
+        function filterDomain(d) {
+            appState.activeDomain = d;
+            document.querySelectorAll('.domain-btn').forEach(btn => {
+                btn.className = ((d === 'all' && btn.textContent.includes('All Domains')) || (d !== 'all' && btn.textContent.includes(d))) ? "domain-btn active px-3 py-1.5 text-xs font-semibold rounded-lg bg-amber-500 text-slate-900 border border-amber-500 transition shadow" : "domain-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition";
+            });
+            renderQuestions();
+        }
+
+        function handleSelectOption(qId, optIdx, isMulti) {
+            if (appState.submitted && appState.mode === 'exam') return;
+            if (appState.mode === 'practice' && appState.evaluated[qId]) return;
+            if (!appState.answers[qId]) appState.answers[qId] = [];
+            const req = rawQuestions.find(i => i.id === qId).c.length;
+            if (isMulti) {
+                const i = appState.answers[qId].indexOf(optIdx);
+                if (i > -1) appState.answers[qId].splice(i, 1);
+                else if (appState.answers[qId].length < req) appState.answers[qId].push(optIdx);
+            } else appState.answers[qId] = [optIdx];
+            saveState(); updateProgress(); renderQuestionCard(qId);
+        }
+
+        function checkAnswer(qId) { appState.evaluated[qId] = true; saveState(); updateProgress(); renderQuestionCard(qId); }
+
+        function updateProgress() {
+            let ac = appState.mode === 'practice' ? Object.keys(appState.evaluated).length : Object.keys(appState.answers).filter(k => appState.answers[k].length === rawQuestions.find(i => i.id == k).c.length).length;
+            document.getElementById('answered-count').textContent = ac;
+            document.getElementById('progress-bar').style.width = `${Math.round((ac / rawQuestions.length) * 100)}%`;
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-list');
+            container.innerHTML = '';
+            document.getElementById('cheat-sheet').parentElement.classList.toggle('hidden', appState.activeDomain !== 'all');
+            rawQuestions.filter(q => appState.activeDomain === 'all' || q.dom.includes(appState.activeDomain)).forEach(q => container.appendChild(createQuestionCardHtml(q)));
+        }
+
+        function renderQuestionCard(qId) {
+            const eCard = document.getElementById(`question-card-${qId}`);
+            if (eCard) eCard.replaceWith(createQuestionCardHtml(rawQuestions.find(q => q.id === qId)));
+        }
+
+        function createQuestionCardHtml(q) {
+            const card = document.createElement('div');
+            card.id = `question-card-${q.id}`;
+            card.className = "bg-slate-800/90 border border-slate-700/80 rounded-2xl p-4 sm:p-6 shadow-lg transition-all duration-200 hover:border-slate-600";
+            const us = appState.answers[q.id] || [], isM = q.c.length > 1, isPE = appState.mode === 'practice' && appState.evaluated[q.id], isEE = appState.submitted;
+            let html = `<div class="flex flex-wrap items-center justify-between gap-2 mb-3 sm:mb-4"><div class="flex items-center space-x-2"><span class="px-2 py-0.5 sm:px-2.5 sm:py-1 text-[10px] sm:text-xs font-extrabold rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">Question ${q.id}</span>${isM ? `<span class="px-1.5 py-0.5 text-[9px] sm:text-[10px] font-semibold uppercase bg-sky-500/10 text-sky-400 border border-sky-500/20 rounded">Select ${q.c.length}</span>` : ''}</div><span class="text-[9px] sm:text-xs font-medium text-slate-400 bg-slate-900/60 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full border border-slate-700/50">${q.dom}</span></div><p class="text-slate-100 font-medium text-xs sm:text-[15px] leading-relaxed mb-4">${(isPE || isEE) && q.x ? highlightText(q.q, q.x) : q.q}</p><div class="space-y-2.5">`;
+            
+            q.o.forEach((optText, optIdx) => {
+                const isSel = us.includes(optIdx), isCor = q.c.includes(optIdx);
+                let optClass = "border-slate-700 bg-slate-900/40 hover:bg-slate-700/50 text-slate-200";
+                let indHtml = `<div style="width:14px;height:14px;min-width:14px;" class="rounded-full border border-slate-500 flex items-center justify-center mr-3 mt-0.5 shrink-0 ${isSel?'border-amber-500 bg-amber-500':''}">${isSel?'<div style="width:5px;height:5px;" class="rounded-full bg-slate-900"></div>':''}</div>`;
+                if(isM) indHtml = `<div style="width:14px;height:14px;min-width:14px;" class="rounded border border-slate-500 flex items-center justify-center mr-3 mt-0.5 shrink-0 ${isSel?'border-amber-500 bg-amber-500':''}">${isSel?'<svg class="w-2.5 h-2.5 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>':''}</div>`;
+                
+                if (isPE || isEE) {
+                    if (isCor) { optClass = "border-emerald-500/60 bg-emerald-950/30 text-emerald-200 font-medium"; indHtml = `<div style="width:14px;height:14px;min-width:14px;" class="rounded-full bg-emerald-500 text-slate-900 flex items-center justify-center mr-3 mt-0.5 shrink-0 font-bold text-[9px]">✓</div>`; } 
+                    else if (isSel && !isCor) { optClass = "border-rose-500/60 bg-rose-950/30 text-rose-200 font-medium"; indHtml = `<div style="width:14px;height:14px;min-width:14px;" class="rounded-full bg-rose-500 text-white flex items-center justify-center mr-3 mt-0.5 shrink-0 font-bold text-[9px]">✕</div>`; }
+                } else if (isSel) { optClass = "border-amber-500/80 bg-amber-500/10 text-amber-200 font-medium shadow-sm"; }
+                
+                html += `<label onclick="handleSelectOption(${q.id}, ${optIdx}, ${isM})" class="flex items-start p-3 sm:p-3.5 rounded-xl border transition-all duration-150 select-none ${optClass} ${(isPE || isEE) ? 'pointer-events-none' : 'cursor-pointer'}">${indHtml}<span class="text-[11px] sm:text-[13px] leading-snug">${optText}</span></label>`;
+            });
+            html += `</div>`;
+
+            if (appState.mode === 'practice' && !isPE) html += `<button ${us.length !== q.c.length ? 'disabled' : ''} onclick="checkAnswer(${q.id})" class="mt-4 px-4 py-2 bg-amber-500 text-slate-900 font-bold text-[11px] sm:text-xs rounded-lg transition ${us.length !== q.c.length ? 'opacity-50 cursor-not-allowed' : 'hover:bg-amber-400'}">Check Answer</button>`;
+
+            if (isPE || isEE) {
+                const uCor = q.c.every(v => us.includes(v)) && us.length === q.c.length;
+                html += `<details class="aws-expl-container" open><summary class="aws-expl-summary text-xs sm:text-sm">Show/Hide Explanation</summary><div class="mt-3 border-t border-slate-700/80 fade-in"><div class="flex items-center space-x-2 mb-2 mt-3"><span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider ${uCor ? 'text-emerald-400' : 'text-rose-400'}">${uCor ? '✓ Correct Answer' : '✕ Incorrect'}</span></div>`;
+                if(q.x && q.x.length) html += `<div class="mb-3 p-3 rounded-xl bg-slate-900/60 border border-amber-500/30"><span class="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-amber-400 block mb-1.5">Exam Clues:</span><div class="flex flex-wrap">${q.x.map(c => `<span class="inline-block bg-yellow-500/10 text-amber-400 border border-yellow-500/20 px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] font-mono mr-1 mb-1">"${c}"</span>`).join('')}</div></div>`;
+                
+                if (q.customHtml) {
+                    html += q.customHtml;
+                } else {
+                    html += `<div class="p-3 sm:p-4 rounded-xl bg-slate-900/80 border border-slate-700/60 text-[11px] sm:text-sm text-slate-300 leading-relaxed mb-3"><strong class="text-slate-100 block mb-1">Breakdown:</strong>${q.e}</div>`;
+                    if (q.w) html += `<div class="p-3 sm:p-4 rounded-xl bg-rose-950/20 border border-rose-900/40 text-[11px] sm:text-[13px] text-slate-400 leading-relaxed"><strong class="text-rose-400 block mb-1">Why Incorrect:</strong>${q.w}</div>`;
+                }
+                html += `</div></details>`;
+            }
+            card.innerHTML = html; return card;
+        }
+
+        function submitExam() {
+            appState.submitted = true; stopTimer(); saveState(); window.scrollTo({ top: 0, behavior: 'smooth' });
+            let cc = 0; rawQuestions.forEach(q => { if(q.c.every(v => (appState.answers[q.id]||[]).includes(v)) && (appState.answers[q.id]||[]).length===q.c.length) cc++; });
+            const p = Math.round((cc / rawQuestions.length) * 100);
+            document.getElementById('results-screen').classList.remove('hidden');
+            document.getElementById('submit-container').classList.add('hidden');
+            document.getElementById('score-percentage').textContent = `${p}%`;
+            document.getElementById('score-raw').textContent = `${cc} / ${rawQuestions.length} Correct`;
+            
+            const sBad = document.getElementById('score-badge'), sStat = document.getElementById('score-status');
+            if (p >= 75) { sBad.className = "mt-4 sm:mt-6 inline-flex flex-col items-center justify-center p-4 sm:p-6 rounded-2xl border-2 border-emerald-500/50 bg-emerald-950/20 shadow-inner text-emerald-400 w-40 h-40 sm:w-48 sm:h-48"; sStat.textContent = "PASS"; sStat.className = "mt-2 text-[10px] sm:text-xs uppercase tracking-widest font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"; } 
+            else { sBad.className = "mt-4 sm:mt-6 inline-flex flex-col items-center justify-center p-4 sm:p-6 rounded-2xl border-2 border-rose-500/50 bg-rose-950/20 shadow-inner text-rose-400 w-40 h-40 sm:w-48 sm:h-48"; sStat.textContent = "FAIL"; sStat.className = "mt-2 text-[10px] sm:text-xs uppercase tracking-widest font-bold px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30"; }
+
+            const dGrid = document.getElementById('domain-results-grid'); dGrid.innerHTML = '';
+            ["Monitoring and Logging"].forEach(d => {
+                const dq = rawQuestions.filter(q => q.dom === d); if(!dq.length) return;
+                let dc = 0; dq.forEach(q => { if(q.c.every(v => (appState.answers[q.id]||[]).includes(v)) && (appState.answers[q.id]||[]).length===q.c.length) dc++; });
+                const dp = Math.round((dc / dq.length) * 100);
+                dGrid.innerHTML += `<div class="p-3 sm:p-4 rounded-xl bg-slate-900/60 border border-slate-700/60 flex flex-col justify-between"><div class="flex justify-between items-center mb-2"><span class="text-[10px] sm:text-xs font-semibold text-slate-200">${d}</span><span class="text-[10px] sm:text-xs font-extrabold ${dp >= 75 ? 'text-emerald-400' : 'text-amber-400'}">${dp}%</span></div><div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden border border-slate-700"><div class="h-full ${dp >= 75 ? 'bg-emerald-500' : 'bg-amber-500'}" style="width: ${dp}%"></div></div><span class="text-[9px] sm:text-[10px] text-slate-400 mt-2 block">${dc} of ${dq.length} correct</span></div>`;
+            });
+            renderQuestions(); 
+        }
+
+        function resetQuiz() {
+            if(confirm("Reset quiz? This clears your progress.")) {
+                appState = { answers: {}, mode: 'practice', activeDomain: 'all', timeRemaining: 180 * 60, timerInterval: null, submitted: false, evaluated: {} };
+                
+                document.getElementById('results-screen').classList.add('hidden'); document.getElementById('submit-container').classList.remove('hidden');
+                updateProgress(); renderQuestions(); window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+</html>

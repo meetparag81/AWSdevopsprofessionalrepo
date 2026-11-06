@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en" class="dark" data-quiz-id="aws-dop-c02-monitoring-practice-part3-v1" data-quiz-layout="classic">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS DOP-C02: Practice Test - Part 3</title>
+    <link rel="stylesheet" href="monitoring.css">
+    <link rel="stylesheet" href="quiz-cloud.css">
+    <script defer src="supabase-config.js"></script>
+    <script defer src="monitoring-adapter.js"></script>
+    <script defer src="quiz-cloud.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        .keyword-highlight { 
+            background-color: rgba(245, 158, 11, 0.2); 
+            color: #fbbf24; 
+            font-weight: 700; 
+            padding: 0.125rem 0.25rem; 
+            border-radius: 0.25rem; 
+            border: 1px solid rgba(245, 158, 11, 0.3); 
+            transition: all 0.3s ease; 
+        }
+        
+        html { scroll-behavior: smooth; }
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* AWS Explanation Accordion Styles */
+        .aws-expl-container { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background-color: #0f172a; 
+            color: #e2e8f0; 
+            padding: 1.5rem; 
+            border-radius: 0.5rem; 
+            line-height: 1.6; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 1.25rem;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+        .aws-expl-summary { 
+            cursor: pointer; 
+            font-size: 1.125rem; 
+            font-weight: 600; 
+            color: #38bdf8; 
+            outline: none; 
+            user-select: none;
+            display: flex;
+            align-items: center;
+        }
+        .aws-expl-summary:hover { color: #7dd3fc; }
+        .aws-expl-summary::before {
+            content: "▶";
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+        details[open] > .aws-expl-summary::before {
+            transform: rotate(90deg);
+        }
+        .aws-expl-correct { 
+            background-color: rgba(2, 44, 34, 0.5); 
+            border-left: 4px solid #10b981; 
+            padding: 1rem; 
+            margin: 1.25rem 0; 
+            border-radius: 0.25rem; 
+        }
+        .aws-expl-incorrect { 
+            background-color: rgba(69, 10, 10, 0.5); 
+            border-left: 4px solid #ef4444; 
+            padding: 1rem; 
+            margin: 1.25rem 0; 
+            border-radius: 0.25rem; 
+        }
+        .aws-keyword { 
+            font-weight: bold; 
+            color: #fbbf24; 
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-amber-500 selection:text-slate-900">
+
+    <!-- Sticky Header -->
+    <header class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-amber-500/10 rounded-lg border border-amber-500/20">
+                        <svg style="width: 28px; height: 28px;" class="text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white tracking-tight">AWS DevOps Engineer Professional</h1>
+                        <p class="text-xs text-slate-400">Monitoring and Logging • Part 3 (Questions 31 - 40)</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="bg-slate-800 p-1 rounded-lg border border-slate-700 flex items-center">
+                        <button id="btn-practice-mode" onclick="setMode('practice')" class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 bg-amber-500 text-slate-900 shadow">Practice Mode</button>
+                        <button id="btn-exam-mode" onclick="setMode('exam')" class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 text-slate-400 hover:text-slate-200">Exam Mode</button>
+                    </div>
+
+                    <div id="timer-container" class="hidden items-center space-x-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-amber-400 font-mono font-bold text-sm">
+                        <svg style="width: 16px; height: 16px;" class="animate-pulse text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span id="timer-display">180:00</span>
+                    </div>
+
+                    <button onclick="resetQuiz()" class="p-2 text-slate-400 hover:text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition" title="Reset Quiz">
+                        <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progress Tracker -->
+            <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                <div class="flex items-center space-x-2">
+                    <span>Evaluated: <strong id="answered-count" class="text-white">0</strong> / <span id="total-q-count">0</span></span>
+                    <span id="save-indicator" class="ml-4 text-[10px] font-mono text-emerald-400 opacity-0 transition-opacity duration-300">● Progress Saved</span>
+                </div>
+                <div class="w-1/2 bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700">
+                    <div id="progress-bar" class="bg-amber-500 h-full w-0 transition-all duration-300"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <nav class="monitoring-nav" aria-label="Quiz navigation"><a href="../index.html">Study portal home</a>
+        <a href="index.html">All Monitoring and Logging quizzes</a>
+        <a href="../SDLC35%20questionsnew.html">SDLC quiz</a></nav>
+    <section id="cloud-panel" aria-labelledby="cloud-heading">
+        <h2 id="cloud-heading">Save and resume across devices</h2>
+        <p>Sign in with the same account on your phone or another PC. Wait for "Saved to cloud" before closing.
+            Guest progress stays only in this browser. Each quiz keeps its latest attempt, not a history of attempts.</p>
+        <p id="cloud-status" role="status" aria-live="polite">Starting cloud connection...</p>
+        <form id="cloud-login">
+            <label>Email <input id="cloud-email" type="email" autocomplete="username" required></label>
+            <label>Password <input id="cloud-password" type="password" autocomplete="current-password" required></label>
+            <button type="submit">Sign in</button>
+        </form>
+        <p id="cloud-account" hidden></p>
+        <div id="cloud-actions" hidden>
+            <button id="cloud-sync" type="button">Sync now</button>
+            <button id="cloud-signout" type="button">Sign out</button>
+        </div>
+        <div id="cloud-conflict" hidden>
+            <p>A different device has a newer save. Choose which progress to keep. Replacing a save cannot be undone.</p>
+            <button id="cloud-use-remote" type="button">Use cloud save</button>
+            <button id="cloud-use-local" type="button">Replace cloud with this device</button>
+        </div>
+        <p>First use: create your login in Supabase Authentication &gt; Users. No password is stored in this HTML.</p>
+    </section>
+
+    <!-- Main Workspace -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
+        
+        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-8 right-8 z-50 p-3 bg-amber-500 text-slate-900 rounded-full shadow-lg hover:bg-amber-400 transition transform hover:scale-105" title="Back to Top">
+            <svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+        </button>
+
+        <!-- HIGH YIELD EXAM CHEAT SHEET -->
+        <div class="mb-8">
+            <button onclick="document.getElementById('cheat-sheet').classList.toggle('hidden')" class="w-full flex items-center justify-between bg-slate-800 hover:bg-slate-700 border border-slate-700 transition rounded-xl p-4 shadow-md group">
+                <div class="flex items-center space-x-3">
+                    <div class="p-1.5 bg-sky-500/10 rounded-lg text-sky-400 group-hover:bg-sky-500/20 transition">
+                        <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h2 class="text-base font-bold text-white tracking-wide">Pre-Exam Cheat Sheet: Monitoring and Logging (Part 3)</h2>
+                </div>
+                <svg style="width: 20px; height: 20px;" class="text-slate-400 group-hover:text-white transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            
+            <div id="cheat-sheet" class="hidden mt-2 p-6 bg-slate-800/50 border border-slate-700 rounded-xl text-sm text-slate-300 leading-relaxed shadow-inner">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Events & Config -->
+                    <div>
+                        <h3 class="text-amber-400 font-bold uppercase tracking-wider mb-3 text-xs border-b border-slate-700 pb-1">Governance & Automated Auditing</h3>
+                        <ul class="space-y-2">
+                            <li><strong class="text-white">AWS Config for Audits:</strong> Config captures the state of your resources. You can create rules (like <code>encrypted-volumes</code> or <code>cloudtrail-enabled</code>) to flag non-compliance.</li>
+                            <li><strong class="text-white">Amazon Macie:</strong> Fully managed data security and privacy service that uses machine learning to automatically discover and protect sensitive <span class="keyword-highlight">PII data</span> in S3.</li>
+                            <li><strong class="text-white">Amazon GuardDuty:</strong> Intelligent threat detection. Combines CloudTrail, VPC Flow Logs, and DNS logs to flag <span class="keyword-highlight">anomalous behavior</span> or compromised credentials.</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Logging & Analytics -->
+                    <div>
+                        <h3 class="text-amber-400 font-bold uppercase tracking-wider mb-3 text-xs border-b border-slate-700 pb-1">Metrics & Logs</h3>
+                        <ul class="space-y-2">
+                            <li><strong class="text-white">CloudWatch Anomaly Detection:</strong> Dynamically adjusts to historical trends (like day vs. night traffic) so you don't get false positive alerts when traffic naturally dips.</li>
+                            <li><strong class="text-white">Custom Metrics:</strong> If a specific application metric is needed (e.g., number of payment refunds), use the AWS SDK (PutMetricData) to push a Custom Metric directly into CloudWatch.</li>
+                            <li><strong class="text-white">EC2 System Log:</strong> When an instance completely fails to boot up or SSH fails and SSM is unavailable, viewing the raw <span class="keyword-highlight">System Log</span> from the console is the first diagnostic step.</li>
+                            <li><strong class="text-white">Container Insights:</strong> Used on EKS/ECS to capture robust infrastructure metrics (CPU, Memory, Network) per task and per service in near real-time.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen (Hidden initially) -->
+        <div id="results-screen" class="hidden mb-8 bg-slate-800 border border-slate-700 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden fade-in">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="text-center max-w-xl mx-auto mb-8">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">Exam Results Breakdown</h2>
+                <p class="text-slate-400 text-sm">Target Passing Score: <span class="text-amber-400 font-bold">75%</span></p>
+                
+                <div id="score-badge" class="mt-6 inline-flex flex-col items-center justify-center p-6 rounded-2xl border-2 w-48 h-48 bg-slate-900/50 shadow-inner">
+                    <span id="score-percentage" class="text-4xl font-black tracking-tight">0%</span>
+                    <span id="score-status" class="mt-2 text-xs uppercase tracking-widest font-bold px-3 py-1 rounded-full">FAIL</span>
+                    <span id="score-raw" class="mt-2 text-xs text-slate-400">0 / 0 Correct</span>
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <h3 class="text-lg font-bold text-white mb-4 border-b border-slate-700 pb-2">Domain Performance Summary</h3>
+                <div id="domain-results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-slate-700 flex flex-wrap justify-between items-center gap-4">
+                <p class="text-xs text-slate-400">Scroll down to inspect your answers with full architectural breakdowns.</p>
+                <button onclick="resetQuiz()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold rounded-xl transition shadow-lg text-sm">
+                    Reset & Retake Examination
+                </button>
+            </div>
+        </div>
+
+        <!-- Domain Filters -->
+        <div class="mb-6 overflow-x-auto pb-2">
+            <div id="domain-filters" class="flex space-x-2 min-w-max">
+                <button onclick="filterDomain('all')" class="domain-btn active px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-500 text-slate-900 border border-amber-500 transition shadow">All Domains</button>
+                <button onclick="filterDomain('Monitoring and Logging')" class="domain-btn px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">Monitoring & Logging</button>
+            </div>
+        </div>
+
+        <!-- Continuous Scroll Question List -->
+        <div id="questions-list" class="space-y-6 fade-in"></div>
+
+        <!-- Submit Banner -->
+        <div id="submit-container" class="mt-10 p-6 bg-slate-800 border border-slate-700 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+            <div>
+                <h4 class="text-base font-bold text-white">Ready to complete your examination?</h4>
+                <p class="text-xs text-slate-400">Ensure you have thoroughly reviewed all questions before final evaluation.</p>
+            </div>
+            <button onclick="submitExam()" class="w-full sm:w-auto px-8 py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 font-extrabold rounded-xl transition shadow-lg text-sm tracking-wide">
+                Submit Exam
+            </button>
+        </div>
+    </main>
+
+    <footer class="bg-slate-950 border-t border-slate-800 py-6 text-center text-xs text-slate-500 mt-12">
+        <div class="max-w-7xl mx-auto px-4">
+            AWS Certified DevOps Engineer - Professional (DOP-C02) Interactive Examination Portal<br/>
+            Your progress is automatically saved securely to your browser.
+        </div>
+    </footer>
+
+    <script>
+        const rawQuestions = [
+            {
+                id: 31, dom: "Monitoring and Logging",
+                q: "A cyber forensics company would like to ensure that CloudTrail is always enabled in its AWS account. It also needs to have an audit trail of the status for CloudTrail. In the case of compliance breaches, the company would like to automatically resolve them. As a DevOps Engineer, how can you implement a solution for this requirement?",
+                o: [
+                    "Create an AWS Config rule to track if CloudTrail is enabled. Create a CloudWatch Event rule to get alerted in case of breaches, and trigger a Lambda function that will re-enable CloudTrail",
+                    "Place all your AWS IAM users under an IAM group named 'everyone'. Create an IAM deny policy on that group to prevent users from using the DeleteTrail API. Create a CloudWatch Event rule that will trigger a Lambda function every 5 minutes. That Lambda function will check if CloudTrail is enabled using an API call and enable it back if necessary",
+                    "Create a CloudWatch Event rule that will trigger a Lambda function every 5 minutes. That Lambda function will check if CloudTrail is enabled using an API call and enable it back if necessary",
+                    "Place all your AWS IAM users under an IAM group named 'everyone'. Create an IAM deny policy on that group to prevent users from using the DeleteTrail API. Create an AWS Config rule that tracks if every user is in that IAM group. Create a CloudWatch Event rule to get alerted in case of breaches, and trigger a Lambda function that will add users to the 'everyone' group automatically"
+                ],
+                c: [0], 
+                x: ["ensure that CloudTrail is always enabled", "audit trail of the status", "automatically resolve them"],
+                e: "", // Custom HTML breakdown added below
+                w: "", // Custom HTML breakdown added below
+                customHtml: `
+<details class="aws-expl-container" open>
+  <summary class="aws-expl-summary">Show/Hide Explanation</summary>
+  
+  <div class="aws-expl-correct">
+    <h3 style="color: #10b981; margin-top: 0; font-size: 1.1rem;">Why AWS Config + Lambda is Correct</h3>
+    <p style="margin-bottom: 0.5rem;">To maintain auditability and track compliance over time (which acts as the audit trail of the status), you must use <strong>AWS Config</strong>.</p>
+    <ul style="margin-bottom: 0; padding-left: 1.25rem; list-style-type: disc;">
+      <li><strong>Detection:</strong> You can use the <code>cloudtrail-enabled</code> Config managed rule to actively check whether AWS CloudTrail is enabled in your AWS account.</li>
+      <li><strong>Alerting & Remediation:</strong> To be automatically alerted of compliance issues and resolve them, you map an Amazon EventBridge (CloudWatch Events) rule to the AWS Config compliance state change, and set a Lambda function as the target. The Lambda function automatically executes the API call to re-enable CloudTrail.</li>
+    </ul>
+  </div>
+
+  <div class="aws-expl-incorrect">
+    <h3 style="color: #ef4444; margin-top: 0; font-size: 1.1rem;">Why Other Options are Incorrect</h3>
+    <ul style="margin-bottom: 0; padding-left: 1.25rem; list-style-type: disc;">
+      <li><strong>Lambda triggered every 5 minutes:</strong> Using a scheduled cron job (Lambda every 5 minutes) will not provide a compliant historical audit trail (dashboard) of <em>when</em> the status changed. AWS Config naturally builds this timeline.</li>
+      <li><strong>IAM Deny Policy on 'everyone' group:</strong> While restricting the <code>DeleteTrail</code> API is a good preventive measure, it does not stop users from assuming new IAM roles (which might bypass the group policy) to disable the trail. It also fails to provide the requested audit trail of the compliance status itself.</li>
+    </ul>
+  </div>
+</details>
+`
+            },
+            {
+                id: 32, dom: "Monitoring and Logging",
+                q: "A business wants to monitor its AWS accounts for unusual behavior associated with an IAM identity. The business wants to send a notification to any employee for whom the unusual activity is detected, and send a notification to the user's team leader. An external messaging platform will send the notifications, requiring a target user-id for each recipient. The business already has an API that can be used to retrieve the team leader's and the employee's user-id from IAM user names. Which solution will satisfy the requirements?",
+                o: [
+                    "Choose an AWS account in the organization to serve as the Amazon GuardDuty administrator. Add the business' AWS accounts as GuardDuty member accounts that are associated with the administrator account. Create a Lambda function to perform the user-id lookup and deliver notifications. Create a rule in Amazon EventBridge from the administrator account to match the Impact:IAMUser/AnomalousBehavior notification type and invoke the Lambda function.",
+                    "Choose an AWS account in the organization to serve as the Amazon Detective administrator. Add the business' AWS accounts as Detective member accounts. Create a Lambda function to perform the user-id lookup and deliver notifications. Create a rule in Amazon EventBridge to match the Impact:IAMUser/AnomalousBehavior notification type.",
+                    "Choose an AWS account in the organization to serve as the Amazon GuardDuty administrator. Add the business' AWS accounts as member accounts. Create a Lambda function to perform the user-id lookup. Create a topic in SNS from the GuardDuty administrator account to match the Impact:IAMUser/AnomalousBehavior notification type and invoke the Lambda function.",
+                    "Choose an AWS account to serve as the Amazon Detective administrator. Add the business' accounts. Create a Lambda function to perform the user-id lookup. Create a topic in SNS from the Detective administrator account to match the Impact:IAMUser/AnomalousBehavior notification type and invoke Lambda."
+                ],
+                c: [0], 
+                x: ["monitor its AWS accounts for unusual behavior that is associated with an IAM identity", "external messaging platform"],
+                e: "Amazon GuardDuty is the correct AWS threat detection service that continuously monitors AWS accounts and workloads for malicious activity and delivers detailed security findings (such as Impact:IAMUser/AnomalousBehavior). GuardDuty integrates seamlessly with Amazon EventBridge, which can parse the exact JSON finding type and trigger a Lambda function to hit the external messaging API.[cite: 7]",
+                w: "<ul class='space-y-2 text-slate-400'><li><strong>Amazon Detective:</strong> Detective is an investigation and visual analysis tool used *after* a finding occurs; it does not natively generate the real-time anomalous behavior detections.</li><li><strong>Create a topic in SNS... to match the notification type:</strong> Amazon SNS cannot natively parse or filter complex internal JSON payload contents (like finding types) directly from GuardDuty. You must use EventBridge to filter the event and then route it.</li></ul>"
+            },
+            {
+                id: 33, dom: "Monitoring and Logging",
+                q: "A leading e-commerce company has a payment portal that handles the payment and refund transactions of its online platform. The portal is hosted in an Auto Scaling group of On-Demand Amazon EC2 instances across multiple Availability Zones. There is a new requirement to improve the system monitoring of the application as well as to track the number of payment and refund transactions being done every minute. The DevOps team should also be notified if this metric breaches a specified threshold. Which of the following options provides the MOST cost-effective and automated solution?",
+                o: [
+                    "Configure the instances to push the number of payments and refund transactions to Amazon CloudWatch as a custom metric. Set up a CloudWatch alarm to notify the DevOps team using Amazon SNS when the threshold is breached.",
+                    "Configure the instances to push the number of payments and refund transactions to Amazon CloudWatch Logs as a custom metric. Develop a custom monitoring application using a Python-based Flask web application to view the metrics and host it in an EC2 instance.",
+                    "Set up an ELK Stack in AWS using Amazon OpenSearch service for log processing. Store the payments and refund transactions in each instance and configure Logstash to send the logs to OpenSearch. Set up a Kibana dashboard to view the data.",
+                    "Configure the instances to push the entire log of each payment and refund transactions to Amazon EventBridge as a custom metric. Set up a CloudWatch alarm to notify the DevOps team using Amazon SNS."
+                ],
+                c: [0], 
+                x: ["track the number of payment and refund transactions being done every minute", "MOST cost-effective"],
+                e: "Using the AWS SDK, the application can issue a `PutMetricData` API call to push business-level data directly to Amazon CloudWatch as a Custom Metric. Once the data exists as a metric, native CloudWatch Alarms can trigger an Amazon SNS topic if the rate drops below or exceeds the configured threshold. This is completely serverless and highly cost-effective.[cite: 7]",
+                w: "<ul class='space-y-2 text-slate-400'><li><strong>Set up an ELK Stack / OpenSearch:</strong> Provisioning an entire OpenSearch cluster (servers, storage) just to count transactions is massive overkill and fails the 'cost-effective' requirement entirely.</li><li><strong>Push the entire log to Amazon EventBridge as a custom metric:</strong> Amazon EventBridge is an event bus, not a time-series metric storage repository. It does not accept 'custom metrics'.</li></ul>"
+            },
+            {
+                id: 34, dom: "Monitoring and Logging",
+                q: "A health-care services company has strong regulatory requirements and it has come to light recently that some of the EBS volumes have not been encrypted. It is necessary for the company to monitor and audit compliance over time and alert the corresponding teams if unencrypted EBS volumes are detected. How should a DevOps Engineer implement an alert for the unencrypted EBS volumes with the least administrative overhead?",
+                o: [
+                    "Create an AWS Config managed rule checking for EBS volume encryption. Use a CloudWatch Event rule to provide alerting.",
+                    "Create an AWS Config managed rule checking for EBS volume encryption. Connect the rule to an SNS topic to provide alerting.",
+                    "Create an AWS Lambda Function that is triggered by a CloudWatch Event rule monitoring for new EBS volumes. The Lambda function should send a notification to SNS.",
+                    "Create an AWS Config custom rule checking for the EC2 instances, and their EBS attachments. Connect the rule to an SNS topic to provide alerting."
+                ],
+                c: [0], 
+                x: ["monitor and audit compliance over time", "alert the corresponding teams if unencrypted EBS volumes are detected", "least administrative overhead"],
+                e: "AWS Config provides a native managed rule (`encrypted-volumes`) specifically designed to evaluate if EBS volumes are encrypted. Config continuously builds an audit dashboard over time. To isolate alerts specifically for this rule violation (rather than getting spammed with all Config changes), you use an Amazon EventBridge (CloudWatch Events) rule filtering for that specific compliance failure, which then triggers the alert.[cite: 7]",
+                w: "<ul class='space-y-2 text-slate-400'><li><strong>Connect the rule to an SNS topic to provide alerting:</strong> AWS Config delivery channels send *every single* configuration change to SNS. To selectively alert only on the EBS encryption violation, EventBridge must be used in the middle.</li><li><strong>Create an AWS Lambda Function...</strong><br/>Rationale: Writing custom Lambda scripts from scratch to monitor EC2 API calls creates high administrative overhead, and fails to build the historical compliance audit dashboard that AWS Config provides natively.</li></ul>"
+            },
+            {
+                id: 35, dom: "Monitoring and Logging",
+                q: "A financial planning company runs a tax optimization application that allows people to enter their personal financial information and get recommendations. The company is committed to the maximum security for the Personally identifiable information (PII) data in S3 buckets, and as part of compliance requirements, it needs to implement a solution to be alerted in case of new PII and its access in S3. As an AWS Certified DevOps Engineer, which solution would you recommend such that it needs MINIMUM development effort?",
+                o: [
+                    "Enable Amazon Macie on the selected S3 buckets. Setup alerting using CloudWatch Events",
+                    "Set up an S3 bucket policy that filters requests containing PII data using a conditional statement",
+                    "Create an Amazon Lambda function that is integrated with Amazon Sagemaker to detect PII data. Integrate the Lambda function with S3 events for PUT requests",
+                    "Enable Amazon GuardDuty on the select S3 buckets. Setup alerting using CloudWatch Alarms"
+                ],
+                c: [0], 
+                x: ["alerted in case of new PII and its access in S3", "MINIMUM development effort"],
+                e: "Amazon Macie is a fully managed data security service that uses machine learning to automatically discover, classify, and protect sensitive PII (like credit card numbers and SSNs) stored in Amazon S3. Macie natively emits security findings to Amazon EventBridge (CloudWatch Events), making alerting effortless.[cite: 7]",
+                w: "<ul class='space-y-2 text-slate-400'><li><strong>Enable Amazon GuardDuty...</strong><br/>Rationale: Amazon GuardDuty focuses on threat detection (malicious IP addresses, compromised credentials) but it does NOT scan the internal contents of S3 objects for PII signatures.</li><li><strong>Lambda integrated with Amazon SageMaker...</strong><br/>Rationale: Building custom machine learning models to detect PII requires massive development and data science effort, failing the minimum effort requirement.</li></ul>"
+            },
+            {
+                id: 36, dom: "Monitoring and Logging",
+                q: "An application logs a custom metric tracking the number of successful user sign-ups to Amazon CloudWatch. The DevOps team notices that during the night, sign-ups drop naturally due to lower user activity, which regularly triggers false alerts on their standard alarms. The team needs an intelligent alerting solution that dynamically accounts for historical traffic patterns and alerts them only when a drop in sign-ups indicates a genuine application failure. Which solution should be implemented?",
+                o: [
+                    "A CloudWatch alarm based on anomaly detection for the user sign-up metric.",
+                    "A CloudWatch composite alarm that requires both the sign-up metric and CPU utilization to drop simultaneously.",
+                    "An EventBridge rule that disables the CloudWatch alarm during expected low-traffic nighttime hours.",
+                    "A CloudWatch logs metric filter that applies a dynamic multiplier to nighttime log counts."
+                ],
+                c: [0], 
+                x: ["dynamically accounts for historical traffic patterns", "alerts them only when a drop in sign-ups indicates a genuine application failure"],
+                e: "Amazon CloudWatch Anomaly Detection uses machine learning algorithms to continuously analyze a metric’s historical behavior over hours, days, and weeks. It dynamically builds a baseline pattern that accounts for regular, predictable cycles (such as expected nightly or weekend traffic drops). By attaching an alarm to this anomaly detection band, it will only trigger an alert if the metric falls outside its statistically normal behavior.[cite: 8]",
+                w: "<ul class='space-y-2 text-slate-400'><li><strong>An EventBridge rule that disables the CloudWatch alarm...</strong><br/>Rationale: Disabling the alarm completely at night leaves the application completely blind. If a genuine failure occurs at 3 AM, no one will be notified.</li><li><strong>CloudWatch composite alarm...</strong><br/>Rationale: Tying the alert to CPU utilization assumes that sign-ups falling will strictly correlate with CPU dropping, which isn't a reliable mathematical baseline.</li></ul>"
+            },
+            {
+                id: 37, dom: "Monitoring and Logging",
+                q: "An Amazon EC2 instance inside a private subnet fails to boot up successfully after a major kernel update, and administrators cannot establish an AWS Systems Manager Session Manager connection to troubleshoot it. The engineer needs to view the instance's low-level operating system boot sequence and kernel messages to diagnose why the startup sequence is failing. Which native method should be used first?",
+                o: [
+                    "View the instance's system log from the EC2 console.",
+                    "Attach an Elastic IP to the instance and connect via SSH.",
+                    "Use AWS CloudTrail to view the instance boot execution history.",
+                    "Create a Lambda function to query the EC2 metadata service."
+                ],
+                c: [0], 
+                x: ["view the instance's low-level operating system boot sequence and kernel messages to diagnose why the startup sequence is failing"],
+                e: "The EC2 Instance System Log captures the raw serial console text output generated by the instance's virtual motherboard during its boot phase. Because AWS extracts this serial text stream directly from the underlying hypervisor virtualization layer, you can read it to diagnose kernel panics or broken configuration files even when the instance has absolutely no network connectivity.[cite: 8]",
+                w: "<ul class='space-y-2 text-slate-400'><li><strong>Attach an Elastic IP... and connect via SSH.</strong><br/>Rationale: If the instance fails to boot the kernel properly, the SSH daemon (sshd) will never start, making network-based SSH connections impossible.</li><li><strong>Use AWS CloudTrail...</strong><br/>Rationale: CloudTrail logs AWS API activity (like `RunInstances`), it does not log internal Linux OS boot messages or kernel panics.</li></ul>"
+            },
+            {
+                id: 38, dom: "Monitoring and Logging",
+                q: "A company runs a microservices application on Amazon ECS using the AWS Fargate launch type. The DevOps team needs to collect, aggregate, and visualize container-level performance metrics (such as CPU, memory, and network utilization per task) in near real-time using CloudWatch dashboards. Which feature should be enabled on the ECS cluster?",
+                o: [
+                    "CloudWatch Container Insights",
+                    "AWS X-Ray",
+                    "Amazon Macie",
+                    "CloudWatch Logs Insights"
+                ],
+                c: [0], 
+                x: ["collect, aggregate, and visualize container-level performance metrics", "CPU, memory, and network utilization per task"],
+                e: "Amazon CloudWatch Container Insights is purpose-built to automatically collect, aggregate, and summarize operational metrics and logs from containerized applications and microservices (ECS and EKS). Enabling Container Insights on an ECS cluster configures the infrastructure to automatically ingest granular performance data per task and service, populating pre-built dashboards within the CloudWatch console.[cite: 8]",
+                w: "<ul class='space-y-2 text-slate-400'><li><strong>AWS X-Ray:</strong> X-Ray tracks application requests as they travel between microservices (tracing latency and HTTP errors). It is not designed to plot host/container CPU or Memory utilization metrics.</li><li><strong>CloudWatch Logs Insights:</strong> This is an interactive SQL-like query language used to search raw text log files. It does not automatically capture or visualize CPU/Memory telemetry.</li></ul>"
+            },
+            {
+                id: 39, dom: "Monitoring and Logging",
+                q: "An application running on an EC2 instance writes log data to a local text file. The DevOps team wants to stream these logs into an Amazon CloudWatch Logs log group. They have installed the unified CloudWatch agent on the instance. Which configuration file must be modified to define the log file path, log group name, and log stream structure for ingestion?",
+                o: [
+                    "The CloudWatch agent configuration JSON file (amazon-cloudwatch-agent.json).",
+                    "The EC2 user-data bash script.",
+                    "The CloudTrail configuration YAML file.",
+                    "The AWS Systems Manager Run Command parameters."
+                ],
+                c: [0], 
+                x: ["define the log file path, log group name, and log stream structure for ingestion", "unified CloudWatch agent"],
+                e: "The unified Amazon CloudWatch agent relies on a centralized JSON configuration file (typically named `amazon-cloudwatch-agent.json`) to manage its collection parameters. To stream local files, you must define the file paths, target log groups, and stream settings within the `logs` section of this configuration file.[cite: 8]",
+                w: "<ul class='space-y-2 text-slate-400'><li><strong>The EC2 user-data bash script:</strong> User-data is used to install the agent during boot, but the agent itself relies strictly on its internal JSON configuration file to know *which* local files to parse.</li><li><strong>The CloudTrail configuration YAML file:</strong> CloudTrail captures AWS API calls, it has absolutely nothing to do with streaming internal OS log files to CloudWatch.</li></ul>"
+            },
+            {
+                id: 40, dom: "Monitoring and Logging",
+                q: "A company wants to implement an automated compliance check that evaluates their AWS environment against the Center for Internet Security (CIS) AWS Foundations Benchmark. The solution must run comprehensive configuration checks on a recurring schedule and provide a clear compliance score along with detailed remediation instructions for any failed checks. Which AWS service provides this native capability?",
+                o: [
+                    "AWS Security Hub",
+                    "Amazon Inspector",
+                    "AWS CloudTrail",
+                    "AWS Systems Manager Parameter Store"
+                ],
+                c: [0], 
+                x: ["evaluates their AWS environment against the Center for Internet Security (CIS) AWS Foundations Benchmark", "provide a clear compliance score"],
+                e: "AWS Security Hub features native support for automated compliance standards, including the CIS AWS Foundations Benchmark. When enabled, Security Hub automatically runs continuous configuration checks across your resources, evaluates compliance against the benchmark controls, provides a compliance score, and offers detailed remediation steps for findings.[cite: 8]",
+                w: "<ul class='space-y-2 text-slate-400'><li><strong>Amazon Inspector:</strong> Inspector focuses on finding network exposures and unpatched CVE vulnerabilities inside EC2 OS packages. It does not provide global environment scoring against the CIS framework.</li><li><strong>AWS CloudTrail:</strong> CloudTrail records API calls for auditing purposes. It does not possess any compliance assessment or scoring capabilities.</li></ul>"
+            }
+        ];
+
+        let appState = {
+            answers: {}, mode: 'practice', activeDomain: 'all', timeRemaining: 180 * 60,
+            timerInterval: null, submitted: false, evaluated: {}
+        };
+
+        function escapeRegExp(string) { return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+        function highlightText(text, clues) {
+            if (!clues || clues.length === 0) return text;
+            let highlighted = text;
+            clues.forEach(clue => {
+                const regex = new RegExp(`(${escapeRegExp(clue)})`, 'gi');
+                highlighted = highlighted.replace(regex, '<span class="keyword-highlight">$1</span>');
+            });
+            return highlighted;
+        }
+
+        function setMode(mode) {
+            appState.mode = mode;
+            const btnPractice = document.getElementById('btn-practice-mode');
+            const btnExam = document.getElementById('btn-exam-mode');
+            const timerContainer = document.getElementById('timer-container');
+
+            if (mode === 'practice') {
+                btnPractice.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 bg-amber-500 text-slate-900 shadow";
+                btnExam.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 text-slate-400 hover:text-slate-200";
+                timerContainer.classList.add('hidden');
+                stopTimer();
+            } else {
+                btnExam.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 bg-amber-500 text-slate-900 shadow";
+                btnPractice.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 text-slate-400 hover:text-slate-200";
+                timerContainer.classList.remove('hidden');
+                if (!appState.submitted) startTimer();
+            }
+            saveState();
+            renderQuestions();
+        }
+
+        function startTimer() {
+            if (appState.timerInterval) clearInterval(appState.timerInterval);
+            appState.timerInterval = setInterval(() => {
+                if (appState.timeRemaining <= 0) {
+                    clearInterval(appState.timerInterval);
+                    submitExam();
+                } else {
+                    appState.timeRemaining--;
+                    updateTimerDisplay();
+                    if (appState.timeRemaining % 5 === 0) saveState();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (appState.timerInterval) clearInterval(appState.timerInterval);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(appState.timeRemaining / 60);
+            const seconds = appState.timeRemaining % 60;
+            document.getElementById('timer-display').textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function filterDomain(domain) {
+            appState.activeDomain = domain;
+            const buttons = document.querySelectorAll('.domain-btn');
+            buttons.forEach(btn => {
+                if ((domain === 'all' && btn.textContent.includes('All Domains')) || (domain !== 'all' && btn.textContent.includes(domain))) {
+                    btn.className = "domain-btn active px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-500 text-slate-900 border border-amber-500 transition shadow";
+                } else {
+                    btn.className = "domain-btn px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition";
+                }
+            });
+            renderQuestions();
+        }
+
+        function handleSelectOption(qId, optIdx, isMulti) {
+            if (appState.submitted && appState.mode === 'exam') return;
+            if (appState.mode === 'practice' && appState.evaluated[qId]) return;
+
+            const q = rawQuestions.find(item => item.id === qId);
+            if (!appState.answers[qId]) appState.answers[qId] = [];
+
+            const userSelected = appState.answers[qId];
+            const requiredSelections = q.c.length;
+
+            if (isMulti) {
+                const idx = userSelected.indexOf(optIdx);
+                if (idx > -1) {
+                    userSelected.splice(idx, 1);
+                } else {
+                    if (userSelected.length < requiredSelections) {
+                        userSelected.push(optIdx);
+                    }
+                }
+            } else {
+                appState.answers[qId] = [optIdx];
+            }
+
+            saveState();
+            updateProgress();
+            renderQuestionCard(qId);
+        }
+
+        function checkAnswer(qId) {
+            appState.evaluated[qId] = true;
+            saveState();
+            updateProgress();
+            renderQuestionCard(qId);
+        }
+
+        function updateProgress() {
+            let answeredCount = 0;
+            if (appState.mode === 'practice') {
+                answeredCount = Object.keys(appState.evaluated).length;
+            } else {
+                answeredCount = Object.keys(appState.answers).filter(k => {
+                    const q = rawQuestions.find(item => item.id == k);
+                    return appState.answers[k] && appState.answers[k].length === q.c.length;
+                }).length;
+            }
+            
+            document.getElementById('answered-count').textContent = answeredCount;
+            const pct = Math.round((answeredCount / rawQuestions.length) * 100);
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-list');
+            container.innerHTML = '';
+            
+            const cheatSheet = document.getElementById('cheat-sheet');
+            if (cheatSheet) {
+                if (appState.activeDomain === 'all' || appState.activeDomain === 'Monitoring and Logging') {
+                    cheatSheet.parentElement.classList.remove('hidden');
+                } else {
+                    cheatSheet.parentElement.classList.add('hidden');
+                }
+            }
+            
+            const filtered = rawQuestions.filter(q => appState.activeDomain === 'all' || q.dom.includes(appState.activeDomain));
+            filtered.forEach(q => container.appendChild(createQuestionCardHtml(q)));
+        }
+
+        function renderQuestionCard(qId) {
+            const existingCard = document.getElementById(`question-card-${qId}`);
+            if (existingCard) {
+                const newCard = createQuestionCardHtml(rawQuestions.find(q => q.id === qId));
+                existingCard.replaceWith(newCard);
+            }
+        }
+
+        function createQuestionCardHtml(q) {
+            const card = document.createElement('div');
+            card.id = `question-card-${q.id}`;
+            card.className = "bg-slate-800/90 border border-slate-700/80 rounded-2xl p-5 sm:p-6 shadow-lg transition-all duration-200 hover:border-slate-600";
+
+            const userSelected = appState.answers[q.id] || [];
+            const isMulti = q.c.length > 1;
+            const requiredSelections = q.c.length;
+            
+            const isPracticeEvaluated = appState.mode === 'practice' && appState.evaluated[q.id];
+            const isExamEvaluated = appState.submitted;
+
+            let displayQuestion = q.q;
+            if ((isPracticeEvaluated || isExamEvaluated) && q.x && q.x.length > 0) {
+                displayQuestion = highlightText(q.q, q.x);
+            }
+
+            let html = `
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2.5 py-1 text-xs font-extrabold rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">Question ${q.id}</span>
+                        ${isMulti ? `<span class="px-2 py-0.5 text-[10px] font-semibold uppercase bg-sky-500/10 text-sky-400 border border-sky-500/20 rounded">Select ${requiredSelections}</span>` : ''}
+                    </div>
+                    <span class="text-xs font-medium text-slate-400 bg-slate-900/60 px-3 py-1 rounded-full border border-slate-700/50">${q.dom}</span>
+                </div>
+                <p class="text-slate-100 font-medium text-sm sm:text-base leading-relaxed mb-5">${displayQuestion}</p>
+                <div class="space-y-2.5">
+            `;
+
+            q.o.forEach((optText, optIdx) => {
+                const isSelected = userSelected.includes(optIdx);
+                const isCorrect = q.c.includes(optIdx);
+
+                let optClass = "border-slate-700 bg-slate-900/40 hover:bg-slate-700/50 text-slate-200";
+                
+                let indicatorHtml = `<div style="width: 16px; height: 16px; min-width: 16px;" class="rounded-full border border-slate-500 flex items-center justify-center mr-3 mt-0.5 shrink-0 ${isSelected ? 'border-amber-500 bg-amber-500' : ''}">${isSelected ? '<div style="width: 6px; height: 6px;" class="rounded-full bg-slate-900"></div>' : ''}</div>`;
+                if (isMulti) {
+                    indicatorHtml = `<div style="width: 16px; height: 16px; min-width: 16px;" class="rounded border border-slate-500 flex items-center justify-center mr-3 mt-0.5 shrink-0 ${isSelected ? 'border-amber-500 bg-amber-500' : ''}">${isSelected ? '<svg style="width: 12px; height: 12px;" class="text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>' : ''}</div>`;
+                }
+
+                if (isPracticeEvaluated || isExamEvaluated) {
+                    if (isCorrect) {
+                        optClass = "border-emerald-500/60 bg-emerald-950/30 text-emerald-200 font-medium";
+                        indicatorHtml = `<div style="width: 16px; height: 16px; min-width: 16px;" class="rounded-full bg-emerald-500 text-slate-900 flex items-center justify-center mr-3 mt-0.5 shrink-0 font-bold text-xs">✓</div>`;
+                    } else if (isSelected && !isCorrect) {
+                        optClass = "border-rose-500/60 bg-rose-950/30 text-rose-200 font-medium";
+                        indicatorHtml = `<div style="width: 16px; height: 16px; min-width: 16px;" class="rounded-full bg-rose-500 text-white flex items-center justify-center mr-3 mt-0.5 shrink-0 font-bold text-xs">✕</div>`;
+                    }
+                } else if (isSelected) {
+                    optClass = "border-amber-500/80 bg-amber-500/10 text-amber-200 font-medium shadow-sm";
+                }
+
+                const pointerEvent = (isPracticeEvaluated || isExamEvaluated) ? 'pointer-events-none' : 'cursor-pointer';
+
+                html += `
+                    <label onclick="handleSelectOption(${q.id}, ${optIdx}, ${isMulti})" class="flex items-start p-3.5 rounded-xl border transition-all duration-150 select-none ${optClass} ${pointerEvent}">
+                        ${indicatorHtml}
+                        <span class="text-xs sm:text-sm leading-snug">${optText}</span>
+                    </label>
+                `;
+            });
+
+            html += `</div>`;
+
+            if (appState.mode === 'practice' && !isPracticeEvaluated) {
+                const btnDisabled = userSelected.length !== requiredSelections ? 'opacity-50 cursor-not-allowed' : 'hover:bg-amber-400';
+                html += `<button ${userSelected.length !== requiredSelections ? 'disabled' : ''} onclick="checkAnswer(${q.id})" class="mt-5 px-5 py-2 bg-amber-500 text-slate-900 font-bold text-sm rounded-lg transition ${btnDisabled}">Check Answer</button>`;
+            }
+
+            if (isPracticeEvaluated || isExamEvaluated) {
+                const userCorrect = isQuestionCorrect(q.id);
+                const cluesHtml = q.x && q.x.length > 0 
+                    ? q.x.map(clue => `<span class="inline-block bg-yellow-500/10 text-amber-400 border border-yellow-500/20 px-2 py-1 rounded text-xs font-mono mr-1.5 mb-1.5">"${clue}"</span>`).join('')
+                    : '<span class="text-xs text-slate-500">No explicit clues extracted for this question</span>';
+
+                html += `
+                    <details class="aws-expl-container" open>
+                        <summary class="aws-expl-summary">Show/Hide Explanation</summary>
+                        <div class="mt-4 border-t border-slate-700/80 fade-in">
+                            <div class="flex items-center space-x-2 mb-3 mt-3">
+                                <span class="text-xs font-bold uppercase tracking-wider ${userCorrect ? 'text-emerald-400' : 'text-rose-400'}">
+                                    ${userCorrect ? '✓ Correct Answer' : '✕ Incorrect'}
+                                </span>
+                            </div>
+                            ${q.x && q.x.length > 0 ? `
+                            <div class="mb-3 p-3.5 rounded-xl bg-slate-900/60 border border-amber-500/30">
+                                <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-400 block mb-2">Exam Clues (Keyword Indicators):</span>
+                                <div class="flex flex-wrap">${cluesHtml}</div>
+                            </div>` : ''}
+                            
+                            ${q.customHtml ? q.customHtml : `
+                            <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-700/60 text-xs sm:text-sm text-slate-300 leading-relaxed mb-3">
+                                <strong class="text-slate-100 block mb-1">Architectural Breakdown:</strong>
+                                ${q.e}
+                            </div>
+                            ${q.w ? `
+                            <div class="p-4 rounded-xl bg-rose-950/20 border border-rose-900/40 text-xs sm:text-sm text-slate-400 leading-relaxed">
+                                <strong class="text-rose-400 block mb-2">Why Incorrect Options Fail:</strong>
+                                ${q.w}
+                            </div>
+                            ` : ''}
+                            `}
+                        </div>
+                    </details>
+                `;
+            }
+            card.innerHTML = html;
+            return card;
+        }
+
+        function isQuestionCorrect(qId) {
+            const q = rawQuestions.find(item => item.id === qId);
+            const userAns = appState.answers[qId] || [];
+            if (userAns.length !== q.c.length) return false;
+            return q.c.every(val => userAns.includes(val));
+        }
+
+        function submitExam(skipSave = false) {
+            appState.submitted = true;
+            stopTimer();
+            if(!skipSave) {
+                saveState();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            let correctCount = 0;
+            rawQuestions.forEach(q => { if (isQuestionCorrect(q.id)) correctCount++; });
+
+            const percentage = Math.round((correctCount / rawQuestions.length) * 100);
+            const isPass = percentage >= 75;
+
+            document.getElementById('results-screen').classList.remove('hidden');
+            document.getElementById('submit-container').classList.add('hidden');
+
+            const scoreBadge = document.getElementById('score-badge');
+            document.getElementById('score-percentage').textContent = `${percentage}%`;
+            document.getElementById('score-raw').textContent = `${correctCount} / ${rawQuestions.length} Correct`;
+            
+            const scoreStatus = document.getElementById('score-status');
+            if (isPass) {
+                scoreBadge.className = "mt-6 inline-flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-emerald-500/50 bg-emerald-950/20 shadow-inner text-emerald-400";
+                scoreStatus.textContent = "PASS";
+                scoreStatus.className = "mt-2 text-xs uppercase tracking-widest font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+            } else {
+                scoreBadge.className = "mt-6 inline-flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-rose-500/50 bg-rose-950/20 shadow-inner text-rose-400";
+                scoreStatus.textContent = "FAIL";
+                scoreStatus.className = "mt-2 text-xs uppercase tracking-widest font-bold px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30";
+            }
+
+            const domains = ["Monitoring and Logging"];
+            const domainGrid = document.getElementById('domain-results-grid');
+            domainGrid.innerHTML = '';
+
+            domains.forEach(dName => {
+                const domainQuestions = rawQuestions.filter(q => q.dom === dName);
+                if(domainQuestions.length === 0) return;
+                
+                let dCorrect = 0;
+                domainQuestions.forEach(dq => { if (isQuestionCorrect(dq.id)) dCorrect++; });
+                const dPct = Math.round((dCorrect / domainQuestions.length) * 100);
+
+                domainGrid.innerHTML += `
+                    <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-700/60 flex flex-col justify-between">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-semibold text-slate-200">${dName}</span>
+                            <span class="text-xs font-extrabold ${dPct >= 75 ? 'text-emerald-400' : 'text-amber-400'}">${dPct}%</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700">
+                            <div class="h-full ${dPct >= 75 ? 'bg-emerald-500' : 'bg-amber-500'}" style="width: ${dPct}%"></div>
+                        </div>
+                        <span class="text-[10px] text-slate-400 mt-2 block">${dCorrect} of ${domainQuestions.length} correct</span>
+                    </div>
+                `;
+            });
+            renderQuestions(); 
+        }
+
+        function resetQuiz() {
+            if(confirm("Are you sure you want to reset the quiz? This will clear all your saved progress.")) {
+                
+                appState.answers = {};
+                appState.evaluated = {};
+                appState.submitted = false;
+                appState.timeRemaining = 180 * 60;
+                document.getElementById('results-screen').classList.add('hidden');
+                document.getElementById('submit-container').classList.remove('hidden');
+                if (appState.mode === 'exam') startTimer();
+                updateProgress();
+                renderQuestions();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+</html>
