@@ -18,7 +18,15 @@
 <button id="private-login-button" type="submit">Sign in</button></form>
 <div id="private-account" class="toolbar" hidden><span id="private-account-name"></span><button id="private-sign-out" type="button">Sign out</button></div>
 <button id="private-retry" type="button" hidden>Retry / reload access</button>
-<p>Only approved accounts can download questions. Progress is saved separately per account in this browser; it is not cloud-synced.</p>
+<p>Only approved accounts can download questions. Answers, exam deadlines and results sync separately per account and test. Wait for "Saved to cloud" before switching devices.</p>
+<section id="private-sync-controls" hidden aria-label="Cloud progress">
+<p id="private-sync-status" role="status" aria-live="polite">Cloud sync will start after approval.</p>
+<button id="private-sync-now" type="button">Sync now</button>
+<div id="private-sync-conflict" class="notice" hidden>
+<p>These devices have different attempts. Choosing one replaces the other attempt after synchronization.</p>
+<button id="private-use-cloud" type="button">Use cloud attempt</button>
+<button id="private-use-browser" type="button">Use browser attempt</button>
+</div></section>
 </section><div id="private-quiz" hidden inert>
 <p class="notice">Source material may describe older AWS features. Answers reproduce the source key, not a newly verified AWS answer key. Results are practice accuracy, not AWS scaled exam scores.</p>
 <p class="notice">This Word document contains 54 questions, not 75. All 54 are included.</p>

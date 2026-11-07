@@ -25,6 +25,8 @@ function newState(mode = 'practice') {
 }
 function validState(value) {
     if (!value || !['practice', 'exam'].includes(value.mode) || typeof value.submitted !== 'boolean' || !byId.has(value.current)) return false;
+    const keys = ['mode', 'answers', 'checked', 'current', 'submitted', 'deadline', 'finishedAt'];
+    if (Object.keys(value).length !== keys.length || !Object.keys(value).every(key => keys.includes(key))) return false;
     if (value.mode === 'exam' ? !Number.isFinite(value.deadline) || value.deadline <= 0 : value.deadline !== null) return false;
     if (value.submitted ? !Number.isFinite(value.finishedAt) : value.finishedAt !== null) return false;
     if (!value.answers || typeof value.answers !== 'object' || Array.isArray(value.answers) || !Array.isArray(value.checked)) return false;
@@ -42,6 +44,8 @@ function showError(message, error) {
     console.error(message, error);
 }
 let state = newState();
+let syncLocked = window.PRIVATE_PRACTICE_CONTEXT?.sync === true;
+let localCacheInvalid = false;
 try {
     const saved = localStorage.getItem(PRACTICE_STORAGE_KEY);
     if (saved !== null) {
@@ -50,13 +54,18 @@ try {
         state = parsed;
     }
 } catch (error) {
+    localCacheInvalid = true;
     showError('Saved progress could not be loaded. A fresh practice attempt is shown. Use a new-attempt button to replace it; browser storage may be unavailable.', error);
 }
-function save() {
+function save(reason = 'progress') {
     try {
         localStorage.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(state));
+        localCacheInvalid = false;
     } catch (error) {
         showError('Progress could not be saved on this browser. Keep this page open to retain this attempt.', error);
+    }
+    if (window.PRIVATE_PRACTICE_CONTEXT?.sync === true && reason !== 'restore') {
+        document.dispatchEvent(new CustomEvent('private-practice-progress', { detail: { reason } }));
     }
 }
 function content(paragraphs) {
@@ -130,10 +139,10 @@ function render() {
     updateTimer();
 }
 function finish(timedOut = false) {
-    if (state.submitted) return;
+    if (syncLocked || state.submitted) return;
     state.submitted = true;
     state.finishedAt = Date.now();
-    save();
+    save('submit');
     render();
     if (timedOut) element('status').textContent = 'Time expired. Your exam was automatically submitted.';
     element('results').focus();
@@ -145,6 +154,7 @@ function updateTimer() {
     })();
 }
 function expireIfNeeded() {
+    if (syncLocked) return false;
     if (state.mode === 'exam' && !state.submitted && remaining(state.deadline) === 0) {
         finish(true);
         return true;
@@ -152,11 +162,12 @@ function expireIfNeeded() {
     return false;
 }
 function start(mode) {
+    if (syncLocked) return;
     if (!confirm(`Start a new ${mode} attempt? This replaces this test's saved answers and results.`)) return;
     state = newState(mode);
     element('domain-filter').value = 'all';
     element('review-filter').value = 'all';
-    save();
+    save('reset');
     render();
 }
 element('start-practice').addEventListener('click', () => start('practice'));
@@ -168,14 +179,14 @@ element('domain-filter').addEventListener('change', render);
 element('review-filter').addEventListener('change', render);
 element('question-nav').addEventListener('click', event => {
     const button = event.target.closest('button[data-question]');
-    if (!button || expireIfNeeded()) return;
+    if (syncLocked || !button || expireIfNeeded()) return;
     state.current = Number(button.dataset.question);
     save();
     render();
 });
 for (const [id, step] of [['previous', -1], ['next', 1]]) {
     element(id).addEventListener('click', () => {
-        if (expireIfNeeded()) return;
+        if (syncLocked || expireIfNeeded()) return;
         const questions = filteredQuestions();
         const position = questions.findIndex(question => question.id === state.current);
         const next = questions[position + step];
@@ -183,7 +194,7 @@ for (const [id, step] of [['previous', -1], ['next', 1]]) {
     });
 }
 element('question').addEventListener('change', event => {
-    if (!event.target.matches('input[name="answer"]') || expireIfNeeded() || state.submitted || state.checked.includes(state.current)) return;
+    if (syncLocked || !event.target.matches('input[name="answer"]') || expireIfNeeded() || state.submitted || state.checked.includes(state.current)) return;
     const question = byId.get(state.current);
     const selected = [...element('question').querySelectorAll('input[name="answer"]:checked')].map(input => Number(input.value));
     if (selected.length > question.correct.length) {
@@ -196,7 +207,7 @@ element('question').addEventListener('change', event => {
     render();
 });
 element('question').addEventListener('click', event => {
-    if (!event.target.closest('#check-answer') || expireIfNeeded() || state.submitted || state.mode !== 'practice') return;
+    if (syncLocked || !event.target.closest('#check-answer') || expireIfNeeded() || state.submitted || state.mode !== 'practice') return;
     const question = byId.get(state.current);
     if ((state.answers[state.current] || []).length !== question.correct.length) {
         element('answer-feedback').textContent = `Select exactly ${question.correct.length} answer${question.correct.length > 1 ? 's' : ''} before checking.`;
@@ -211,4 +222,34 @@ expireIfNeeded();
 setInterval(() => { if (!expireIfNeeded()) updateTimer(); }, 1000);
 document.addEventListener('visibilitychange', expireIfNeeded);
 
+window.PRIVATE_PRACTICE_BRIDGE = Object.freeze({
+    getProgress: () => JSON.parse(JSON.stringify(state)),
+    validate(value) {
+        if (!validState(value)) throw new Error('The saved private practice attempt is invalid.');
+    },
+    apply(value) {
+        this.validate(value);
+        state = JSON.parse(JSON.stringify(value));
+        element('domain-filter').value = 'all';
+        element('review-filter').value = 'all';
+        save('restore');
+        render();
+    },
+    lock(value) {
+        syncLocked = value;
+        element('private-quiz').inert = value;
+        if (!value) expireIfNeeded();
+    },
+    hasLocalCache() {
+        if (localCacheInvalid) throw new Error('The browser attempt could not be read safely. Do not overwrite cloud progress.');
+        return localStorage.getItem(PRACTICE_STORAGE_KEY) !== null;
+    },
+    hasProgress: () => state.submitted || state.mode === 'exam' || state.current !== 1 ||
+        Object.values(state.answers).some(answers => answers.length) || state.checked.length > 0,
+    subscribe(listener) {
+        const handler = event => listener(event.detail.reason);
+        document.addEventListener('private-practice-progress', handler);
+        return () => document.removeEventListener('private-practice-progress', handler);
+    }
+});
 })();

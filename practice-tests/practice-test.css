@@ -44,3 +44,5 @@ th, td { text-align: left; padding: .6rem; border-bottom: 1px solid #475569; }
 #private-auth-status[data-kind="error"] { color: #fecaca; border-left: 4px solid #f87171; padding-left: .8rem; }
 #private-login input { max-width: 100%; font: inherit; }
 #private-account-name { overflow-wrap: anywhere; max-width: 100%; }
+#private-sync-status[data-kind="error"] { color: #fecaca; }
+#private-sync-status[data-kind="saved"] { color: #86efac; }
