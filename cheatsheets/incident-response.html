@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS DOP-C02 Cheat Sheet: Incident and Event Response</title>
+    <link rel="stylesheet" href="cheat-sheet.css">
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        .keyword-badge { 
+            background-color: rgba(245, 158, 11, 0.15); 
+            color: #fbbf24; 
+            font-weight: 600; 
+            padding: 0.25rem 0.5rem; 
+            border-radius: 0.25rem; 
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            font-family: monospace;
+            font-size: 0.875rem;
+            display: inline-block;
+            margin: 0.25rem 0.25rem 0 0;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 antialiased text-base bg-slate-900 text-slate-200">
+    <nav aria-label="Study navigation" style="max-width: 80rem; margin: 0 auto 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem;">
+        <a href="../index.html" style="color: #7dd3fc; text-decoration: underline;">Study portal home</a>
+        <a href="../index.html#incident" style="color: #7dd3fc; text-decoration: underline;">Incident and Event Response study resources</a>
+    </nav>
+
+    <div class="max-w-7xl mx-auto space-y-12">
+        
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-3">AWS Certified DevOps Engineer - Professional</h1>
+            <p class="text-amber-500 font-bold text-lg md:text-2xl tracking-wide uppercase">Master Cheat Sheet: Incident & Event Response</p>
+        </div>
+
+        <!-- SECTION 1: Core Monitoring & Logging Services -->
+        <section>
+            <h2 class="text-2xl md:text-3xl font-bold text-white border-b-2 border-slate-700 pb-3 mb-6 text-amber-500 flex items-center">
+                <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                1. Core Services & Analogies
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <!-- 1. SSM Incident Manager -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">1. AWS Systems Manager (SSM) Incident Manager</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> The central incident response hub for managing the "people" side of an outage. Handles on-call schedules, SMS/Voice paging, and escalation paths.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To automatically notify engineers, track acknowledgments, and escalate to a backup engineer if the primary contact misses the alert, while simultaneously triggering mitigation runbooks.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The 911 Dispatcher.</strong> It tracks who is on shift, sends the page, waits 15 minutes, and calls the backup if no one answers.</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">predefined escalation path</span>
+                            <span class="keyword-badge">page secondary engineer</span>
+                            <span class="keyword-badge">acknowledge alert</span>
+                            <span class="keyword-badge">SMS and voice call</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. AWS Config -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">2. AWS Config</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Records resource configuration changes and continuously evaluates them against compliance rules.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To audit historical resource states, enforce compliance (e.g., ensuring EBS volumes are encrypted), and trigger automated remediations via SSM.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Security Camera & Auto-Lock.</strong> Takes a snapshot every time someone changes a setting. If a DB is made public, Config detects it and triggers a script to lock it back down.</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">compliance breaches</span>
+                            <span class="keyword-badge">evaluate configuration</span>
+                            <span class="keyword-badge">auto-remediation</span>
+                            <span class="keyword-badge">Config Aggregator</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Amazon EventBridge -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">3. Amazon EventBridge (CloudWatch Events)</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> A serverless event bus that routes state changes and API calls to specific targets.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To build event-driven architectures, route alerts across different AWS accounts seamlessly, and trigger actions based on specific payload patterns.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Central Post Office.</strong> GuardDuty detects a threat and sends it to EventBridge. EventBridge reads the "zip code" (event pattern) and routes it to a delivery truck (Lambda).</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">event pattern</span>
+                            <span class="keyword-badge">cross-account event routing</span>
+                            <span class="keyword-badge">trigger a Lambda</span>
+                            <span class="keyword-badge">resource-based policy</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. AWS CloudTrail -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">4. AWS CloudTrail</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Records AWS Management API calls and user activity across the account.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> For security auditing to know exactly who made an API call, what IP they used, and when they did it. Best enforced via Organization Trails.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Itemized Credit Card Bill.</strong> If an EC2 server is mysteriously deleted, CloudTrail tells you exactly which user clicked 'Delete', at what time, and from which IP.</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">API activity</span>
+                            <span class="keyword-badge">audit trail</span>
+                            <span class="keyword-badge">who deleted/created</span>
+                            <span class="keyword-badge">Organization Trail</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. CloudWatch Synthetics -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">5. Amazon CloudWatch Synthetics</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Outside-in monitoring using programmable scripts (canaries).</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To actively simulate complex user workflows (logging in, clicking carts) and capture visual evidence if the UI or endpoint fails.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Mystery Shopper.</strong> A robot opens a browser, navigates to your site, and tries to check out. If broken, it takes a screenshot and alerts you.</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">simulate complex workflows</span>
+                            <span class="keyword-badge">capture screenshot</span>
+                            <span class="keyword-badge">canaries</span>
+                            <span class="keyword-badge">proactively monitor</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. CloudWatch Container Insights -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">6. Amazon CloudWatch Container Insights</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Automated performance monitoring for containerized applications.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To extract CPU, memory, and network metrics at the task/container level without custom agents, especially for serverless AWS Fargate.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Rental Fleet Dashboard.</strong> Automatically gathers telemetry from every single Fargate container into one central dashboard without opening their hoods.</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">container-level metrics</span>
+                            <span class="keyword-badge">ECS cluster</span>
+                            <span class="keyword-badge">AWS Fargate</span>
+                            <span class="keyword-badge">EKS performance</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. Amazon GuardDuty -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">7. Amazon GuardDuty</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Intelligent threat detection service using machine learning.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To continuously monitor network traffic, DNS logs, and CloudTrail for malicious activity, compromised credentials, and anomalous IAM behavior.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Intelligent Security Guard.</strong> Flags if a server suddenly starts communicating with a known bitcoin mining IP address.</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">unauthorized access</span>
+                            <span class="keyword-badge">anomalous IAM behavior</span>
+                            <span class="keyword-badge">threat detection</span>
+                            <span class="keyword-badge">finding severity</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. Amazon Macie -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">8. Amazon Macie</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Data security service specifically for Amazon S3.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To automatically scan the inside of S3 objects and alert the security team if sensitive regulatory data is exposed.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Highly Trained Auditor.</strong> Reads through S3 documents and alerts you if someone accidentally uploaded an Excel sheet full of SSNs.</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">Personally Identifiable Information (PII)</span>
+                            <span class="keyword-badge">credit card / SSN</span>
+                            <span class="keyword-badge">S3 data discovery</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 9. AWS Security Hub -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">9. AWS Security Hub</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Cloud security posture management and alert aggregation.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To provide a single compliance score against industry frameworks and centralize security alerts from GuardDuty, Macie, and Inspector.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The School Report Card.</strong> Grades your cloud against standards (like CIS) and gives an overall score with a list of failing grades to fix.</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">Center for Internet Security (CIS)</span>
+                            <span class="keyword-badge">compliance score</span>
+                            <span class="keyword-badge">Foundations Benchmark</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 10. Amazon OpenSearch Service -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">10. Amazon OpenSearch Service</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Managed search and analytics suite.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> For high-speed, full-text log querying. Supports publishing internal diagnostic logs to CloudWatch to track down heavy queries.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Lightning-Fast Library Catalog.</strong> Pour millions of logs in, instantly search for "Error". Use "slow logs" to track slow searches.</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">slow log publishing</span>
+                            <span class="keyword-badge">complex queries timing out</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 2: SSM Deep Dive -->
+        <section>
+            <h2 class="text-2xl md:text-3xl font-bold text-white border-b-2 border-slate-700 pb-3 mb-6 text-amber-500 flex items-center">
+                <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                2. AWS Systems Manager (SSM) Deep Dive
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
+                    <span class="text-sky-400 font-extrabold text-xl block mb-3">Run Command</span>
+                    <p class="text-slate-300 leading-relaxed">Execute on-demand commands across fleets without SSH/RDP. Provides granular IAM tracking and bulk concurrent execution controls.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
+                    <span class="text-sky-400 font-extrabold text-xl block mb-3">State Manager</span>
+                    <p class="text-slate-300 leading-relaxed">Continuous configuration compliance (anti-drift). E.g., repeatedly applying Ansible playbooks to ensure firewall rules remain intact.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
+                    <span class="text-sky-400 font-extrabold text-xl block mb-3">Automation</span>
+                    <p class="text-slate-300 leading-relaxed">Multi-step operational workflows. The standard target for EventBridge, Config auto-remediations, and CloudWatch Alarms. Requires an <code>AssumeRole</code>.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
+                    <span class="text-sky-400 font-extrabold text-xl block mb-3">Session Manager</span>
+                    <p class="text-slate-300 leading-relaxed">Browser/CLI secure interactive shell access. Eliminates bastion hosts. Logs everything immutably to S3/CloudWatch via KMS.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
+                    <span class="text-sky-400 font-extrabold text-xl block mb-3">Patch Manager</span>
+                    <p class="text-slate-300 leading-relaxed">Automate OS and security updates across fleets using Patch Baselines, approval delays, and strict Maintenance Windows.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
+                    <span class="text-sky-400 font-extrabold text-xl block mb-3">Parameter Store</span>
+                    <p class="text-slate-300 leading-relaxed">Cost-effective hierarchical key-value storage for config values and KMS encrypted SecureStrings. Cheaper alternative to Secrets Manager.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Pro-Tips / 30 Exam Concepts -->
+        <section class="mt-12 pb-12">
+            <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-6 md:p-10 border border-amber-500/30 shadow-2xl">
+                <h2 class="text-2xl md:text-3xl font-bold text-white mb-8 flex items-center border-b border-slate-700 pb-4">
+                    <span class="bg-amber-500 text-slate-900 rounded-full w-10 h-10 flex items-center justify-center mr-4 text-xl">💡</span>
+                    3. Pro-Tips / Exam Scenarios (All 30 Key Takeaways)
+                </h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 text-slate-200">
+                    
+                    <!-- Orchestration & Automation Workflows -->
+                    <div>
+                        <h3 class="text-sky-400 font-bold mb-4 text-xl border-b border-slate-700/50 pb-2">Orchestration & Automation</h3>
+                        <ul class="space-y-4 list-disc pl-5 marker:text-amber-500">
+                            <li><strong class="text-white">Incident Manager Escalation:</strong> Native tool to create a predefined path to automatically page a secondary engineer if the primary misses an alert.</li>
+                            <li><strong class="text-white">Step Functions <code>.sync</code> vs <code>.waitForTaskToken</code>:</strong> Use <code>.sync</code> when calling an SSM Automation document so Step Functions inherently pauses and waits. (SSM doesn't natively callback with a token).</li>
+                            <li><strong class="text-white">Step Functions API Throttling:</strong> Don't write custom Lambda sleep loops for 503 errors. Use native ASL <strong>Retry and Catch</strong> blocks for exponential backoff.</li>
+                            <li><strong class="text-white">Automated Thread Dump & Reboot:</strong> Avoid Lambda SSH. Configure the CloudWatch Alarm Action to directly trigger an <strong>SSM Automation document</strong>.</li>
+                            <li><strong class="text-white">Config Auto-remediation AccessDenied:</strong> If an SSM execution triggered by Config fails, it means the SSM document's <strong>AssumeRole</strong> lacks IAM permissions to modify the target AWS resource.</li>
+                            <li><strong class="text-white">S3 Bucket Made Public:</strong> Use AWS Config to detect the breach and automatically trigger the <code>AWS-ConfigureS3BucketPublicAccessBlock</code> SSM document.</li>
+                            <li><strong class="text-white">Disk Full (No SSH):</strong> Trigger an <strong>SSM Run Command</strong> natively via a CloudWatch Alarm action to run a cleanup script directly on the instance OS.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Event Routing (EventBridge) -->
+                    <div>
+                        <h3 class="text-sky-400 font-bold mb-4 text-xl border-b border-slate-700/50 pb-2">Event Routing (EventBridge)</h3>
+                        <ul class="space-y-4 list-disc pl-5 marker:text-amber-500">
+                            <li><strong class="text-white">EventBridge DLQs:</strong> If EventBridge fails to deliver an event (e.g., Lambda is throttling), capture the lost event by attaching an <strong>SQS Dead-Letter Queue</strong> directly to the target.</li>
+                            <li><strong class="text-white">EventBridge Cross-Account Routing:</strong> Attach a <strong>Resource-Based Policy</strong> to the central Event Bus granting <code>events:PutEvents</code> to the entire AWS Organization.</li>
+                            <li><strong class="text-white">CloudFormation Stuck Rollbacks:</strong> Monitor for <code>CloudFormation Stack Status Change</code> events (where status is <code>UPDATE_ROLLBACK_FAILED</code>) globally via EventBridge.</li>
+                            <li><strong class="text-white">AWS Scheduled Hardware Maintenance:</strong> Intercept maintenance notices seamlessly via an EventBridge rule matching the <code>aws.health</code> source.</li>
+                            <li><strong class="text-white">Regional Network Degradation:</strong> Trigger regional failover runbooks using an EventBridge rule listening for <code>aws.health</code> and the <code>AWS_EC2_OPERATIONAL_ISSUE</code> code.</li>
+                            <li><strong class="text-white">Security Hub Automation:</strong> Route <code>Security Hub Findings - Imported</code> events via EventBridge to Step Functions for automated isolation/notification.</li>
+                            <li><strong class="text-white">Secrets Manager Rotation Failed:</strong> Capture the explicit <code>RotationFailed</code> event via EventBridge and route to SNS.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Forensics & Diagnostics -->
+                    <div>
+                        <h3 class="text-sky-400 font-bold mb-4 text-xl border-b border-slate-700/50 pb-2">Forensics & Diagnostics</h3>
+                        <ul class="space-y-4 list-disc pl-5 marker:text-amber-500">
+                            <li><strong class="text-white">Isolating Compromised Instances:</strong> Never terminate or stop a compromised EC2 instance (it destroys volatile RAM). Apply a restrictive <strong>Forensic Security Group</strong> instead.</li>
+                            <li><strong class="text-white">ASG Lifecycle Hooks for Forensics:</strong> Use the <code>autoscaling:EC2_INSTANCE_TERMINATING</code> hook to pause an instance. Trigger an EventBridge -> SSM Automation to pull logs, then signal the ASG to continue termination.</li>
+                            <li><strong class="text-white">ECS/Fargate OOM crash:</strong> Capture the <code>ECS Task State Change</code> event via EventBridge. The payload contains the critical <code>stoppedReason</code> for diagnostic alerting.</li>
+                            <li><strong class="text-white">CloudTrail Integrity:</strong> To definitively prove logs weren't tampered with by an attacker, enable <strong>Log File Integrity Validation</strong> (generates SHA-256 hashes & digital signatures).</li>
+                            <li><strong class="text-white">Missing S3 GetObject Audits:</strong> By default, CloudTrail only logs Management Events. To audit file access, you must explicitly enable <strong>S3 Data Events</strong>.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Monitoring & Data Analytics -->
+                    <div>
+                        <h3 class="text-sky-400 font-bold mb-4 text-xl border-b border-slate-700/50 pb-2">Monitoring & Data Analytics</h3>
+                        <ul class="space-y-4 list-disc pl-5 marker:text-amber-500">
+                            <li><strong class="text-white">DynamoDB PITR Restoration:</strong> PITR <strong>always</strong> restores to a brand new table. You cannot overwrite a live table. You must write a custom script to scan the new table and insert missing items back into production.</li>
+                            <li><strong class="text-white">Athena for S3 Logs:</strong> For instantaneous queries during a volumetric DDoS attack, use <strong>Amazon Athena</strong> to query ALB Access Logs directly in S3.</li>
+                            <li><strong class="text-white">Fastest Query for JSON CW Logs:</strong> Use <strong>CloudWatch Logs Insights</strong> to interactively bin/filter logs already sitting in CloudWatch without exporting them.</li>
+                            <li><strong class="text-white">Variable Traffic False Positives:</strong> Replace static CPU thresholds with <strong>CloudWatch Anomaly Detection</strong> to baseline normal historical ML patterns.</li>
+                            <li><strong class="text-white">CloudWatch Metric Math (Ratios):</strong> Use Metric Math to dynamically calculate error percentages (e.g., divide `HTTPCode_ELB_5XX_Count` by `RequestCount`) and alarm on the result.</li>
+                            <li><strong class="text-white">Cross-Region Dashboards & Alarms:</strong> Centralize alerting using <strong>CloudWatch Metric Math</strong> cross-region expressions (e.g., SEARCH queries targeting eu-west-1 from us-east-1).</li>
+                            <li><strong class="text-white">Synthetics Canary Alerts:</strong> Bind a CloudWatch Alarm directly to the Canary's <code>SuccessPercent</code> metric, which can trigger an Incident Manager Response Plan.</li>
+                            <li><strong class="text-white">Interactive Logs for EC2:</strong> The most native way to stream massive log files for near real-time querying is installing the <strong>unified CloudWatch agent</strong> and querying via Logs Insights.</li>
+                            <li><strong class="text-white">Elastic Beanstalk Logs (Blocked SSH):</strong> If port 22 is blocked, use the Elastic Beanstalk console or EB CLI to request <strong>Snapshot Logs</strong> natively.</li>
+                            <li><strong class="text-white">RDS Multi-AZ Failover Alerts:</strong> Do not rely on CloudTrail or connection metrics. Create a native <strong>Amazon RDS Event Subscription</strong> for the 'failover' category targeting SNS.</li>
+                            <li><strong class="text-white">Lambda Timeout on External API:</strong> If a downstream API is slow, <strong>increase the Lambda execution timeout setting</strong>. Changing concurrency limits or memory will not fix synchronous latency.</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </div>
+</body>
+</html>

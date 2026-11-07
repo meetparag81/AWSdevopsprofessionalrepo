@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS DOP-C02 Cheat Sheet: SDLC Automation</title>
+    <link rel="stylesheet" href="cheat-sheet.css">
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        .keyword-badge { 
+            background-color: rgba(245, 158, 11, 0.15); 
+            color: #fbbf24; 
+            font-weight: 600; 
+            padding: 0.25rem 0.5rem; 
+            border-radius: 0.25rem; 
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            font-family: monospace;
+            font-size: 0.875rem;
+            display: inline-block;
+            margin: 0.25rem 0.25rem 0 0;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 antialiased text-base bg-slate-900 text-slate-200">
+    <nav aria-label="Study navigation" style="max-width: 80rem; margin: 0 auto 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem;">
+        <a href="../index.html" style="color: #7dd3fc; text-decoration: underline;">Study portal home</a>
+        <a href="../index.html#sdlc" style="color: #7dd3fc; text-decoration: underline;">SDLC Automation study resources</a>
+    </nav>
+
+    <div class="max-w-7xl mx-auto space-y-12">
+        
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-3">AWS Certified DevOps Engineer - Professional</h1>
+            <p class="text-amber-500 font-bold text-lg md:text-2xl tracking-wide uppercase">Master Cheat Sheet: SDLC Automation</p>
+        </div>
+
+        <!-- SECTION 1: Core Monitoring & Logging Services -->
+        <section>
+            <h2 class="text-2xl md:text-3xl font-bold text-white border-b-2 border-slate-700 pb-3 mb-6 text-amber-500 flex items-center">
+                <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                1. Core Services & Analogies
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <!-- 1. AWS CloudFormation -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">1. AWS CloudFormation</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Infrastructure as Code (IaC) templating and deployment service.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To automate infrastructure provisioning, prevent accidental deletion of stateful resources (Stack Policies), and deploy across multiple accounts/regions simultaneously (StackSets).</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Real Estate Blueprint.</strong> A Stack is the built house. A Stack Policy is the bodyguard standing outside your master bedroom (RDS database) preventing the contractor from bulldozing it during a remodel.</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">Update:Replace</span>
+                            <span class="keyword-badge">DeletionPolicy: Retain</span>
+                            <span class="keyword-badge">service-managed permissions</span>
+                            <span class="keyword-badge">Change Set</span>
+                            <span class="keyword-badge">parameter overrides</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. AWS CodeDeploy -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">2. AWS CodeDeploy</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Automated application deployment service to Amazon EC2, AWS Fargate, and AWS Lambda.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To shift traffic safely (Canary/Linear deployments), execute scripts during deployment transitions (Lifecycle hooks), and automatically roll back to the last known good revision on failure.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Two Houses.</strong> Blue/Green deployments are like buying a fully furnished new house (Green) while keeping the old one (Blue). You move in instantly, and if the plumbing breaks, you just drive back to the old house. No downtime.</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">BeforeAllowTraffic</span>
+                            <span class="keyword-badge">LambdaLinear10PercentEvery3Minutes</span>
+                            <span class="keyword-badge">Retain the content</span>
+                            <span class="keyword-badge">latest successful revision</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. AWS CodePipeline -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">3. AWS CodePipeline</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Fully managed continuous delivery service that automates release pipelines.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To orchestrate builds, enforce manual approval gates, integrate Step Functions for complex/long integration tests, and manage cross-region/cross-account deployments securely.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Factory Conveyor Belt.</strong> It moves code from the warehouse to the assembly station (CodeBuild), pauses the belt completely for a manager's signature (Manual Approval), and then ships it (CodeDeploy).</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">Customer Managed KMS Key (CMK)</span>
+                            <span class="keyword-badge">cross-region actions</span>
+                            <span class="keyword-badge">Step Functions action</span>
+                            <span class="keyword-badge">Manual Approval</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. AWS CodeBuild -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">4. AWS CodeBuild</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Fully managed continuous integration service that compiles source code, runs tests, and produces software packages.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To run automated tests natively, cache large dependencies (like Maven or npm) in S3 to speed up build times, securely authenticate to ECR, and connect directly to private VPCs.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Secure Factory.</strong> To deliver a package (Docker image) to a highly secure warehouse (ECR), the factory worker must first get a temporary VIP pass (aws ecr get-login-password) in the pre-build phase before pushing.</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">reports section</span>
+                            <span class="keyword-badge">S3 cache</span>
+                            <span class="keyword-badge">target VPC ID</span>
+                            <span class="keyword-badge">env: secrets-manager</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. AWS SAM -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">5. AWS Serverless Application Model (SAM)</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Open-source framework used to build, test, and deploy serverless applications on AWS.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To define Lambda functions, API Gateways, and DynamoDB tables using shorthand syntax, and to easily package and upload deployment artifacts to S3 while rewriting template URIs.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Kitchen & Shipping Dept.</strong> `sam build` is the prep cook gathering all ingredients. `sam package` is the shipping department zipping them up, putting them in an S3 warehouse, and generating your updated receipt (a new CloudFormation template).</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">sam build followed by sam package</span>
+                            <span class="keyword-badge">DeploymentPreference: Canary</span>
+                            <span class="keyword-badge">Traffic splitting</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. AWS CodeArtifact -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">6. AWS CodeArtifact</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Fully managed artifact repository service designed to securely store and share software packages.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To allow internal development teams to consume semantic-versioned shared libraries and securely cache open-source dependencies pulled from the internet.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Internal Library.</strong> Instead of every single developer downloading the same package from the public internet every time, CodeArtifact downloads it once, stores a secure copy in your AWS account, and serves it internally.</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">aws codeartifact login</span>
+                            <span class="keyword-badge">semantic versioned package</span>
+                            <span class="keyword-badge">cache open source packages</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 2: CodeDeploy Lifecycle Hooks Deep Dive -->
+        <section>
+            <h2 class="text-2xl md:text-3xl font-bold text-white border-b-2 border-slate-700 pb-3 mb-6 text-amber-500 flex items-center">
+                <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                2. CodeDeploy Lifecycle Hooks (Strict Execution Order)
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
+                    <span class="text-sky-400 font-extrabold text-xl block mb-3">1. ApplicationStop</span>
+                    <p class="text-slate-300 leading-relaxed">The very first hook. Used to gracefully shut down the currently running application (e.g., <code>pm2 stop app</code> or stopping Nginx) before anything else happens.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
+                    <span class="text-amber-500 font-extrabold text-xl block mb-3">DownloadBundle (Native)</span>
+                    <p class="text-slate-300 leading-relaxed"><em>Not scriptable in appspec.yml.</em> The CodeDeploy agent securely downloads the new revision files from Amazon S3 or GitHub to a temporary directory.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
+                    <span class="text-sky-400 font-extrabold text-xl block mb-3">2. BeforeInstall</span>
+                    <p class="text-slate-300 leading-relaxed">Execute pre-installation tasks. Commonly used to decrypt sensitive files, back up old directories, or run <code>aws codeartifact login</code> to prepare for dependencies.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
+                    <span class="text-amber-500 font-extrabold text-xl block mb-3">Install (Native)</span>
+                    <p class="text-slate-300 leading-relaxed"><em>Not scriptable.</em> The CodeDeploy agent copies the unzipped revision files from the temporary directory to their final destination on the instance.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
+                    <span class="text-sky-400 font-extrabold text-xl block mb-3">3. AfterInstall</span>
+                    <p class="text-slate-300 leading-relaxed">Configure the application and resolve dependencies. This is where you typically run <code>npm install</code>, <code>pip install -r requirements.txt</code>, or fix file permissions.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
+                    <span class="text-sky-400 font-extrabold text-xl block mb-3">4. ApplicationStart & ValidateService</span>
+                    <p class="text-slate-300 leading-relaxed"><strong>ApplicationStart:</strong> Starts the newly installed application process. <br/><strong>ValidateService:</strong> Runs tests to verify the application is healthy before passing the deployment.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Pro-Tips / Exam Scenarios -->
+        <section class="mt-12 pb-12">
+            <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-6 md:p-10 border border-amber-500/30 shadow-2xl">
+                <h2 class="text-2xl md:text-3xl font-bold text-white mb-8 flex items-center border-b border-slate-700 pb-4">
+                    <span class="bg-amber-500 text-slate-900 rounded-full w-10 h-10 flex items-center justify-center mr-4 text-xl">💡</span>
+                    3. Pro-Tips / Exam Scenarios (Key Takeaways)
+                </h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 text-slate-200">
+                    
+                    <!-- CodePipeline & Artifacts -->
+                    <div>
+                        <h3 class="text-sky-400 font-bold mb-4 text-xl border-b border-slate-700/50 pb-2">CodePipeline & Artifacts</h3>
+                        <ul class="space-y-4 list-disc pl-5 marker:text-amber-500">
+                            <li><strong class="text-white">Cross-Region Deployments:</strong> You <strong>must</strong> configure a local S3 artifact bucket in the destination region and encrypt the entire pipeline using a <strong>Customer Managed KMS Key (CMK)</strong>.</li>
+                            <li><strong class="text-white">Cross-Account CodePipeline:</strong> The pipeline in Account A must assume a cross-account IAM role in Account B. The artifact bucket must also use a CMK, as default AWS managed keys cannot be shared across accounts.</li>
+                            <li><strong class="text-white">Manual Approvals + CloudFormation:</strong> To allow an architect to review infrastructure changes before deployment, sequence the actions as: <code>Create Change Set</code> -> <code>Manual Approval</code> -> <code>Execute Change Set</code>.</li>
+                            <li><strong class="text-white">Enforcing PR Approvals:</strong> Do not use CodePipeline manual approvals to enforce GitHub/CodeCommit PR checks. Natively enforce this by attaching a <strong>CodeCommit Approval Rule Template</strong> requiring specific IAM group sign-offs.</li>
+                            <li><strong class="text-white">Long Running Integration Tests:</strong> If a test takes hours and requires complex branching logic, use an <strong>AWS Step Functions</strong> action directly in CodePipeline instead of CodeBuild.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Deployment Strategies -->
+                    <div>
+                        <h3 class="text-sky-400 font-bold mb-4 text-xl border-b border-slate-700/50 pb-2">Deployment Strategies</h3>
+                        <ul class="space-y-4 list-disc pl-5 marker:text-amber-500">
+                            <li><strong class="text-white">ECS Blue/Green Data Validation:</strong> To run a test script against the new Green container <em>before</em> live customer traffic hits it, use the <strong>BeforeAllowTraffic</strong> hook in CodeDeploy.</li>
+                            <li><strong class="text-white">Auto Scaling CodeDeploy Integration:</strong> If an ASG scales out, CodeDeploy natively intercepts the boot process and automatically deploys the <strong>latest successful revision</strong> before placing it in service.</li>
+                            <li><strong class="text-white">Elastic Beanstalk Canary:</strong> The native way to shift fractional traffic (e.g., 15%) to a new version for a timed evaluation period is using the <strong>Traffic splitting deployment</strong> policy.</li>
+                            <li><strong class="text-white">CodeDeploy Automatic Rollbacks:</strong> CodeDeploy does not "undo" steps or run rollback scripts. It simply initiates a brand new deployment using the <strong>last known good application revision</strong>.</li>
+                            <li><strong class="text-white">Retaining Manual Hotfixes:</strong> By default, CodeDeploy deletes files not tracked in the previous deployment. To prevent wiping out manual hotfixes, choose the <strong>Retain the content</strong> deployment option.</li>
+                        </ul>
+                    </div>
+
+                    <!-- CodeBuild & Testing -->
+                    <div>
+                        <h3 class="text-sky-400 font-bold mb-4 text-xl border-b border-slate-700/50 pb-2">CodeBuild & Testing</h3>
+                        <ul class="space-y-4 list-disc pl-5 marker:text-amber-500">
+                            <li><strong class="text-white">Slow Builds (Dependency Downloads):</strong> If CodeBuild takes 20 minutes downloading Maven/npm packages, dramatically speed it up by specifying an <strong>S3 cache</strong> path in the <code>buildspec.yml</code> file.</li>
+                            <li><strong class="text-white">CodeBuild inside a VPC:</strong> To run integration tests against a private RDS database, you must configure the CodeBuild project with the <strong>VPC ID, private subnets, and Security Groups</strong>.</li>
+                            <li><strong class="text-white">Visualizing Test Results:</strong> To see JUnit test pass/fail charts directly in the AWS Console, define a <strong>reports</strong> block in the <code>buildspec.yml</code> pointing to the XML files.</li>
+                            <li><strong class="text-white">Secure Passwords in CodeBuild:</strong> Never pass passwords via CodePipeline environment variables (plaintext). Reference AWS Secrets Manager natively using the <strong>env: secrets-manager</strong> mapping in the buildspec.</li>
+                            <li><strong class="text-white">Pushing to ECR:</strong> The IAM Service role needs <code>ecr:GetAuthorizationToken</code> permissions, and the buildspec must run <code>aws ecr get-login-password</code> piped to <code>docker login</code> in the pre_build phase.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Automation Security & Hooks -->
+                    <div>
+                        <h3 class="text-sky-400 font-bold mb-4 text-xl border-b border-slate-700/50 pb-2">Automation Security & Alerts</h3>
+                        <ul class="space-y-4 list-disc pl-5 marker:text-amber-500">
+                            <li><strong class="text-white">CodeGuru Security Review:</strong> Run Amazon CodeGuru in the <strong>Build Stage</strong> to fail the pipeline immediately if SAST vulnerabilities are detected, preventing buggy code from deploying.</li>
+                            <li><strong class="text-white">Slack Notifications for CodeDeploy:</strong> Route native CodeDeploy deployment state-change events (Success/Fail) through <strong>Amazon EventBridge</strong> to trigger a Lambda function that posts to Slack.</li>
+                            <li><strong class="text-white">CloudFormation Drift Detection Alerting:</strong> The lowest overhead way to alert on manual out-of-band changes to a stack is using <strong>AWS Config (cloudformation-stack-drift-detection-check)</strong> routed via EventBridge to SNS.</li>
+                            <li><strong class="text-white">Pull Request Auto-Testing:</strong> When using CodeConnections to a Git repo, configure CodeBuild <strong>webhook filters</strong> for PR created/updated events to trigger unit tests natively on PRs.</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </div>
+</body>
+</html>
