@@ -74,6 +74,57 @@ function content(paragraphs) {
         return `${text ? `<p>${text}</p>` : ''}${paragraph.images.map(image => `<img src="${image}" alt="Source diagram" loading="lazy">`).join('')}`;
     }).join('');
 }
+function examMemory(question) {
+    if (bank.studyAids) return bank.studyAids[question.id];
+    if (bank.title !== 'PracticeTest1') return null;
+    if (question.id === 1) return {
+        keywords: 'Daily check + golden AMIs + Linux and Windows',
+        hint: 'Separate recurring scheduling from event ingestion and threshold alarms. Look for an ordered workflow that launches instances, prepares the assessment prerequisites, and targets only the tagged instances.',
+        shortcut: 'For this source scenario: EventBridge scheduled rule -> Step Functions -> launch EC2 instances -> install the Inspector Classic agent -> tag targets -> run the assessment. An event bus receives events; an alarm is not a daily schedule.',
+        note: 'This question describes legacy Amazon Inspector Classic, not the current Amazon Inspector scanning workflow. Retain this distinction when studying; the original answer key is unchanged.',
+        failures: [
+            { index: 0, label: 'Workflow + event bus', reason: 'An event bus alone does not create a daily schedule, and the option omits the tags used to scope this assessment.' },
+            { index: 1, label: 'Custom functions + alarm', reason: 'A threshold alarm is not a daily scheduler. The option also omits the Inspector Classic agent needed for the described assessment.' },
+            { index: 3, label: 'Custom functions + scheduled rule', reason: 'The schedule and tags are present, but the required Inspector Classic agent installation is missing.' }
+        ],
+        services: [
+            ['Amazon Inspector Classic', 'Legacy vulnerability ASSESSOR; this source workflow requires assessment preparation and target scoping.'],
+            ['AWS Step Functions', 'Multi-step workflow ORCHESTRATOR; coordinates launching, preparation, and assessment.'],
+            ['Amazon EC2', 'Instance RUNNER; launches the golden AMI so its operating system can be assessed.'],
+            ['Amazon EventBridge', 'Event/schedule TRIGGER; a scheduled rule starts recurring work, while a bus receives and routes events.'],
+            ['AWS Lambda', 'Custom-code EXECUTOR; can call APIs but must implement the required setup and sequencing.'],
+            ['Amazon CloudWatch Alarms', 'Threshold WATCHER; reacts to alarm state, not a daily calendar schedule.']
+        ]
+    };
+    if (question.id === 2) return {
+        keywords: 'Small subset of users + verify before full release',
+        hint: 'Distinguish shifting a small portion of live traffic first from approving a release before sending all traffic at once. Equal repeated traffic increments are a different rollout pattern.',
+        shortcut: 'Small first release, then the remainder -> AWS CodeDeploy canary deployment. CodeDeployDefault.LambdaCanary10Percent5Minutes sends 10% of traffic first, waits 5 minutes, then shifts the remaining traffic. CloudFormation publishes the version; a manual approval alone does not split traffic.',
+        note: '',
+        failures: [
+            { index: 1, label: 'CLI script + production alias switch', reason: 'Switching the production alias directly does not provide the requested small live-traffic release followed by verification.' },
+            { index: 2, label: 'All-at-once deployment', reason: 'All traffic moves immediately, leaving no initial small-subset verification stage.' },
+            { index: 3, label: 'Manual approval + production alias', reason: 'Approval gates the release but does not itself split live traffic between old and new versions.' }
+        ],
+        services: [
+            ['AWS CloudFormation', 'Infrastructure/version DEFINER; provisions the resources, but publishing a version alone does not shift traffic gradually.'],
+            ['AWS CodeDeploy', 'Deployment/traffic SHIFTER; canary starts small, linear uses equal repeated increments, all-at-once shifts everything.'],
+            ['AWS CodePipeline', 'Release-stage COORDINATOR; approval pauses a pipeline, not a traffic split.'],
+            ['AWS CodeBuild', 'Build/test RUNNER; can execute deployment commands, but does not inherently provide a canary traffic policy.'],
+            ['AWS Lambda', 'Serverless EXECUTOR; published versions and aliases support routing invocations.'],
+            ['Amazon DynamoDB', 'Application data STORE; not the deployment traffic controller.'],
+            ['GitHub', 'Source-code HOST; supplies the pipeline source, not the runtime rollout strategy.']
+        ]
+    };
+    return null;
+}
+const visibleHints = new Set();
+function memoryExplanation(memory) {
+    return `<aside class="notice"><h3>Exam Memory Shortcut</h3><p>${escapeHtml(memory.shortcut)}</p>${memory.note ? `<p>${escapeHtml(memory.note)}</p>` : ''}
+        <div class="table-scroll"><table><caption>Why the other options fail</caption><thead><tr><th scope="col">Option</th><th scope="col">Why it fails</th></tr></thead>
+        <tbody>${memory.failures.map(failure => `<tr><th scope="row">${String.fromCharCode(65 + failure.index)} - ${escapeHtml(failure.label)}</th><td>${escapeHtml(failure.reason)}</td></tr>`).join('')}</tbody></table></div>
+        <h3>Service memory shortcuts</h3><ul>${memory.services.map(([service, detail]) => `<li><strong>${escapeHtml(service)}:</strong> ${escapeHtml(detail)}</li>`).join('')}</ul></aside>`;
+}
 function filteredQuestions() {
     return bank.questions.filter(question => {
         if (element('domain-filter').value !== 'all' && question.domain !== element('domain-filter').value) return false;
@@ -124,6 +175,7 @@ function render() {
         return;
     }
     const question = questions[position];
+    const memory = examMemory(question);
     const evaluated = state.submitted || state.checked.includes(question.id);
     const selected = state.answers[question.id] || [];
     element('question').innerHTML = `<h2>Question ${question.id} of ${bank.questions.length}</h2><p>${escapeHtml(question.domain)}</p>
@@ -134,8 +186,10 @@ function render() {
             <input type="${question.correct.length === 1 ? 'radio' : 'checkbox'}" name="answer" value="${index}" ${selected.includes(index) ? 'checked' : ''} ${evaluated ? 'disabled' : ''}>
             <span>${String.fromCharCode(65 + index)}.</span><span class="content">${content([option])}</span></label>`).join('')}</fieldset>
         ${state.mode === 'practice' && !evaluated ? '<button id="check-answer">Check answer</button>' : ''}
+        ${memory && (state.mode === 'practice' || state.submitted) ? `<button id="toggle-hint" type="button" aria-controls="exam-memory-hint" aria-expanded="${visibleHints.has(question.id)}">${visibleHints.has(question.id) ? 'Hide' : 'Show'} Hint</button>
+        <aside id="exam-memory-hint" class="notice" ${visibleHints.has(question.id) ? '' : 'hidden'}><h3>Exam Memory Hint</h3><p><strong>${escapeHtml(memory.keywords)}</strong></p><p>${escapeHtml(memory.hint)}</p></aside>` : ''}
         <p id="answer-feedback" role="status">${evaluated ? `${isCorrect(question, selected) ? 'Correct.' : selected.length ? 'Incorrect.' : 'Unanswered.'} Correct answer${question.correct.length > 1 ? 's' : ''}: ${question.correct.map(index => String.fromCharCode(65 + index)).join(', ')}.` : ''}</p>
-        ${evaluated ? `<details open><summary>Explanation and references</summary><div class="content">${content(question.explanation)}</div></details>` : ''}`;
+        ${evaluated ? `<details open><summary>Explanation and references</summary>${memory ? memoryExplanation(memory) : ''}<div class="content">${content(question.explanation)}</div></details>` : ''}`;
     updateTimer();
 }
 function finish(timedOut = false) {
@@ -165,6 +219,7 @@ function start(mode) {
     if (syncLocked) return;
     if (!confirm(`Start a new ${mode} attempt? This replaces this test's saved answers and results.`)) return;
     state = newState(mode);
+    visibleHints.clear();
     element('domain-filter').value = 'all';
     element('review-filter').value = 'all';
     save('reset');
@@ -207,6 +262,14 @@ element('question').addEventListener('change', event => {
     render();
 });
 element('question').addEventListener('click', event => {
+    if (syncLocked || expireIfNeeded()) return;
+    if (event.target.closest('#toggle-hint')) {
+        if (!examMemory(byId.get(state.current)) || (state.mode === 'exam' && !state.submitted)) return;
+        if (visibleHints.has(state.current)) visibleHints.delete(state.current);
+        else visibleHints.add(state.current);
+        render();
+        return;
+    }
     if (syncLocked || !event.target.closest('#check-answer') || expireIfNeeded() || state.submitted || state.mode !== 'practice') return;
     const question = byId.get(state.current);
     if ((state.answers[state.current] || []).length !== question.correct.length) {
