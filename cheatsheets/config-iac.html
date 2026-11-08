@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS DOP-C02 Cheat Sheet: Configuration Management and Infrastructure as Code</title>
+    
+    <link rel="stylesheet" href="cheat-sheet.css">
+    
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        .keyword-badge { 
+            background-color: rgba(245, 158, 11, 0.15); 
+            color: #fbbf24; 
+            font-weight: 600; 
+            padding: 0.25rem 0.5rem; 
+            border-radius: 0.25rem; 
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            font-family: monospace;
+            font-size: 0.875rem;
+            display: inline-block;
+            margin: 0.25rem 0.25rem 0 0;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 antialiased text-base bg-slate-900 text-slate-200">
+    <nav aria-label="Study navigation" style="max-width: 80rem; margin: 0 auto 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem;">
+        <a href="../index.html" style="color: #7dd3fc; text-decoration: underline;">Study portal home</a>
+        <a href="../index.html#config" style="color: #7dd3fc; text-decoration: underline;">Configuration Management and Infrastructure as Code study resources</a>
+    </nav>
+
+    <div class="max-w-7xl mx-auto space-y-12">
+        
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-3">AWS Certified DevOps Engineer - Professional</h1>
+            <p class="text-amber-500 font-bold text-lg md:text-2xl tracking-wide uppercase" style="color: #f59e0b;">Master Cheat Sheet: Config Management & IaC (All 50 Qs)</p>
+        </div>
+
+        <!-- SECTION 1: AWS CDK & Programmatic IaC -->
+        <section>
+            <h2 class="text-2xl md:text-3xl font-bold text-white border-b-2 border-slate-700 pb-3 mb-6 flex items-center" style="color: #f59e0b;">
+                <svg class="mr-3" style="width: 2rem; height: 2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                1. Programmatic IaC (CDK & Catalog)
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <!-- AWS CDK -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">1. AWS CDK (Cloud Development Kit)</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Defines cloud infrastructure in code (Python, TypeScript) and compiles it down to CloudFormation.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To build reusable infrastructure (L3 constructs), enforce strict security rules via Aspects before deployment, and execute custom logic via AwsCustomResource.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Architect's Blueprint Validator.</strong> Before building the house (deploying), `CDK Aspects` scan the blueprint to ensure no doors are missing locks (blocking wildcard IAM roles).</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">cdk diff</span>
+                            <span class="keyword-badge">CDK Aspects</span>
+                            <span class="keyword-badge">synthesis phase</span>
+                            <span class="keyword-badge">AwsCustomResource</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AWS Service Catalog -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">2. AWS Service Catalog</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Centralized hub for creating and managing approved IT service catalogs.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To allow developers to safely launch pre-approved infrastructure across an AWS Organization without giving them direct administrative IAM permissions.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Corporate Vending Machine.</strong> Developers push a button to get a pre-approved EC2 instance (Launch Constraint) without having the master keys to the AWS account.</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">Launch Constraints</span>
+                            <span class="keyword-badge">Delegated Administrator</span>
+                            <span class="keyword-badge">abstract IAM permissions</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 2: Systems Manager, Config & OS Management -->
+        <section>
+            <h2 class="text-2xl md:text-3xl font-bold text-white border-b-2 border-slate-700 pb-3 mb-6 flex items-center mt-12" style="color: #f59e0b;">
+                <svg class="mr-3" style="width: 2rem; height: 2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                2. Systems Manager, Config & AppConfig
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <!-- SSM State Manager -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">3. SSM State Manager</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Declarative, continuous configuration enforcement for EC2 and on-prem servers.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To natively enforce states (e.g., AD joins, running Ansible playbooks) avoiding fragile UserData scripts, and automatically fixing configuration drift.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Relentless Hotel Maid.</strong> No matter how many times a guest messes up the room (drift), State Manager runs on a schedule to restore it to the exact standard.</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">continuous compliance</span>
+                            <span class="keyword-badge">enforce state</span>
+                            <span class="keyword-badge">AWS-ApplyAnsiblePlaybooks</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AWS Config Auto-Remediation -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">4. AWS Config Auto-Remediation</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Links compliance auditing directly to automated fixes.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To detect non-compliant resources (like missing tags or open SGs) and instantly trigger native SSM Automation documents to fix them without writing Lambda scripts.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Automated Traffic Cop.</strong> It spots a car speeding (untagged EC2), pulls it over, and automatically slaps a ticket on it (appends a tag via SSM).</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">auto-remediation</span>
+                            <span class="keyword-badge">SSM Automation document</span>
+                            <span class="keyword-badge">zero custom code</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AWS AppConfig -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">5. AWS AppConfig</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Dynamic configuration and feature flag management.</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To roll out application changes gradually, monitor CloudWatch alarms during "bake time", and auto-rollback instantly without restarting compute environments.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Volume Dial.</strong> Slowly turn up the volume of a new feature to 10%, 50%, then 100%. If the speakers crackle (CloudWatch Alarm), it instantly snaps back to 0%.</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">feature flags</span>
+                            <span class="keyword-badge">dynamic rollout</span>
+                            <span class="keyword-badge">no restart required</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EC2 Image Builder -->
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-white mb-4">6. EC2 Image Builder</h3>
+                    <div class="space-y-3">
+                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Automates the creation, testing, and deployment of virtual machine images (AMIs).</p>
+                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To establish a secure, repeatable weekly pipeline for baking hardened OS images. Never poll this service; use it to push SNS events when a new AMI is ready.</p>
+                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Factory Assembly Line.</strong> It takes a raw OS, installs your custom security software, runs a test suite on it, and publishes the finished "Golden Image" AMI.</p>
+                        <div>
+                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
+                            <span class="keyword-badge">Golden AMI</span>
+                            <span class="keyword-badge">event-driven pipeline</span>
+                            <span class="keyword-badge">automate image creation</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 3: CloudFormation Mechanics -->
+        <section>
+            <h2 class="text-2xl md:text-3xl font-bold text-white border-b-2 border-slate-700 pb-3 mb-6 flex items-center mt-12" style="color: #f59e0b;">
+                <svg class="mr-3" style="width: 2rem; height: 2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                3. CloudFormation Mechanics & StackSets
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
+                    <span class="font-extrabold text-xl block mb-3" style="color: #38bdf8;">Stack Coupling & Naming</span>
+                    <p class="text-slate-300 leading-relaxed mb-2"><strong style="color: #fff;">Nested vs Cross-Stack:</strong> Cross-Stack (Exports) creates a hard lock. You can't modify an exported value. Nested Stacks bypass this and overcome the 51,200-byte size limit.</p>
+                    <p class="text-slate-300 leading-relaxed"><strong style="color: #fff;">Name Collisions:</strong> To deploy Dev and Prod stacks in the <em>same account and region</em>, completely remove explicit physical <code>Name:</code> properties to let CFN auto-generate unique hashes.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
+                    <span class="font-extrabold text-xl block mb-3" style="color: #38bdf8;">Secrets & Dynamic References</span>
+                    <p class="text-slate-300 leading-relaxed mb-2"><strong style="color: #fff;">Secrets Manager:</strong> <code>{{resolve:secretsmanager:...}}</code> Use combined with <code>SecretTargetAttachment</code> to dynamically <em>generate</em> and auto-rotate RDS passwords.</p>
+                    <p class="text-slate-300 leading-relaxed"><strong style="color: #fff;">SSM SecureString:</strong> <code>{{resolve:ssm-secure:...}}</code> Best for static encrypted keys that do not need automatic rotation functionality.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
+                    <span class="font-extrabold text-xl block mb-3" style="color: #38bdf8;">StackSets Orchestration</span>
+                    <p class="text-slate-300 leading-relaxed mb-2"><strong style="color: #fff;">AccountRemovalBehavior:</strong> Set to <strong>RETAIN</strong> if you want an account moved out of an OU to keep its infrastructure intact instead of destroying it.</p>
+                    <p class="text-slate-300 leading-relaxed"><strong style="color: #fff;">Drift Recovery:</strong> If someone manually deletes a resource in one member account, do NOT delete the stack instance. Execute <code>UpdateStackInstances</code> on that specific account.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
+                    <span class="font-extrabold text-xl block mb-3" style="color: #38bdf8;">Policies & Conditions</span>
+                    <p class="text-slate-300 leading-relaxed mb-2"><strong style="color: #fff;">Stack Policy:</strong> Prevents specific resources from <code>Update:Replace</code> or <code>Update:Delete</code> during stack updates.</p>
+                    <p class="text-slate-300 leading-relaxed mb-2"><strong style="color: #fff;">DeletionPolicy: Retain:</strong> Survives stack deletion entirely.</p>
+                    <p class="text-slate-300 leading-relaxed"><strong style="color: #fff;">CreationPolicy:</strong> Pauses stack creation until OS scripts finish via <code>cfn-signal</code>.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md lg:col-span-2">
+                    <span class="font-extrabold text-xl block mb-3" style="color: #fb7185;">🚨 Troubleshooting CloudFormation Failures</span>
+                    <p class="text-slate-300 leading-relaxed mb-2"><strong style="color: #fff;">DELETE_IN_PROGRESS (Custom Resource Stuck):</strong> The backing Lambda was deleted out-of-band. Manually send a <code>"Status": "SUCCESS"</code> JSON payload via <code>curl -X PUT</code> to the S3 ResponseURL found in CloudTrail.</p>
+                    <p class="text-slate-300 leading-relaxed mb-2"><strong style="color: #fff;">UPDATE_ROLLBACK_FAILED:</strong> A resource failed to revert. Fix the out-of-band issue (e.g., recreate the manually deleted IAM role it needs for teardown), then execute <code>ContinueUpdateRollback</code>.</p>
+                    <p class="text-slate-300 leading-relaxed mb-2"><strong style="color: #fff;">S3 DELETE_FAILED:</strong> CloudFormation cannot delete an S3 bucket with objects inside it. It must be emptied first.</p>
+                    <p class="text-slate-300 leading-relaxed"><strong style="color: #fff;">DependsOn Race Condition:</strong> If CFN fails saying a bucket doesn't exist when applying a bucket policy, explicitly add <code>DependsOn: MyBucket</code> to the policy resource to force sequential execution.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Compute & Orchestration Edge Cases -->
+        <section class="mt-12 pb-12">
+            <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-6 md:p-10 border border-amber-500/30 shadow-2xl">
+                <h2 class="text-2xl md:text-3xl font-bold text-white mb-8 flex items-center border-b border-slate-700 pb-4">
+                    <span class="bg-amber-500 text-slate-900 rounded-full w-10 h-10 flex items-center justify-center mr-4 text-xl">💡</span>
+                    4. Compute, CI/CD, & The Polling Trap
+                </h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 text-slate-200">
+                    
+                    <!-- Compute Workflows -->
+                    <div>
+                        <h3 class="font-bold mb-4 text-xl border-b border-slate-700/50 pb-2" style="color: #38bdf8;">CI/CD & Compute Workflows</h3>
+                        <ul class="space-y-4 list-disc pl-5" style="color: #e2e8f0;">
+                            <li><strong style="color: #fff;">Private EKS Deployments:</strong> To run <code>kubectl apply</code> in CodePipeline against a private EKS cluster, you MUST attach the <strong>CodeBuild project to the private VPC subnet</strong> and map its IAM role into the Kubernetes <code>aws-auth</code> ConfigMap.</li>
+                            <li><strong style="color: #fff;">Least Privilege Pipeline Execution:</strong> To allow a developer to manually trigger a CodePipeline that uses CloudFormation (without giving the developer full admin access), grant the developer <strong><code>iam:PassRole</code></strong> so they can pass the Service Role to CFN.</li>
+                            <li><strong style="color: #fff;">Elastic Beanstalk AL2 Proxies:</strong> On Amazon Linux 2 platforms, NGINX configurations placed in <code>.ebextensions</code> are completely ignored. They MUST be placed in <strong><code>.platform/nginx/conf.d/</code></strong>.</li>
+                            <li><strong style="color: #fff;">Elastic Beanstalk Secrets:</strong> Do not place highly sensitive DB passwords in plain-text Environment Properties. Grant the EC2 instance profile access to Secrets Manager and fetch the secret via the <strong>AWS SDK at runtime</strong>.</li>
+                            <li><strong style="color: #fff;">EC2 Image Builder to Beanstalk:</strong> To auto-update Beanstalk with a new AMI, use an <strong>Event-Driven architecture</strong> (Image Builder -> SNS -> Lambda -> <code>UpdateEnvironment</code> API). Do not use <code>.ebextensions</code> for AMI swaps.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Beware the "Polling" Trap -->
+                    <div>
+                        <h3 class="font-bold mb-4 text-xl border-b border-slate-700/50 pb-2" style="color: #fb7185;">The "Polling" Anti-Pattern</h3>
+                        <div class="bg-slate-900/50 p-4 rounded-lg border border-rose-900/50 mt-2">
+                            <p class="mb-3">The AWS DevOps Professional exam heavily penalizes architectures that rely on <strong>polling</strong> (e.g., writing custom bash loops to check an API every 5 minutes, or using Managed Updates to poll for AMIs).</p>
+                            <p><strong>When you see the word "poll":</strong> Instantly look for a distractor that uses EventBridge, Amazon SNS, or native AWS Config remediation actions. AWS strongly prefers asynchronous, event-driven, push-based architectures.</p>
+                            <div class="mt-4">
+                                <span class="keyword-badge">Avoid: Cron jobs</span>
+                                <span class="keyword-badge">Avoid: While loops</span>
+                                <span class="keyword-badge">Favor: EventBridge</span>
+                                <span class="keyword-badge">Favor: Native SSM triggers</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </div>
+</body>
+</html>
