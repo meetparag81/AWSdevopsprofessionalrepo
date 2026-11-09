@@ -91,7 +91,7 @@
       <button id="clear" type="button">Clear</button>
       <button id="print" type="button">Print / save PDF</button>
       <nav class="nav" aria-label="Cheatsheet sections">
-        <a href="#services">Services</a><a href="#keywords">Keywords</a><a href="#comparisons">Comparisons</a><a href="#questions">Q1-50</a>
+        <a href="#one-line-memory">One-line memory</a><a href="#services">Services</a><a href="#keywords">Keywords</a><a href="#comparisons">Comparisons</a><a href="#questions">Q1-50</a>
       </nav>
       <span id="status" class="muted" role="status" aria-live="polite"></span>
     </div>
@@ -106,6 +106,176 @@
       </div>
       <div class="memory">Choose by the required control, not a single word such as "attack", "logs", or "compliance".</div>
       <p class="caution">A quiz-key answer can be the best available option without describing a complete solution. Amber notes flag those gaps. Timing such as "immediate", "exactly", or "zero downtime" must be verified rather than assumed.</p>
+    </section>
+    <section id="one-line-memory" class="panel">
+      <h2>AWS Services - One-Line Exam Memory Sheet</h2>
+      <p>Quick recall for the services and features in our questions and options. Search filters these rows too. Linked names open the detailed service card.</p>
+      <div class="memory">Choose by the requirement: DATA, ACTIVITY, PERMISSIONS, VULNERABILITIES, FINDINGS, API HISTORY, or CONFIGURATION.</div>
+      <article class="memory-category">
+        <h3>1. Security detection and investigation</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Service / feature</th><th>Memory phrase</th></tr></thead>
+          <tbody>
+            <tr><td><a href="#macie">Amazon Macie</a></td><td>Find sensitive DATA inside supported S3 files.</td></tr>
+            <tr><td><a href="#guardduty">Amazon GuardDuty</a></td><td>Detect suspicious ACTIVITY and threats.</td></tr>
+            <tr><td><a href="#inspector">Amazon Inspector</a></td><td>Find software VULNERABILITIES in supported workloads.</td></tr>
+            <tr><td><a href="#access-analyzer">IAM Access Analyzer</a></td><td>Analyze PERMISSIONS: who could access resources, and what policies allow.</td></tr>
+            <tr><td><a href="#security-hub">AWS Security Hub</a></td><td>Centralize security FINDINGS from integrated services.</td></tr>
+            <tr><td>Amazon Detective</td><td>Investigate security incidents and relationships.</td></tr>
+            <tr><td><a href="#cloudtrail">AWS CloudTrail</a></td><td>Record AWS API calls - who did what and when, not terminal commands.</td></tr>
+            <tr><td>CloudTrail Insights</td><td>Detect unusual API call or error-rate patterns.</td></tr>
+            <tr><td><a href="#cloudtrail">CloudTrail integrity validation</a></td><td>Detect altered or missing delivered logs using signed digests and hashes.</td></tr>
+            <tr><td><a href="#credential-report">AWS Trusted Advisor</a></td><td>Recommend AWS BEST PRACTICES - not a custom policy deployment gate.</td></tr>
+            <tr><td><a href="#credential-report">IAM Credential Report</a></td><td>Report IAM user credential status and usage - not automatically disable credentials.</td></tr>
+          </tbody>
+        </table></div>
+      </article>
+      <article class="memory-category">
+        <h3>2. Identity, permissions, and credentials</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Service / feature</th><th>Memory phrase</th></tr></thead>
+          <tbody>
+            <tr><td>AWS IAM</td><td>Control who can perform which AWS actions.</td></tr>
+            <tr><td><a href="#permission-table">Identity-based policy</a></td><td>What may this user or role do?</td></tr>
+            <tr><td><a href="#permission-table">Resource-based policy</a></td><td>Who may access this resource?</td></tr>
+            <tr><td><a href="#sts">Role trust policy</a></td><td>Who may assume this role, and under what conditions?</td></tr>
+            <tr><td><a href="#boundaries">Permissions boundary</a></td><td>Set an identity's permission ceiling - not grant permissions.</td></tr>
+            <tr><td><a href="#scp">AWS Organizations</a></td><td>Organize and centrally govern multiple AWS accounts.</td></tr>
+            <tr><td><a href="#scp">Service Control Policy (SCP)</a></td><td>Limit member-account permissions - not grant access.</td></tr>
+            <tr><td><a href="#identity-center">IAM Identity Center</a></td><td>Centrally assign workforce access to AWS accounts.</td></tr>
+            <tr><td><a href="#identity-center">Permission set</a></td><td>Define WHAT permissions an assigned user/group receives.</td></tr>
+            <tr><td><a href="#identity-center">Account assignment</a></td><td>WHO gets WHAT permissions in WHICH account.</td></tr>
+            <tr><td><a href="#sts">AWS STS</a></td><td>Issue temporary AWS credentials.</td></tr>
+            <tr><td><a href="#sts">External ID</a></td><td>Distinguish the customer a third-party vendor is acting for.</td></tr>
+            <tr><td><a href="#eks">EKS IRSA</a></td><td>Give Kubernetes service accounts IAM roles - not hardcoded keys.</td></tr>
+            <tr><td><a href="#eks">EKS Pod Identity</a></td><td>Provide temporary IAM role credentials to associated EKS workloads.</td></tr>
+            <tr><td><a href="#secrets">Secrets Manager</a></td><td>Store secrets and manage supported credential ROTATION.</td></tr>
+            <tr><td><a href="#parameter-store">Parameter Store SecureString</a></td><td>Store KMS-encrypted configuration when managed rotation is unnecessary.</td></tr>
+          </tbody>
+        </table></div>
+      </article>
+      <article class="memory-category">
+        <h3>3. Systems Manager and server operations</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Service / feature</th><th>Memory phrase</th></tr></thead>
+          <tbody>
+            <tr><td><a href="#ssm">AWS Systems Manager (SSM)</a></td><td>Central operations toolbox for managed servers and automation.</td></tr>
+            <tr><td><a href="#session">Session Manager</a></td><td>Interactive terminal without inbound SSH.</td></tr>
+            <tr><td><a href="#automation">SSM Run Command</a></td><td>Execute commands remotely - not an interactive terminal.</td></tr>
+            <tr><td><a href="#automation">SSM Automation</a></td><td>Run multistep operational runbooks and remediation.</td></tr>
+            <tr><td><a href="#automation">SSM State Manager</a></td><td>Maintain the desired configuration of managed nodes.</td></tr>
+            <tr><td><a href="#patch">SSM Patch Manager</a></td><td>Scan for and install approved server patches.</td></tr>
+            <tr><td><a href="#patch">Patch baseline</a></td><td>Define WHICH patches are approved.</td></tr>
+            <tr><td><a href="#patch">Maintenance Window</a></td><td>Schedule WHEN maintenance tasks run.</td></tr>
+            <tr><td><a href="#ssm">SSM Inventory</a></td><td>Collect installed software and managed-node configuration information.</td></tr>
+            <tr><td><a href="#ssm">SSM Agent</a></td><td>Receive and execute Systems Manager tasks on a node.</td></tr>
+            <tr><td>EC2 Instance Connect</td><td>Help establish SSH access - SSH still needs network access to port 22.</td></tr>
+            <tr><td>AWS Client VPN</td><td>Connect your device to a private network.</td></tr>
+          </tbody>
+        </table></div>
+      </article>
+      <article class="memory-category">
+        <h3>4. Compliance and automation</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Service / feature</th><th>Memory phrase</th></tr></thead>
+          <tbody>
+            <tr><td><a href="#config">AWS Config</a></td><td>Record resource configurations and CHECK compliance.</td></tr>
+            <tr><td><a href="#automation">Config remediation</a></td><td>Invoke SSM Automation to FIX a failed check.</td></tr>
+            <tr><td><a href="#conformance">Config Conformance Pack</a></td><td>Bundle compliance rules and remediation configurations.</td></tr>
+            <tr><td><a href="#config">Config Aggregator</a></td><td>Collect cross-account configuration/compliance data - not deploy rules.</td></tr>
+            <tr><td><a href="#eventbridge">Amazon EventBridge</a></td><td>Route EVENTS or schedule work.</td></tr>
+            <tr><td><a href="#eventbridge">AWS Lambda</a></td><td>Execute custom CODE without managing servers.</td></tr>
+            <tr><td><a href="#step-functions">AWS Step Functions</a></td><td>Coordinate a multistep WORKFLOW.</td></tr>
+            <tr><td><a href="#eventbridge">Amazon SNS</a></td><td>Publish NOTIFICATIONS - not perform remediation by itself.</td></tr>
+            <tr><td><a href="#security-hub">Security Hub Custom Action</a></td><td>Send manually selected findings into an event-driven workflow.</td></tr>
+          </tbody>
+        </table></div>
+      </article>
+      <article class="memory-category">
+        <h3>5. Web and network protection</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Service / feature</th><th>Memory phrase</th></tr></thead>
+          <tbody>
+            <tr><td><a href="#waf">AWS WAF</a></td><td>Filter HTTP/HTTPS WEB REQUESTS.</td></tr>
+            <tr><td><a href="#waf">WAF Web ACL</a></td><td>Apply a collection of web-filtering rules.</td></tr>
+            <tr><td><a href="#waf">WAF rate-based rule</a></td><td>Limit excessive requests per aggregation key, such as IP.</td></tr>
+            <tr><td><a href="#waf">WAF IP Set</a></td><td>List IPs for a rule to match - not block them by itself.</td></tr>
+            <tr><td><a href="#shield">AWS Shield</a></td><td>Provide managed DDoS protection.</td></tr>
+            <tr><td><a href="#shield">Shield Advanced</a></td><td>Enhanced DDoS protection, response expertise, and qualifying cost protection.</td></tr>
+            <tr><td><a href="#firewall-manager">AWS Firewall Manager</a></td><td>Centrally enforce supported security policies across accounts.</td></tr>
+            <tr><td><a href="#network">Security group</a></td><td>Stateful resource-level ALLOW rules - no explicit deny.</td></tr>
+            <tr><td><a href="#network">Network ACL</a></td><td>Stateless subnet-level ALLOW and DENY rules.</td></tr>
+            <tr><td>AWS Network Firewall</td><td>Inspect and filter traffic routed through a VPC firewall.</td></tr>
+            <tr><td><a href="#network">Gateway VPC endpoint</a></td><td>Reach supported services such as S3/DynamoDB through private route-table paths.</td></tr>
+            <tr><td><a href="#network">Interface VPC endpoint / PrivateLink</a></td><td>Reach supported services through private-IP network interfaces.</td></tr>
+            <tr><td><a href="#network">NAT Gateway</a></td><td>Provide outbound address translation - not service authorization.</td></tr>
+            <tr><td><a href="#network">Internet Gateway</a></td><td>Enable VPC internet connectivity with appropriate routing.</td></tr>
+            <tr><td>VPC peering</td><td>Route traffic privately between two VPCs.</td></tr>
+            <tr><td>VPC Flow Logs</td><td>Record network traffic metadata - not command or payload contents.</td></tr>
+          </tbody>
+        </table></div>
+      </article>
+      <article class="memory-category">
+        <h3>6. Storage, encryption, and content delivery</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Service / feature</th><th>Memory phrase</th></tr></thead>
+          <tbody>
+            <tr><td>Amazon S3</td><td>Store objects such as files, datasets, logs, and artifacts.</td></tr>
+            <tr><td><a href="#s3-security">S3 bucket policy</a></td><td>Control access to the bucket and its objects.</td></tr>
+            <tr><td><a href="#s3-security">S3 Block Public Access</a></td><td>Prevent public exposure - not encrypt data.</td></tr>
+            <tr><td><a href="#presigned">S3 presigned URL</a></td><td>Temporary access link for a specific object operation.</td></tr>
+            <tr><td><a href="#s3-security">SSE-S3</a></td><td>Encrypt stored objects using S3-managed keys.</td></tr>
+            <tr><td><a href="#kms">SSE-KMS</a></td><td>Encrypt stored objects using KMS keys.</td></tr>
+            <tr><td><a href="#s3-security"><code>aws:SecureTransport</code></a></td><td>Check secure transport; deny false to reject HTTP.</td></tr>
+            <tr><td><a href="#object-lock">S3 Versioning</a></td><td>Preserve object versions - not guarantee immutability.</td></tr>
+            <tr><td><a href="#object-lock">Object Lock Compliance mode</a></td><td>Protect retained versions with no privileged retention bypass.</td></tr>
+            <tr><td><a href="#object-lock">Object Lock Governance mode</a></td><td>Protect retained versions with authorized bypass possible.</td></tr>
+            <tr><td><a href="#object-lock">S3 Lifecycle</a></td><td>Transition storage classes and expire eligible objects.</td></tr>
+            <tr><td><a href="#kms">AWS KMS</a></td><td>Manage cryptographic KEYS and authorize their use.</td></tr>
+            <tr><td><a href="#kms">KMS key policy</a></td><td>Control who may use this encryption key.</td></tr>
+            <tr><td><a href="#kms">KMS automatic rotation</a></td><td>Refresh eligible key material while preserving old-data decryption.</td></tr>
+            <tr><td><a href="#kms">KMS multi-Region keys</a></td><td>Decrypt the same ciphertext using related keys in different Regions.</td></tr>
+            <tr><td><a href="#acm">AWS ACM</a></td><td>Manage SSL/TLS CERTIFICATES - not application secrets.</td></tr>
+            <tr><td><a href="#cloudfront">Amazon CloudFront</a></td><td>Deliver content through global edge locations.</td></tr>
+            <tr><td><a href="#cloudfront">CloudFront OAC</a></td><td>Authenticate CloudFront to the private S3 ORIGIN.</td></tr>
+            <tr><td><a href="#cloudfront">CloudFront signed URLs/cookies</a></td><td>Restrict VIEWER access through CloudFront.</td></tr>
+            <tr><td><a href="#ebs">Amazon EBS</a></td><td>Provide block storage for EC2.</td></tr>
+            <tr><td><a href="#ebs">EBS Encryption by Default</a></td><td>Encrypt new volumes in the configured account and Region.</td></tr>
+          </tbody>
+        </table></div>
+      </article>
+      <article class="memory-category">
+        <h3>7. Compute, deployment, and logging</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Service / feature</th><th>Memory phrase</th></tr></thead>
+          <tbody>
+            <tr><td>Amazon EC2</td><td>Run virtual servers.</td></tr>
+            <tr><td><a href="#eks">Amazon EKS</a></td><td>Run Kubernetes with a managed control plane.</td></tr>
+            <tr><td><a href="#ecr">Amazon ECR</a></td><td>Store container images.</td></tr>
+            <tr><td><a href="#ecr">ECR scan on push</a></td><td>Start vulnerability scanning after image upload - not automatically block deployment.</td></tr>
+            <tr><td><a href="#inspector">EC2 Image Builder</a></td><td>Build and test standardized machine images.</td></tr>
+            <tr><td><a href="#cloudformation">AWS CloudFormation</a></td><td>Provision infrastructure from templates.</td></tr>
+            <tr><td><a href="#cloudformation">CloudFormation StackSets</a></td><td>Deploy template stacks across accounts and Regions.</td></tr>
+            <tr><td><a href="#cloudformation">AWS CodeBuild</a></td><td>Run builds, tests, and pre-deployment checks.</td></tr>
+            <tr><td><a href="#cloudformation">AWS CodePipeline</a></td><td>Orchestrate software delivery stages.</td></tr>
+            <tr><td>AWS CodeCommit</td><td>Host Git source repositories.</td></tr>
+            <tr><td><a href="#cloudformation">AWS CodeDeploy</a></td><td>Deploy application revisions to supported targets.</td></tr>
+            <tr><td><a href="#cloudwatch">CloudWatch Agent</a></td><td>Collect configured logs and metrics - not automatically record terminal sessions.</td></tr>
+            <tr><td><a href="#cloudwatch">CloudWatch Logs</a></td><td>Centralize logs; associate KMS encryption with the log group.</td></tr>
+            <tr><td>Amazon Data Firehose</td><td>Deliver streaming records to supported destinations.</td></tr>
+            <tr><td>Application Load Balancer</td><td>Distribute HTTP/HTTPS requests across application targets.</td></tr>
+            <tr><td>Amazon API Gateway</td><td>Expose and manage APIs.</td></tr>
+            <tr><td>Amazon RDS</td><td>Manage relational databases.</td></tr>
+            <tr><td>RDS Performance Insights</td><td>Analyze database load - not AWS API audit history.</td></tr>
+            <tr><td>Amazon DynamoDB</td><td>Provide managed NoSQL tables.</td></tr>
+            <tr><td>DynamoDB global tables</td><td>Replicate table data - not application KMS keys.</td></tr>
+            <tr><td>Elastic Beanstalk</td><td>Deploy/manage applications and platform environments.</td></tr>
+            <tr><td>AWS Resource Access Manager (RAM)</td><td>Share supported resources - not replace KMS key-policy authorization.</td></tr>
+          </tbody>
+        </table></div>
+      </article>
+      <p id="empty-memory" class="empty" hidden>No matching one-line phrases. Try a service name or a shorter keyword.</p>
+      <div class="memory">DATA -&gt; Macie | ACTIVITY -&gt; GuardDuty | VULNERABILITIES -&gt; Inspector<br>PERMISSIONS -&gt; Access Analyzer | FINDINGS -&gt; Security Hub | API HISTORY -&gt; CloudTrail<br>CHECK -&gt; Config | FIX -&gt; Automation | PREVENT across accounts -&gt; SCP</div>
     </section>
     <section id="services">
       <h2>Service functions + numbered examples</h2>
@@ -731,6 +901,9 @@
       questionList.append(item);
     });
     const search = document.getElementById("search");
+    const memoryRows = Array.from(document.querySelectorAll("#one-line-memory tbody tr"));
+    const memoryCategories = Array.from(document.querySelectorAll(".memory-category"));
+    memoryRows.forEach(row => searchable(row, row.textContent));
     function matches(node, term) {
       if (/^q\d+$/i.test(term)) return new RegExp("\\b" + term + "\\b", "i").test(node.dataset.search);
       return node.dataset.search.includes(term);
@@ -740,7 +913,8 @@
       const groups = [
         [Array.from(serviceList.children), "empty-services"],
         [Array.from(keywordRows.children), "empty-keywords"],
-        [Array.from(questionList.children), "empty-questions"]
+        [Array.from(questionList.children), "empty-questions"],
+        [memoryRows, "empty-memory"]
       ];
       const counts = groups.map(([nodes, empty]) => {
         let visible = 0;
@@ -748,7 +922,10 @@
         document.getElementById(empty).hidden = visible !== 0;
         return visible;
       });
-      document.getElementById("status").textContent = counts[0] + " service cards / " + counts[2] + " questions" + (term ? " match" : "");
+      memoryCategories.forEach(category => {
+        category.hidden = !Array.from(category.querySelectorAll("tbody tr")).some(row => !row.hidden);
+      });
+      document.getElementById("status").textContent = counts[3] + " one-liners / " + counts[0] + " service cards / " + counts[2] + " questions" + (term ? " match" : "");
     }
     search.addEventListener("input", filter);
     document.getElementById("clear").addEventListener("click", () => { search.value = ""; filter(); search.focus(); });
