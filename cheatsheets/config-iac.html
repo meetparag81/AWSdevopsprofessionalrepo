@@ -1,243 +1,1634 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWS DOP-C02 Cheat Sheet: Configuration Management and Infrastructure as Code</title>
-    
-    <link rel="stylesheet" href="cheat-sheet.css">
-    
-    <style>
-        body { font-family: system-ui, -apple-system, sans-serif; background-color: #0f172a; color: #e2e8f0; }
-        .keyword-badge { 
-            background-color: rgba(245, 158, 11, 0.15); 
-            color: #fbbf24; 
-            font-weight: 600; 
-            padding: 0.25rem 0.5rem; 
-            border-radius: 0.25rem; 
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            font-family: monospace;
-            font-size: 0.875rem;
-            display: inline-block;
-            margin: 0.25rem 0.25rem 0 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AWS DOP-C02 Infrastructure as Code: 24 service and feature summaries, 50 reference-question mappings, comparisons, and technical caveats.">
+  <title>AWS DOP-C02 | Infrastructure as Code Exam Memory</title>
+  <style>
+    :root { color-scheme: dark; --bg:#0b1220; --panel:#152133; --line:#334155; --text:#e2e8f0; --muted:#b4c2d5; --accent:#7dd3fc; --gold:#fbbf24; --green:#6ee7b7; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; scroll-padding-top:150px; }
+    body { margin:0; background:var(--bg); color:var(--text); font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:3px; }
+    a:hover { color:white; }
+    button,input { font:inherit; }
+    button { cursor:pointer; }
+    :focus-visible { outline:3px solid var(--gold); outline-offset:4px; }
+    .skip { position:absolute; left:12px; top:-80px; background:var(--panel); padding:8px; z-index:10; }
+    .skip:focus { top:12px; }
+    header,.wrap { max-width:1240px; margin:auto; padding:24px; }
+    header { padding-bottom:14px; }
+    h1 { font-size:clamp(1.8rem,4vw,2.8rem); line-height:1.2; margin:8px 0 16px; }
+    h2 { font-size:1.55rem; margin-top:0; line-height:1.35; }
+    h3 { color:var(--accent); font-size:1.08rem; margin:22px 0 8px; }
+    p { margin:8px 0 14px; }
+    .eyebrow,.tag { color:var(--gold); font-weight:700; }
+    .muted { color:var(--muted); }
+    .toolbar { position:sticky; top:0; z-index:3; background:#0b1220f5; border-block:1px solid var(--line); }
+    .tools { max-width:1240px; margin:auto; padding:12px 24px; display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+    input { min-width:160px; flex:1; background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:9px 12px; }
+    button,.nav a { border:1px solid var(--line); background:var(--panel); color:var(--text); border-radius:8px; padding:8px 12px; text-decoration:none; }
+    .nav { display:flex; flex-wrap:wrap; gap:8px; }
+    .nav a { display:inline-block; }
+    section { margin-bottom:32px; }
+    .panel,.service { background:var(--panel); border:1px solid var(--line); padding:24px; border-radius:14px; }
+    .service { margin-bottom:20px; }
+    .memory { border-left:4px solid var(--gold); padding:12px 16px; background:#fbbf2410; color:#fde68a; margin:14px 0; font-weight:650; }
+    .note { border-left:4px solid var(--accent); padding:10px 14px; background:#7dd3fc0b; }
+    .caution { border-left:4px solid var(--gold); padding:10px 14px; background:#fbbf240b; }
+    .flow { white-space:pre-wrap; font:14px/1.8 ui-monospace,Consolas,monospace; padding:14px; background:var(--bg); border:1px solid var(--line); border-radius:8px; overflow-wrap:anywhere; }
+    .table-wrap { overflow-x:auto; }
+    table { border-collapse:collapse; width:100%; font-size:.94rem; }
+    th,td { text-align:left; vertical-align:top; border-bottom:1px solid var(--line); padding:12px; }
+    th { color:var(--accent); background:#0b122070; }
+    tbody tr:last-child td { border-bottom:0; }
+    code { font: .9em ui-monospace,Consolas,monospace; color:#fde68a; overflow-wrap:anywhere; }
+    .chips { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+    .chips a { border:1px solid var(--line); padding:3px 10px; border-radius:20px; text-decoration:none; font-size:.9rem; }
+    .examples { padding-left:22px; }
+    .examples li { padding:5px 0; }
+    .badge { display:inline-block; font-size:.78rem; padding:2px 8px; border:1px solid var(--gold); color:var(--gold); border-radius:12px; margin-bottom:6px; }
+    .answer { color:var(--green); font-weight:650; }
+    details { border:1px solid var(--line); border-radius:8px; margin:12px 0; padding:10px 14px; }
+    summary { cursor:pointer; font-weight:650; color:var(--accent); }
+    .question { scroll-margin-top:160px; }
+    .question h3 { margin:12px 0 8px; }
+    .question p { margin:6px 0 12px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+    .grid .panel { padding:18px; }
+    [hidden] { display:none !important; }
+    .empty { padding:24px; border:1px dashed var(--gold); border-radius:10px; }
+    footer { border-top:1px solid var(--line); }
+    @media (max-width:640px) { header,.wrap { padding:16px; } .tools { padding:10px 16px; } .panel,.service { padding:16px; } th,td { padding:9px; } html { scroll-padding-top:200px; } }
+    @media print {
+      :root { color-scheme:light; --bg:white; --panel:white; --line:#bbb; --text:#111; --muted:#333; --accent:#164e63; --gold:#734b00; --green:#14532d; }
+      .toolbar,.skip,.no-print { display:none; }
+      body { font-size:11pt; }
+      .wrap,header { max-width:none; padding:12px; }
+      .service,.panel { border-radius:0; }
+      h2,h3,summary { break-after:avoid; }
+      tr,.memory,.examples li { break-inside:avoid; }
+      .flow,th { background:white; }
+      code,.memory { color:#333; }
+      a { color:#164e63; }
+    }
+  </style>
 </head>
-<body class="p-4 md:p-8 antialiased text-base bg-slate-900 text-slate-200">
-    <nav aria-label="Study navigation" style="max-width: 80rem; margin: 0 auto 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem;">
-        <a href="../index.html" style="color: #7dd3fc; text-decoration: underline;">Study portal home</a>
-        <a href="../index.html#config" style="color: #7dd3fc; text-decoration: underline;">Configuration Management and Infrastructure as Code study resources</a>
-    </nav>
-
-    <div class="max-w-7xl mx-auto space-y-12">
-        
-        <!-- Header -->
-        <div class="text-center mb-12">
-            <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-3">AWS Certified DevOps Engineer - Professional</h1>
-            <p class="text-amber-500 font-bold text-lg md:text-2xl tracking-wide uppercase" style="color: #f59e0b;">Master Cheat Sheet: Config Management & IaC (All 50 Qs)</p>
-        </div>
-
-        <!-- SECTION 1: AWS CDK & Programmatic IaC -->
-        <section>
-            <h2 class="text-2xl md:text-3xl font-bold text-white border-b-2 border-slate-700 pb-3 mb-6 flex items-center" style="color: #f59e0b;">
-                <svg class="mr-3" style="width: 2rem; height: 2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
-                1. Programmatic IaC (CDK & Catalog)
-            </h2>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                
-                <!-- AWS CDK -->
-                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
-                    <h3 class="text-xl font-bold text-white mb-4">1. AWS CDK (Cloud Development Kit)</h3>
-                    <div class="space-y-3">
-                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Defines cloud infrastructure in code (Python, TypeScript) and compiles it down to CloudFormation.</p>
-                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To build reusable infrastructure (L3 constructs), enforce strict security rules via Aspects before deployment, and execute custom logic via AwsCustomResource.</p>
-                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Architect's Blueprint Validator.</strong> Before building the house (deploying), `CDK Aspects` scan the blueprint to ensure no doors are missing locks (blocking wildcard IAM roles).</p>
-                        <div>
-                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
-                            <span class="keyword-badge">cdk diff</span>
-                            <span class="keyword-badge">CDK Aspects</span>
-                            <span class="keyword-badge">synthesis phase</span>
-                            <span class="keyword-badge">AwsCustomResource</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AWS Service Catalog -->
-                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
-                    <h3 class="text-xl font-bold text-white mb-4">2. AWS Service Catalog</h3>
-                    <div class="space-y-3">
-                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Centralized hub for creating and managing approved IT service catalogs.</p>
-                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To allow developers to safely launch pre-approved infrastructure across an AWS Organization without giving them direct administrative IAM permissions.</p>
-                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Corporate Vending Machine.</strong> Developers push a button to get a pre-approved EC2 instance (Launch Constraint) without having the master keys to the AWS account.</p>
-                        <div>
-                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
-                            <span class="keyword-badge">Launch Constraints</span>
-                            <span class="keyword-badge">Delegated Administrator</span>
-                            <span class="keyword-badge">abstract IAM permissions</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- SECTION 2: Systems Manager, Config & OS Management -->
-        <section>
-            <h2 class="text-2xl md:text-3xl font-bold text-white border-b-2 border-slate-700 pb-3 mb-6 flex items-center mt-12" style="color: #f59e0b;">
-                <svg class="mr-3" style="width: 2rem; height: 2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                2. Systems Manager, Config & AppConfig
-            </h2>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                
-                <!-- SSM State Manager -->
-                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
-                    <h3 class="text-xl font-bold text-white mb-4">3. SSM State Manager</h3>
-                    <div class="space-y-3">
-                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Declarative, continuous configuration enforcement for EC2 and on-prem servers.</p>
-                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To natively enforce states (e.g., AD joins, running Ansible playbooks) avoiding fragile UserData scripts, and automatically fixing configuration drift.</p>
-                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Relentless Hotel Maid.</strong> No matter how many times a guest messes up the room (drift), State Manager runs on a schedule to restore it to the exact standard.</p>
-                        <div>
-                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
-                            <span class="keyword-badge">continuous compliance</span>
-                            <span class="keyword-badge">enforce state</span>
-                            <span class="keyword-badge">AWS-ApplyAnsiblePlaybooks</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AWS Config Auto-Remediation -->
-                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
-                    <h3 class="text-xl font-bold text-white mb-4">4. AWS Config Auto-Remediation</h3>
-                    <div class="space-y-3">
-                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Links compliance auditing directly to automated fixes.</p>
-                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To detect non-compliant resources (like missing tags or open SGs) and instantly trigger native SSM Automation documents to fix them without writing Lambda scripts.</p>
-                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Automated Traffic Cop.</strong> It spots a car speeding (untagged EC2), pulls it over, and automatically slaps a ticket on it (appends a tag via SSM).</p>
-                        <div>
-                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
-                            <span class="keyword-badge">auto-remediation</span>
-                            <span class="keyword-badge">SSM Automation document</span>
-                            <span class="keyword-badge">zero custom code</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AWS AppConfig -->
-                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
-                    <h3 class="text-xl font-bold text-white mb-4">5. AWS AppConfig</h3>
-                    <div class="space-y-3">
-                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Dynamic configuration and feature flag management.</p>
-                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To roll out application changes gradually, monitor CloudWatch alarms during "bake time", and auto-rollback instantly without restarting compute environments.</p>
-                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Volume Dial.</strong> Slowly turn up the volume of a new feature to 10%, 50%, then 100%. If the speakers crackle (CloudWatch Alarm), it instantly snaps back to 0%.</p>
-                        <div>
-                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
-                            <span class="keyword-badge">feature flags</span>
-                            <span class="keyword-badge">dynamic rollout</span>
-                            <span class="keyword-badge">no restart required</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- EC2 Image Builder -->
-                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
-                    <h3 class="text-xl font-bold text-white mb-4">6. EC2 Image Builder</h3>
-                    <div class="space-y-3">
-                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Automates the creation, testing, and deployment of virtual machine images (AMIs).</p>
-                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To establish a secure, repeatable weekly pipeline for baking hardened OS images. Never poll this service; use it to push SNS events when a new AMI is ready.</p>
-                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Factory Assembly Line.</strong> It takes a raw OS, installs your custom security software, runs a test suite on it, and publishes the finished "Golden Image" AMI.</p>
-                        <div>
-                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
-                            <span class="keyword-badge">Golden AMI</span>
-                            <span class="keyword-badge">event-driven pipeline</span>
-                            <span class="keyword-badge">automate image creation</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- SECTION 3: CloudFormation Mechanics -->
-        <section>
-            <h2 class="text-2xl md:text-3xl font-bold text-white border-b-2 border-slate-700 pb-3 mb-6 flex items-center mt-12" style="color: #f59e0b;">
-                <svg class="mr-3" style="width: 2rem; height: 2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
-                3. CloudFormation Mechanics & StackSets
-            </h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
-                    <span class="font-extrabold text-xl block mb-3" style="color: #38bdf8;">Stack Coupling & Naming</span>
-                    <p class="text-slate-300 leading-relaxed mb-2"><strong style="color: #fff;">Nested vs Cross-Stack:</strong> Cross-Stack (Exports) creates a hard lock. You can't modify an exported value. Nested Stacks bypass this and overcome the 51,200-byte size limit.</p>
-                    <p class="text-slate-300 leading-relaxed"><strong style="color: #fff;">Name Collisions:</strong> To deploy Dev and Prod stacks in the <em>same account and region</em>, completely remove explicit physical <code>Name:</code> properties to let CFN auto-generate unique hashes.</p>
-                </div>
-                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
-                    <span class="font-extrabold text-xl block mb-3" style="color: #38bdf8;">Secrets & Dynamic References</span>
-                    <p class="text-slate-300 leading-relaxed mb-2"><strong style="color: #fff;">Secrets Manager:</strong> <code>{{resolve:secretsmanager:...}}</code> Use combined with <code>SecretTargetAttachment</code> to dynamically <em>generate</em> and auto-rotate RDS passwords.</p>
-                    <p class="text-slate-300 leading-relaxed"><strong style="color: #fff;">SSM SecureString:</strong> <code>{{resolve:ssm-secure:...}}</code> Best for static encrypted keys that do not need automatic rotation functionality.</p>
-                </div>
-                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
-                    <span class="font-extrabold text-xl block mb-3" style="color: #38bdf8;">StackSets Orchestration</span>
-                    <p class="text-slate-300 leading-relaxed mb-2"><strong style="color: #fff;">AccountRemovalBehavior:</strong> Set to <strong>RETAIN</strong> if you want an account moved out of an OU to keep its infrastructure intact instead of destroying it.</p>
-                    <p class="text-slate-300 leading-relaxed"><strong style="color: #fff;">Drift Recovery:</strong> If someone manually deletes a resource in one member account, do NOT delete the stack instance. Execute <code>UpdateStackInstances</code> on that specific account.</p>
-                </div>
-                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
-                    <span class="font-extrabold text-xl block mb-3" style="color: #38bdf8;">Policies & Conditions</span>
-                    <p class="text-slate-300 leading-relaxed mb-2"><strong style="color: #fff;">Stack Policy:</strong> Prevents specific resources from <code>Update:Replace</code> or <code>Update:Delete</code> during stack updates.</p>
-                    <p class="text-slate-300 leading-relaxed mb-2"><strong style="color: #fff;">DeletionPolicy: Retain:</strong> Survives stack deletion entirely.</p>
-                    <p class="text-slate-300 leading-relaxed"><strong style="color: #fff;">CreationPolicy:</strong> Pauses stack creation until OS scripts finish via <code>cfn-signal</code>.</p>
-                </div>
-                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md lg:col-span-2">
-                    <span class="font-extrabold text-xl block mb-3" style="color: #fb7185;">🚨 Troubleshooting CloudFormation Failures</span>
-                    <p class="text-slate-300 leading-relaxed mb-2"><strong style="color: #fff;">DELETE_IN_PROGRESS (Custom Resource Stuck):</strong> The backing Lambda was deleted out-of-band. Manually send a <code>"Status": "SUCCESS"</code> JSON payload via <code>curl -X PUT</code> to the S3 ResponseURL found in CloudTrail.</p>
-                    <p class="text-slate-300 leading-relaxed mb-2"><strong style="color: #fff;">UPDATE_ROLLBACK_FAILED:</strong> A resource failed to revert. Fix the out-of-band issue (e.g., recreate the manually deleted IAM role it needs for teardown), then execute <code>ContinueUpdateRollback</code>.</p>
-                    <p class="text-slate-300 leading-relaxed mb-2"><strong style="color: #fff;">S3 DELETE_FAILED:</strong> CloudFormation cannot delete an S3 bucket with objects inside it. It must be emptied first.</p>
-                    <p class="text-slate-300 leading-relaxed"><strong style="color: #fff;">DependsOn Race Condition:</strong> If CFN fails saying a bucket doesn't exist when applying a bucket policy, explicitly add <code>DependsOn: MyBucket</code> to the policy resource to force sequential execution.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 4: Compute & Orchestration Edge Cases -->
-        <section class="mt-12 pb-12">
-            <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-6 md:p-10 border border-amber-500/30 shadow-2xl">
-                <h2 class="text-2xl md:text-3xl font-bold text-white mb-8 flex items-center border-b border-slate-700 pb-4">
-                    <span class="bg-amber-500 text-slate-900 rounded-full w-10 h-10 flex items-center justify-center mr-4 text-xl">💡</span>
-                    4. Compute, CI/CD, & The Polling Trap
-                </h2>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 text-slate-200">
-                    
-                    <!-- Compute Workflows -->
-                    <div>
-                        <h3 class="font-bold mb-4 text-xl border-b border-slate-700/50 pb-2" style="color: #38bdf8;">CI/CD & Compute Workflows</h3>
-                        <ul class="space-y-4 list-disc pl-5" style="color: #e2e8f0;">
-                            <li><strong style="color: #fff;">Private EKS Deployments:</strong> To run <code>kubectl apply</code> in CodePipeline against a private EKS cluster, you MUST attach the <strong>CodeBuild project to the private VPC subnet</strong> and map its IAM role into the Kubernetes <code>aws-auth</code> ConfigMap.</li>
-                            <li><strong style="color: #fff;">Least Privilege Pipeline Execution:</strong> To allow a developer to manually trigger a CodePipeline that uses CloudFormation (without giving the developer full admin access), grant the developer <strong><code>iam:PassRole</code></strong> so they can pass the Service Role to CFN.</li>
-                            <li><strong style="color: #fff;">Elastic Beanstalk AL2 Proxies:</strong> On Amazon Linux 2 platforms, NGINX configurations placed in <code>.ebextensions</code> are completely ignored. They MUST be placed in <strong><code>.platform/nginx/conf.d/</code></strong>.</li>
-                            <li><strong style="color: #fff;">Elastic Beanstalk Secrets:</strong> Do not place highly sensitive DB passwords in plain-text Environment Properties. Grant the EC2 instance profile access to Secrets Manager and fetch the secret via the <strong>AWS SDK at runtime</strong>.</li>
-                            <li><strong style="color: #fff;">EC2 Image Builder to Beanstalk:</strong> To auto-update Beanstalk with a new AMI, use an <strong>Event-Driven architecture</strong> (Image Builder -> SNS -> Lambda -> <code>UpdateEnvironment</code> API). Do not use <code>.ebextensions</code> for AMI swaps.</li>
-                        </ul>
-                    </div>
-
-                    <!-- Beware the "Polling" Trap -->
-                    <div>
-                        <h3 class="font-bold mb-4 text-xl border-b border-slate-700/50 pb-2" style="color: #fb7185;">The "Polling" Anti-Pattern</h3>
-                        <div class="bg-slate-900/50 p-4 rounded-lg border border-rose-900/50 mt-2">
-                            <p class="mb-3">The AWS DevOps Professional exam heavily penalizes architectures that rely on <strong>polling</strong> (e.g., writing custom bash loops to check an API every 5 minutes, or using Managed Updates to poll for AMIs).</p>
-                            <p><strong>When you see the word "poll":</strong> Instantly look for a distractor that uses EventBridge, Amazon SNS, or native AWS Config remediation actions. AWS strongly prefers asynchronous, event-driven, push-based architectures.</p>
-                            <div class="mt-4">
-                                <span class="keyword-badge">Avoid: Cron jobs</span>
-                                <span class="keyword-badge">Avoid: While loops</span>
-                                <span class="keyword-badge">Favor: EventBridge</span>
-                                <span class="keyword-badge">Favor: Native SSM triggers</span>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
+<body>
+  <a href="#main" class="skip">Skip to cheatsheet</a>
+  <header id="top">
+    <div class="eyebrow">AWS DOP-C02 / CONFIGURATION MANAGEMENT &amp; INFRASTRUCTURE AS CODE</div>
+    <h1>Understand the service.<br>Recognize the requirement. Recall the answer.</h1>
+    <p>One consolidated revision sheet for <strong>50 mapped reference questions</strong>: service functions first, numbered examples next, then keyword mappings and comparison tables.</p>
+    <p class="muted">Question numbers and option numbers refer to the supplied master questionnaire, not an official AWS exam. Prepared 9 November 2026. Option order can change in other quizzes.</p>
+    <p><a href="https://meetparag81.github.io/AWSdevopsprofessionalrepo/index.html">Study portal home</a> | <a href="https://meetparag81.github.io/AWSdevopsprofessionalrepo/config-iac/index.html">Open the reference questionnaire</a> <span class="muted">(online links; internet connection required)</span></p>
+  </header>
+  <div class="toolbar">
+    <div class="tools">
+      <label for="search">Find a keyword:</label>
+      <input id="search" type="search" placeholder="e.g. cdk synth, Q28, Retain, drift, rotation" autocomplete="off">
+      <button id="clear" type="button">Clear</button>
+      <button id="print" type="button">Print / save PDF</button>
+      <nav class="nav" aria-label="Cheatsheet sections">
+        <a href="#services">Services</a><a href="#keywords">Keywords</a><a href="#comparisons">Comparisons</a><a href="#questions">Q1-50</a>
+      </nav>
+      <span id="status" class="muted" role="status" aria-live="polite"></span>
     </div>
+  </div>
+  <main id="main" class="wrap">
+    <section class="panel" id="how-to"><h2>How to choose the right IaC tool</h2><div class="grid"><div><h3>1. Identify the lifecycle</h3><p>Author, review, provision, configure at runtime, maintain OS state, detect drift, or recover a failure?</p></div><div><h3>2. Identify the scope</h3><p>One resource, a stack, a managed-node fleet, an OU, or multiple accounts and Regions?</p></div><div><h3>3. Identify the guarantee</h3><p>Prevent, detect, repair, retain, validate, wait for readiness, or roll back?</p></div></div><div class="memory">Choose by the lifecycle and required control, not just the word "configuration".</div><p class="caution">Option numbers preserve the supplied reference key, not official AWS exam answers. Some keys are incomplete, ambiguous, or outdated: the amber notes state the practical correction. Do not memorize claims of instant updates or automatic repair without checking the mechanism.</p></section>
+    <section id="services">
+      <h2>Service functions + numbered examples</h2>
+      <p class="muted">Each card explains what the service does, why to use it, where it appears in these questions, and the requirement that should trigger recall.</p>
+      <div id="service-list"></div>
+      <p id="empty-services" class="empty" hidden>No matching service cards. Try a shorter keyword or a question number such as Q23.</p>
+    </section>
+    <section id="keywords" class="panel">
+      <h2>Exam requirement -&gt; service index</h2>
+      <div class="table-wrap">
+        <table><thead><tr><th>When the requirement says...</th><th>Recall this service / feature</th><th>Questions</th></tr></thead><tbody id="keyword-rows"></tbody></table>
+      </div>
+      <p id="empty-keywords" class="empty" hidden>No matching keyword mappings.</p>
+    </section>
+    <section id="comparisons" class="panel"><h2>High-value comparison tables</h2><article class="comparison"><h3>1. Which configuration tool?</h3><div class="table-wrap"><table><thead><tr><th>Requirement</th><th>Choose</th><th>Do not confuse with</th></tr></thead><tbody><tr><td>Runtime flag with safe rollout</td><td>AppConfig</td><td>Parameter Store alone does not stage rollouts</td></tr><tr><td>Keep instance service or Ansible state</td><td>State Manager</td><td>Inventory only reports metadata</td></tr><tr><td>OS patch eligibility and installation</td><td>Patch Manager</td><td>Approval is not installation</td></tr><tr><td>Configuration compliance and repair</td><td>Config + Automation</td><td>SCP/IAM prevents supported forbidden calls</td></tr><tr><td>Build a tested Golden AMI</td><td>Image Builder</td><td>Updating a running instance</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>2. CloudFormation lifecycle controls</h3><div class="table-wrap"><table><thead><tr><th>Operation</th><th>Control</th><th>Limit</th></tr></thead><tbody><tr><td>Block replacement/deletion during update</td><td>Stack policy</td><td>Can be overridden by an authorized caller</td></tr><tr><td>Prevent DeleteStack</td><td>Termination protection</td><td>Does not block update replacement</td></tr><tr><td>Keep resource on stack deletion/removal</td><td>DeletionPolicy: Retain</td><td>Not old-resource replacement retention</td></tr><tr><td>Keep old physical resource on replacement</td><td>UpdateReplacePolicy: Retain</td><td>New resource still created</td></tr><tr><td>Wait for bootstrap</td><td>CreationPolicy + cfn-signal</td><td>Separate from DependsOn ordering</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>3. Composition and custom execution</h3><div class="table-wrap"><table><thead><tr><th>Need</th><th>Choose</th><th>Memory</th></tr></thead><tbody><tr><td>Lock a classic cross-stack reference</td><td>Export + ImportValue</td><td>Consumer locks exported value</td></tr><tr><td>Deploy modular templates together</td><td>Nested stacks</td><td>Parent orchestrates children</td></tr><tr><td>Process shorthand in a template</td><td>Macro</td><td>Transform before deployment</td></tr><tr><td>Execute schema initialization</td><td>Custom resource provider</td><td>Work + lifecycle response</td></tr><tr><td>Deploy template to many accounts</td><td>StackSets</td><td>Account/Region stack instances</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>4. Secret lifecycle</h3><div class="table-wrap"><table><thead><tr><th>Step</th><th>Feature</th><th>Trap</th></tr></thead><tbody><tr><td>Generate a random secret</td><td>Secret GenerateSecretString</td><td>Dynamic reference does not generate</td></tr><tr><td>Read secret during supported stack operation</td><td>Secrets Manager dynamic reference</td><td>Not continuous consumer refresh</td></tr><tr><td>Add DB connection details</td><td>SecretTargetAttachment</td><td>Not a rotation schedule</td></tr><tr><td>Schedule secret rotation</td><td>RotationSchedule + function</td><td>Attachment alone cannot rotate</td></tr><tr><td>Inject ECS container secret</td><td>Container Secrets / ValueFrom ARN</td><td>Do not use unsupported ssm-secure environment property</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>5. Role and network boundaries</h3><div class="table-wrap"><table><thead><tr><th>Requirement</th><th>Needed</th><th>Not enough</th></tr></thead><tbody><tr><td>Start existing pipeline</td><td>StartPipelineExecution</td><td>PassRole alone</td></tr><tr><td>Assign a service role</td><td>Scoped iam:PassRole</td><td>A role ARN without caller authorization</td></tr><tr><td>Deploy CloudFormation action</td><td>Pipeline/action/service-role permissions</td><td>Caller trigger permission alone</td></tr><tr><td>Private EKS kubectl</td><td>CodeBuild network + EKS authorization</td><td>IAM role with no route</td></tr><tr><td>Read KMS-encrypted secret</td><td>Secret-read + appropriate KMS use</td><td>Network access alone</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>6. Quiz wording that needs caution</h3><div class="table-wrap"><table><thead><tr><th>Question</th><th>Reference shortcut</th><th>Practical correction</th></tr></thead><tbody><tr><td>Q13</td><td>60 KB is too large</td><td>Direct body 51,200 bytes; S3 template up to 1 MB</td></tr><tr><td>Q23</td><td>AccountRemovalBehavior=RETAIN</td><td>API property: RetainStacksOnAccountRemoval=true</td></tr><tr><td>Q31</td><td>Delegated admin edits shared portfolio</td><td>Imported products/constraints cannot be edited by recipients</td></tr><tr><td>Q35</td><td>Trigger pipeline needs PassRole</td><td>Existing pipeline trigger normally needs StartPipelineExecution</td></tr><tr><td>Q43</td><td>Update restores deleted subnet</td><td>Detection and unchanged update are not universal repairs</td></tr><tr><td>Q47</td><td>OpsWorks for Chef Automate</td><td>Retired May 5, 2024; historical key only</td></tr><tr><td>Q48</td><td>Attachment schedules rotation</td><td>Separate RotationSchedule and rotation implementation</td></tr></tbody></table></div></article></section>
+    <section id="questions" class="panel">
+      <h2>All 50 questions: recall and answer index</h2>
+      <p>Each entry includes the reference answer number, a requirement-based shortcut, and relevant technical corrections. Search Q followed by a number to jump between its examples and index entry.</p>
+      <button id="expand" class="no-print" type="button">Expand all question details</button>
+      <button id="collapse" class="no-print" type="button">Collapse all question details</button>
+      <div id="question-list"></div>
+      <p id="empty-questions" class="empty" hidden>No matching questions.</p>
+    </section>
+    <section class="panel" id="glossary"><h2>Supporting terms and official caveat references</h2><div class="table-wrap"><table><thead><tr><th>Term</th><th>Meaning</th><th>Recall</th></tr></thead><tbody><tr><td>Logical ID / physical ID</td><td>Template identity / deployed resource identity</td><td>Renaming a logical ID can mean delete + create</td></tr><tr><td>Association / Automation runbook</td><td>Scheduled desired state / procedural workflow</td><td>State Manager != Automation</td></tr><tr><td>Patch baseline / maintenance window</td><td>Eligibility rules / scheduled execution</td><td>Approved != installed</td></tr><tr><td>Change set / drift detection</td><td>Proposed deployment changes / actual configuration differences</td><td>Preview != repair</td></tr><tr><td>SSM Agent / instance profile</td><td>Managed-node agent / node AWS permissions</td><td>Both still need network connectivity</td></tr><tr><td>SNS / EventBridge / Lambda</td><td>Pub-sub / event routing / execution</td><td>Useful completion and remediation pipelines</td></tr></tbody></table></div><h3>Official documentation for disputed or incomplete keys</h3><ul><li><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/dynamic-references-ssm-secure-strings.html">SecureString supported properties</a></li><li><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-secretsmanager-rotationschedule.html">Secret rotation resource</a></li><li><a href="https://docs.aws.amazon.com/servicecatalog/latest/adminguide/catalogs_portfolios_sharing.html">Portfolio sharing restrictions</a></li><li><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/detect-drift-stack.html">CloudFormation drift guidance</a></li></ul><p class="muted">Documentation links require internet access. The summaries and all question mappings work offline.</p></section>
+    <noscript><p class="caution">Enable JavaScript to display the service cards and all 50 question mappings. The static comparison tables and glossary remain available without JavaScript.</p></noscript>
+  </main>
+  <footer class="wrap"><p><a href="#top">Back to top</a> | Standalone HTML: no CDN, login, analytics, or external runtime dependencies.</p><p class="muted">Reference: MonitoringWebsite/config-iac/index.html. All 50 option numbers match that reference. Technical caveats do not alter quiz questions, keys, sign-in, or saved progress. Prepared 9 November 2026.</p></footer>
+  <script>
+    "use strict";
+    const services = [
+  {
+    "id": "stacksets",
+    "name": "CloudFormation StackSets",
+    "memory": "Deploy one template to MANY accounts / Regions",
+    "purpose": "Deploy and operate stack instances across accounts and Regions, including service-managed organization targets.",
+    "why": "Use a standardized infrastructure baseline without manually deploying each account.",
+    "flow": "Template -> StackSet -> target OU/accounts + Regions -> stack instances",
+    "mappings": [
+      [
+        "Existing and future account baselines",
+        "Service-managed permissions + automatic deployment"
+      ],
+      [
+        "Account leaves OU but resources must stay",
+        "RetainStacksOnAccountRemoval=true"
+      ]
+    ],
+    "caveats": [
+      "StackSets deploy resources; Config aggregators only collect compliance views.",
+      "Enable trusted access and target the required Regions; retention is different from resource-level DeletionPolicy."
+    ],
+    "questions": [
+      1,
+      23
+    ],
+    "examples": [
+      [
+        1,
+        "Baseline resources in existing and future organization accounts -> Service-managed StackSets + automatic deployment"
+      ],
+      [
+        23,
+        "Keep StackSet resources when an account leaves the target OU -> AutoDeployment RetainStacksOnAccountRemoval=true"
+      ]
+    ]
+  },
+  {
+    "id": "cdk",
+    "name": "AWS CDK",
+    "memory": "CODE -> SYNTHESIZE -> REVIEW -> DEPLOY",
+    "purpose": "Define infrastructure with constructs in programming languages, then synthesize CloudFormation templates.",
+    "why": "Reuse infrastructure patterns and integrate validation into development workflows.",
+    "flow": "CDK app -> Aspects / validation -> cdk synth -> cdk diff -> reviewed deployment",
+    "mappings": [
+      [
+        "Raw CloudFormation output",
+        "cdk synth"
+      ],
+      [
+        "Preview resource changes",
+        "cdk diff"
+      ],
+      [
+        "Validate construct tree",
+        "CDK Aspects"
+      ]
+    ],
+    "caveats": [
+      "cdk deploy provisions; synth and diff do not deploy.",
+      "L3 constructs are reusable patterns, not automatic security guarantees."
+    ],
+    "questions": [
+      2,
+      11,
+      36,
+      42
+    ],
+    "examples": [
+      [
+        2,
+        "Review the raw template generated from CDK -> cdk synth"
+      ],
+      [
+        11,
+        "Define infrastructure using Python or TypeScript classes -> AWS CDK"
+      ],
+      [
+        36,
+        "Preview CDK infrastructure changes -> cdk diff"
+      ],
+      [
+        42,
+        "Check IAM properties during CDK synthesis -> CDK Aspect with a failing validation gate"
+      ]
+    ]
+  },
+  {
+    "id": "appconfig",
+    "name": "AWS AppConfig",
+    "memory": "Safe RUNTIME configuration rollout",
+    "purpose": "Validate and deploy configuration and feature flags with deployment strategies and optional alarm-driven rollback.",
+    "why": "Change behavior without a code redeployment while limiting configuration rollout risk.",
+    "flow": "Configuration -> validator -> staged deployment -> client retrieval -> alarm / rollback",
+    "mappings": [
+      [
+        "Feature flag without restart",
+        "AppConfig runtime retrieval"
+      ],
+      [
+        "Gradual rollout + alarm rollback",
+        "Deployment strategy + CloudWatch alarms"
+      ]
+    ],
+    "caveats": [
+      "Applications need a runtime retrieval integration or agent/extension.",
+      "Validation, deployment duration, bake time, and client cache refresh solve different problems."
+    ],
+    "questions": [
+      3,
+      19
+    ],
+    "examples": [
+      [
+        3,
+        "Validated feature flags changed without application redeployment -> AWS AppConfig"
+      ],
+      [
+        19,
+        "Gradually roll out Lambda configuration and roll back on alarm -> AppConfig deployment strategy + CloudWatch alarm"
+      ]
+    ]
+  },
+  {
+    "id": "state-manager",
+    "name": "SSM State Manager",
+    "memory": "Keep managed nodes in a DESIRED STATE",
+    "purpose": "Apply SSM documents as associations to maintain instance configuration on a schedule or applicable association events.",
+    "why": "Enforce agents, domain joining, and recurring Ansible without centralized SSH control nodes.",
+    "flow": "Managed-node targets -> scheduled association -> SSM document -> state correction",
+    "mappings": [
+      [
+        "Recurring agent or Ansible enforcement",
+        "State Manager association"
+      ],
+      [
+        "One-off remote command",
+        "Run Command"
+      ]
+    ],
+    "caveats": [
+      "Requires managed nodes, IAM, connectivity, and supported documents.",
+      "A scheduled association is not a real-time process watchdog."
+    ],
+    "questions": [
+      4,
+      16,
+      37
+    ],
+    "examples": [
+      [
+        4,
+        "Restart a stopped antivirus agent within 30 minutes -> State Manager scheduled association"
+      ],
+      [
+        16,
+        "Apply private GitHub Ansible playbooks every 24 hours without SSH -> State Manager + AWS-ApplyAnsiblePlaybooks"
+      ],
+      [
+        37,
+        "Domain joining and SSM Agent updates for newly launched instances -> State Manager associations"
+      ]
+    ]
+  },
+  {
+    "id": "catalog",
+    "name": "AWS Service Catalog",
+    "memory": "APPROVED products + controlled provisioning role",
+    "purpose": "Organize approved infrastructure products into portfolios and share access with launch constraints.",
+    "why": "Provide self-service without giving developers broad direct provisioning permissions.",
+    "flow": "Approved template -> product -> portfolio -> user access -> launch-role provisioning",
+    "mappings": [
+      [
+        "Preapproved EC2 without RunInstances permission",
+        "Product + launch constraint"
+      ],
+      [
+        "Current and future OU accounts",
+        "Organizations portfolio sharing"
+      ]
+    ],
+    "caveats": [
+      "Portfolio sharing does not provision infrastructure by itself.",
+      "Imported portfolios are not editable independent copies; local products belong in a local portfolio."
+    ],
+    "questions": [
+      5,
+      21,
+      31
+    ],
+    "examples": [
+      [
+        5,
+        "Approved EC2 products without direct RunInstances access -> Service Catalog products + launch constraints"
+      ],
+      [
+        21,
+        "Share approved portfolios with current and future OU accounts -> Service Catalog Organizations sharing"
+      ],
+      [
+        31,
+        "Let local admins add products to a shared portfolio -> Quiz key: Service Catalog delegated administration"
+      ]
+    ]
+  },
+  {
+    "id": "stack-composition",
+    "name": "CloudFormation composition",
+    "memory": "EXPORT locks; NESTED stacks orchestrate",
+    "purpose": "Connect separate stacks with classic exports/imports or compose child templates under a parent stack.",
+    "why": "Choose independent stack lifecycles versus deploy-together modules deliberately.",
+    "flow": "Export -> ImportValue lock | Parent -> child outputs -> child parameters",
+    "mappings": [
+      [
+        "Strict cross-stack dependency",
+        "Outputs Export + Fn::ImportValue"
+      ],
+      [
+        "Reusable deploy-together modules",
+        "AWS::CloudFormation::Stack"
+      ]
+    ],
+    "caveats": [
+      "Nested stacks do not remove all replacement risks.",
+      "Direct templates allow 51,200 bytes; S3-hosted templates allow up to 1 MB."
+    ],
+    "questions": [
+      6,
+      13,
+      20
+    ],
+    "examples": [
+      [
+        6,
+        "Prevent deleting a network stack while another stack uses its VPC -> Outputs Export + Fn::ImportValue"
+      ],
+      [
+        13,
+        "Split a large template into reusable deploy-together modules -> Nested stacks"
+      ],
+      [
+        20,
+        "Remove classic export locks while retaining modular templates -> Nested stacks with parent-wired outputs and parameters"
+      ]
+    ]
+  },
+  {
+    "id": "custom-resource",
+    "name": "CloudFormation custom resources",
+    "memory": "Custom provisioning LOGIC with a response contract",
+    "purpose": "Call a provider during resource Create, Update, or Delete and wait for a valid response.",
+    "why": "Integrate schema setup or unsupported provisioning into the dependency graph.",
+    "flow": "Database ready -> custom-resource request -> provider work -> response -> app resources",
+    "mappings": [
+      [
+        "Schema migration during stack deployment",
+        "Lambda-backed custom resource"
+      ],
+      [
+        "CDK AWS SDK call",
+        "AwsCustomResource"
+      ]
+    ],
+    "caveats": [
+      "Implement idempotency and safe lifecycle handlers; obey service timeout and response requirements.",
+      "Response SUCCESS must represent completed required work; retain the actual request identifiers."
+    ],
+    "questions": [
+      7,
+      33,
+      49
+    ],
+    "examples": [
+      [
+        7,
+        "Run schema migration after Aurora, before application instances -> Lambda-backed custom resource + DependsOn"
+      ],
+      [
+        33,
+        "Deletion waits for a missing custom-resource provider -> Quiz key: PUT a valid response to the request ResponseURL"
+      ],
+      [
+        49,
+        "Initialize an RDS schema from CDK -> Custom resource / AwsCustomResource SDK integration"
+      ]
+    ]
+  },
+  {
+    "id": "readiness",
+    "name": "CloudFormation ordering and readiness",
+    "memory": "DependsOn = ORDER; CreationPolicy = READY",
+    "purpose": "Use dependency relationships to sequence resources and success signals to gate supported resource creation.",
+    "why": "Avoid races and declaring an instance fleet ready before bootstrap completes.",
+    "flow": "Dependency ready -> launch -> bootstrap -> cfn-signal -> resource complete",
+    "mappings": [
+      [
+        "Wait for bootstrap",
+        "CreationPolicy + cfn-signal"
+      ],
+      [
+        "Missing dependency edge",
+        "DependsOn"
+      ]
+    ],
+    "caveats": [
+      "Ref/GetAtt and relevant Sub references infer dependencies.",
+      "For rolling ASG updates, review UpdatePolicy and WaitOnResourceSignals separately."
+    ],
+    "questions": [
+      8,
+      40
+    ],
+    "examples": [
+      [
+        8,
+        "Wait for OS bootstrap before declaring an ASG ready -> CreationPolicy + cfn-signal"
+      ],
+      [
+        40,
+        "Bucket policy applied before its bucket exists -> DependsOn when there is no implicit dependency"
+      ]
+    ]
+  },
+  {
+    "id": "protection",
+    "name": "CloudFormation protection and retention",
+    "memory": "UPDATE guard vs DELETE retention vs REPLACEMENT retention",
+    "purpose": "Apply stack policies and resource retention attributes to the appropriate lifecycle operation.",
+    "why": "Protect critical data without confusing stack deletion, updates, and physical replacement.",
+    "flow": "Stack policy guards update | DeletionPolicy handles removal | UpdateReplacePolicy handles old replacement",
+    "mappings": [
+      [
+        "Deny update deletion/replacement",
+        "Stack policy"
+      ],
+      [
+        "Keep resource after stack deletion",
+        "DeletionPolicy: Retain"
+      ],
+      [
+        "Keep old resource after replacement",
+        "UpdateReplacePolicy: Retain"
+      ]
+    ],
+    "caveats": [
+      "Termination protection blocks stack deletion, not resource replacement.",
+      "Retention is not a backup, and IAM controls are needed to prevent overrides or direct deletion."
+    ],
+    "questions": [
+      9,
+      29,
+      45
+    ],
+    "examples": [
+      [
+        9,
+        "Block deletion or replacement of a critical table during updates -> Stack policy denying Update:Delete and Update:Replace"
+      ],
+      [
+        29,
+        "Keep an RDS database running after deleting its stack -> DeletionPolicy: Retain"
+      ],
+      [
+        45,
+        "Keep a bucket on stack deletion but allow update replacement -> DeletionPolicy: Retain; separate UpdateReplacePolicy"
+      ]
+    ]
+  },
+  {
+    "id": "secrets",
+    "name": "AWS Secrets Manager",
+    "memory": "GENERATE != ATTACH != ROTATE != RETRIEVE",
+    "purpose": "Store secrets, generate random values, and configure supported automated rotation workflows.",
+    "why": "Avoid hardcoded passwords and permit authorized applications to retrieve credentials securely.",
+    "flow": "Secret GenerateSecretString -> DB dynamic reference -> attachment -> RotationSchedule -> runtime refresh",
+    "mappings": [
+      [
+        "Generated/rotating database password",
+        "Secrets Manager"
+      ],
+      [
+        "Connection details in secret",
+        "SecretTargetAttachment"
+      ],
+      [
+        "Thirty-day rotation",
+        "RotationSchedule"
+      ]
+    ],
+    "caveats": [
+      "Dynamic references retrieve values; changing the stored value alone does not reconfigure every consumer.",
+      "Customer-managed KMS encryption also requires appropriate key permissions."
+    ],
+    "questions": [
+      10,
+      44,
+      48
+    ],
+    "examples": [
+      [
+        10,
+        "Generate and inject an RDS password without template plaintext -> Secrets Manager + dynamic reference"
+      ],
+      [
+        44,
+        "Encrypted Beanstalk credentials absent from console plaintext -> Secrets Manager fetched at runtime using the instance role"
+      ],
+      [
+        48,
+        "Generate an RDS password and rotate it every 30 days -> Secrets Manager secret + attachment + rotation schedule"
+      ]
+    ]
+  },
+  {
+    "id": "parameters",
+    "name": "SSM Parameter Store",
+    "memory": "Central VALUES; SecureString encrypts",
+    "purpose": "Store configuration values and encrypted parameters for authorized applications and supported deployment references.",
+    "why": "Share static configuration or encrypted API keys without embedding values in source.",
+    "flow": "Parameter -> authorized retrieval / supported reference -> consumer cache refresh",
+    "mappings": [
+      [
+        "Shared endpoints or static values",
+        "Parameter Store"
+      ],
+      [
+        "Encrypted unrotated value",
+        "SecureString"
+      ],
+      [
+        "ECS container secret injection",
+        "Secrets ValueFrom parameter ARN"
+      ]
+    ],
+    "caveats": [
+      "ssm-secure CloudFormation references support only documented properties.",
+      "Parameter changes are not automatic push updates to all stacks and applications."
+    ],
+    "questions": [
+      12,
+      28
+    ],
+    "examples": [
+      [
+        12,
+        "Central configuration shared by stacks and applications -> SSM Parameter Store"
+      ],
+      [
+        28,
+        "Reference an unrotated encrypted API key in an ECS deployment -> Quiz key: Parameter Store ssm-secure dynamic reference"
+      ]
+    ]
+  },
+  {
+    "id": "image-builder",
+    "name": "EC2 Image Builder",
+    "memory": "BAKE -> TEST -> DISTRIBUTE",
+    "purpose": "Automate recipes, components, testing, and distribution of AMIs and supported container images.",
+    "why": "Produce repeatable Golden Images and trigger downstream deployments from build events.",
+    "flow": "Scheduled recipe -> build -> test -> distribute -> SNS -> downstream update",
+    "mappings": [
+      [
+        "Weekly patched Golden AMI",
+        "Image Builder pipeline"
+      ],
+      [
+        "Apply successful image to Beanstalk",
+        "SNS -> Lambda -> UpdateEnvironment"
+      ]
+    ],
+    "caveats": [
+      "Only use an image ready in the target Region and compatible with the target platform.",
+      "Prefer event-driven completion handling for this workflow; publishing an image does not replace running instances."
+    ],
+    "questions": [
+      14,
+      46
+    ],
+    "examples": [
+      [
+        14,
+        "Weekly build, test, and multi-Region distribution of Golden AMIs -> EC2 Image Builder"
+      ],
+      [
+        46,
+        "Apply each successfully built Golden AMI to Beanstalk -> Image Builder SNS -> Lambda -> UpdateEnvironment"
+      ]
+    ]
+  },
+  {
+    "id": "failure-recovery",
+    "name": "CloudFormation failure recovery",
+    "memory": "Fix the CAUSE, then resume the operation",
+    "purpose": "Use stack events and provider evidence to repair failed deletions and rollbacks.",
+    "why": "Recover controlled infrastructure operations without blindly skipping resources or losing retained data.",
+    "flow": "Stack events -> identify failed resource -> repair dependency/data condition -> retry or ContinueUpdateRollback",
+    "mappings": [
+      [
+        "Nonempty S3 DELETE_FAILED",
+        "Confirm data policy, empty bucket, retry"
+      ],
+      [
+        "UPDATE_ROLLBACK_FAILED",
+        "Repair dependency + ContinueUpdateRollback"
+      ]
+    ],
+    "caveats": [
+      "Skipping rollback resources leaves inconsistencies that must be reconciled.",
+      "Do not delete data to satisfy an operation without verifying retention needs."
+    ],
+    "questions": [
+      15,
+      27
+    ],
+    "examples": [
+      [
+        15,
+        "S3 bucket causes DELETE_FAILED -> Empty objects, versions, and delete markers, then retry"
+      ],
+      [
+        27,
+        "Rollback cannot complete because a custom-resource role was deleted -> Restore required role, then ContinueUpdateRollback"
+      ]
+    ]
+  },
+  {
+    "id": "drift",
+    "name": "CloudFormation drift + AWS Config",
+    "memory": "DETECT actual-vs-template differences; plan REPAIR separately",
+    "purpose": "Inspect supported resource configuration differences and automate periodic compliance notification.",
+    "why": "Find out-of-band changes and target a controlled remediation plan.",
+    "flow": "Drift check -> Config NON_COMPLIANT -> EventBridge -> SNS -> reviewed repair",
+    "mappings": [
+      [
+        "Automated stack drift notification",
+        "Config cloudformation-stack-drift-detection-check"
+      ],
+      [
+        "StackSet out-of-band change",
+        "StackSet drift detection"
+      ]
+    ],
+    "caveats": [
+      "Detection is not repair and not an immediate event guarantee.",
+      "An unchanged update is not a universal repair operation for deleted resources."
+    ],
+    "questions": [
+      17,
+      43
+    ],
+    "examples": [
+      [
+        17,
+        "Automated stack-drift notification to SNS -> Config drift-check rule -> EventBridge -> SNS"
+      ],
+      [
+        43,
+        "Recover a manually deleted StackSet subnet -> Quiz key: drift detection + targeted UpdateStackInstances"
+      ]
+    ]
+  },
+  {
+    "id": "codeartifact",
+    "name": "AWS CodeArtifact",
+    "memory": "Private PACKAGE distribution",
+    "purpose": "Host supported software packages for authorized teams and accounts.",
+    "why": "Share internal CDK construct libraries through ordinary package managers.",
+    "flow": "Build language package -> private repository -> authorized npm / pip install",
+    "mappings": [
+      [
+        "Internal CDK libraries via npm/pip",
+        "CodeArtifact"
+      ]
+    ],
+    "caveats": [
+      "Repository/domain policies and token permissions must align.",
+      "A package repository distributes code; it does not deploy a portfolio or StackSet."
+    ],
+    "questions": [
+      18
+    ],
+    "examples": [
+      [
+        18,
+        "Share proprietary CDK constructs through npm or pip -> AWS CodeArtifact"
+      ]
+    ]
+  },
+  {
+    "id": "beanstalk",
+    "name": "Elastic Beanstalk configuration",
+    "memory": ".ebextensions = config; .platform = platform hooks / proxy",
+    "purpose": "Customize supported environment platforms through source-bundle configuration and platform extension directories.",
+    "why": "Apply repeatable OS settings and proxy changes to newly provisioned environment instances.",
+    "flow": "Source bundle -> .ebextensions / .platform -> environment instance customization",
+    "mappings": [
+      [
+        "OS users/packages/files",
+        "Root .ebextensions/*.config"
+      ],
+      [
+        "Amazon Linux 2 NGINX snippets",
+        "Root .platform/nginx/conf.d/*.conf"
+      ]
+    ],
+    "caveats": [
+      "Use the current platform documentation; directory purpose matters.",
+      "Runtime secrets should not be copied into ordinary plaintext environment settings."
+    ],
+    "questions": [
+      24,
+      34
+    ],
+    "examples": [
+      [
+        24,
+        "Provision OS users, files, and packages in Beanstalk -> Root .ebextensions/*.config files"
+      ],
+      [
+        34,
+        "NGINX upload-size customization on Beanstalk Amazon Linux 2 -> Root .platform/nginx/conf.d/*.conf"
+      ]
+    ]
+  },
+  {
+    "id": "macros",
+    "name": "CloudFormation macros",
+    "memory": "TRANSFORM template before deployment",
+    "purpose": "Use a Lambda-backed macro and Transform declarations to process template fragments.",
+    "why": "Expand custom shorthand into standard infrastructure definitions.",
+    "flow": "Source template -> Transform macro -> processed template -> stack operation",
+    "mappings": [
+      [
+        "Custom template syntax expansion",
+        "CloudFormation macro"
+      ]
+    ],
+    "caveats": [
+      "Macros process templates; custom resources perform lifecycle provisioning.",
+      "Review processed results and required capabilities before execution."
+    ],
+    "questions": [
+      25
+    ],
+    "examples": [
+      [
+        25,
+        "Expand custom template shorthand before provisioning -> CloudFormation macros"
+      ]
+    ]
+  },
+  {
+    "id": "patch-manager",
+    "name": "SSM Patch Manager",
+    "memory": "Baseline APPROVES; execution INSTALLS",
+    "purpose": "Select approved patches using baselines and execute scan/install operations on managed nodes.",
+    "why": "Separate staged environment approval from exceptional urgent patch installation.",
+    "flow": "Baseline + patch-group mapping -> maintenance schedule -> AWS-RunPatchBaseline",
+    "mappings": [
+      [
+        "Dev now / Prod after burn-in",
+        "Different baselines + patch groups"
+      ],
+      [
+        "Urgent patch exception",
+        "Operation=Install + InstallOverrideList"
+      ]
+    ],
+    "caveats": [
+      "A CVE identifier is not a downloadable patch.",
+      "Approval delay does not schedule installation or guarantee completion."
+    ],
+    "questions": [
+      26,
+      32
+    ],
+    "examples": [
+      [
+        26,
+        "Approve Dev patches now but delay Prod patches seven days -> Separate patch baselines mapped to patch groups"
+      ],
+      [
+        32,
+        "Install a critical patch without changing the normal delay baseline -> AWS-RunPatchBaseline with InstallOverrideList"
+      ]
+    ]
+  },
+  {
+    "id": "inventory",
+    "name": "SSM Inventory",
+    "memory": "COLLECT metadata, then QUERY",
+    "purpose": "Collect managed-node software/system metadata and synchronize supported inventory to S3.",
+    "why": "Audit installed software across a fleet without per-instance custom collectors.",
+    "flow": "Inventory association -> resource data sync -> S3 -> Athena / reporting",
+    "mappings": [
+      [
+        "Installed package list across fleet",
+        "SSM Inventory"
+      ],
+      [
+        "SQL over centralized inventory",
+        "S3 data sync + Athena"
+      ]
+    ],
+    "caveats": [
+      "Inventory is not Patch Manager or an automatic remediation engine.",
+      "Collection coverage, freshness, schema, and permissions determine reporting quality."
+    ],
+    "questions": [
+      30
+    ],
+    "examples": [
+      [
+        30,
+        "Central installed-software inventory with SQL queries -> SSM Inventory + resource data sync + S3 + Athena"
+      ]
+    ]
+  },
+  {
+    "id": "config-remediation",
+    "name": "AWS Config + SSM Automation",
+    "memory": "DETECT configuration -> RUNBOOK fixes",
+    "purpose": "Evaluate resource compliance and invoke configured Automation remediation actions.",
+    "why": "Repair missing tags or overly permissive security-group rules with existing runbooks.",
+    "flow": "Config rule -> noncompliant resource -> Automation parameters + role -> fix -> reevaluate",
+    "mappings": [
+      [
+        "Missing required tags",
+        "required-tags + tagging runbook"
+      ],
+      [
+        "Remove prohibited public ports",
+        "Suitable security-group rule + remediation"
+      ]
+    ],
+    "caveats": [
+      "Reactive remediation does not prevent forbidden creation.",
+      "Choose runbook scope carefully and validate current resource state; compliance snapshots can be stale."
+    ],
+    "questions": [
+      22,
+      41,
+      50
+    ],
+    "examples": [
+      [
+        22,
+        "Detect and remove internet-open SSH with little custom code -> Config rule + SSM security-group remediation"
+      ],
+      [
+        41,
+        "Automatically add Environment=Unknown to noncompliant instances -> Config rule + SSM tagging remediation"
+      ],
+      [
+        50,
+        "Detect missing CostCenter tags and apply Unassigned -> Config required-tags + SSM Automation"
+      ]
+    ]
+  },
+  {
+    "id": "pipeline-access",
+    "name": "CodePipeline / IAM role boundaries",
+    "memory": "TRIGGER != PASS a role != EXECUTE deployment",
+    "purpose": "Authorize pipeline initiation separately from configuring service roles and running deployment actions.",
+    "why": "Give callers least privilege while pipeline/action roles hold provisioning permissions.",
+    "flow": "Caller StartPipelineExecution -> pipeline role -> action / CloudFormation service role",
+    "mappings": [
+      [
+        "Trigger existing pipeline",
+        "codepipeline:StartPipelineExecution"
+      ],
+      [
+        "Assign a service role",
+        "iam:PassRole"
+      ]
+    ],
+    "caveats": [
+      "PassRole does not itself start a pipeline.",
+      "Scope role resources and iam:PassedToService where appropriate; inspect the actual caller operation."
+    ],
+    "questions": [
+      35
+    ],
+    "examples": [
+      [
+        35,
+        "Least privilege to trigger an existing deployment pipeline -> Quiz key: iam:PassRole"
+      ]
+    ]
+  },
+  {
+    "id": "private-eks",
+    "name": "CodeBuild to private EKS",
+    "memory": "NETWORK path + IAM/EKS authorization",
+    "purpose": "Run build commands in VPC-connected CodeBuild and authorize its role to access Kubernetes.",
+    "why": "Deploy from CodePipeline without exposing a private cluster API to the internet.",
+    "flow": "CodePipeline -> CodeBuild VPC ENI -> private EKS endpoint -> authorized kubectl apply",
+    "mappings": [
+      [
+        "kubectl against a private API",
+        "VPC CodeBuild + EKS access/RBAC"
+      ]
+    ],
+    "caveats": [
+      "Private node subnets alone do not describe the cluster API endpoint mode.",
+      "The build also needs network paths to artifacts, logs, images, and other dependencies."
+    ],
+    "questions": [
+      38
+    ],
+    "examples": [
+      [
+        38,
+        "Run kubectl against a private EKS API from CodePipeline -> VPC-attached CodeBuild + EKS authorization"
+      ]
+    ]
+  },
+  {
+    "id": "naming",
+    "name": "CloudFormation physical naming",
+    "memory": "Reusable templates need UNIQUE physical names",
+    "purpose": "Allow generated resource names or derive unique names from stack/environment parameters.",
+    "why": "Deploy multiple isolated stacks without collisions in shared naming scopes.",
+    "flow": "Logical resource -> generated / unique physical name -> isolated stack deployment",
+    "mappings": [
+      [
+        "Dev/QA/Prod in one account and Region",
+        "Omit fixed names or parameterize uniqueness"
+      ]
+    ],
+    "caveats": [
+      "Some resources have global uniqueness requirements.",
+      "Explicit names are valid when unique; they can constrain replacement strategies."
+    ],
+    "questions": [
+      39
+    ],
+    "examples": [
+      [
+        39,
+        "Deploy Dev, QA, and Prod in the same account and Region -> Omit fixed physical names or use unique names"
+      ]
+    ]
+  },
+  {
+    "id": "chef-legacy",
+    "name": "Legacy OpsWorks / Chef",
+    "memory": "Historical key, NOT a current service choice",
+    "purpose": "OpsWorks for Chef Automate formerly provided managed Chef infrastructure and is now retired.",
+    "why": "Recognize an old questionnaire answer without carrying retired-service guidance into a new design.",
+    "flow": "Legacy Chef recipes -> evaluate supported Chef hosting or migration -> automated configuration",
+    "mappings": [
+      [
+        "Historical managed Chef quiz option",
+        "OpsWorks for Chef Automate (retired)"
+      ]
+    ],
+    "caveats": [
+      "End of life was May 5, 2024.",
+      "For current work, evaluate supported Chef tooling or a deliberate migration; State Manager is not a drop-in Chef server."
+    ],
+    "questions": [
+      47
+    ],
+    "examples": [
+      [
+        47,
+        "Reuse legacy Chef recipes on AWS -> Legacy quiz key: OpsWorks for Chef Automate"
+      ]
+    ]
+  }
+];
+    const questions = [
+  {
+    "id": 1,
+    "options": [
+      1
+    ],
+    "requirement": "Baseline resources in existing and future organization accounts",
+    "answer": "Service-managed StackSets + automatic deployment",
+    "service": "stacksets",
+    "caveat": "Enable trusted access and automatic deployment; target the organization root or required OUs and Regions. Organization membership alone does not enable every prerequisite."
+  },
+  {
+    "id": 2,
+    "options": [
+      3
+    ],
+    "requirement": "Review the raw template generated from CDK",
+    "answer": "cdk synth",
+    "service": "cdk",
+    "caveat": "Synthesis outputs CloudFormation templates; it does not deploy. Add a separate static-analysis build gate."
+  },
+  {
+    "id": 3,
+    "options": [
+      2
+    ],
+    "requirement": "Validated feature flags changed without application redeployment",
+    "answer": "AWS AppConfig",
+    "service": "appconfig",
+    "caveat": "The application must retrieve and apply configuration at runtime. Validators check data; rollout strategies and alarms control deployment safety."
+  },
+  {
+    "id": 4,
+    "options": [
+      2
+    ],
+    "requirement": "Restart a stopped antivirus agent within 30 minutes",
+    "answer": "State Manager scheduled association",
+    "service": "state-manager",
+    "caveat": "A 30-minute schedule plus execution delay is not a strict 30-minute recovery guarantee. Use an appropriate service supervisor and measure recovery latency for a hard SLA."
+  },
+  {
+    "id": 5,
+    "options": [
+      2
+    ],
+    "requirement": "Approved EC2 products without direct RunInstances access",
+    "answer": "Service Catalog products + launch constraints",
+    "service": "catalog",
+    "caveat": "The launch role provisions on behalf of the user. Restrict alternate provisioning permissions and allowed product parameters to prevent bypass."
+  },
+  {
+    "id": 6,
+    "options": [
+      2
+    ],
+    "requirement": "Prevent deleting a network stack while another stack uses its VPC",
+    "answer": "Outputs Export + Fn::ImportValue",
+    "service": "stack-composition",
+    "caveat": "Imports lock the exported value and exporting-stack deletion, not every property in the entire stack. Classic exports/imports are account- and Region-scoped."
+  },
+  {
+    "id": 7,
+    "options": [
+      1
+    ],
+    "requirement": "Run schema migration after Aurora, before application instances",
+    "answer": "Lambda-backed custom resource + DependsOn",
+    "service": "custom-resource",
+    "caveat": "Make the database dependency explicit or infer it with Ref/GetAtt; make the application depend on migration completion. Handle retries and Create/Update/Delete safely."
+  },
+  {
+    "id": 8,
+    "options": [
+      2
+    ],
+    "requirement": "Wait for OS bootstrap before declaring an ASG ready",
+    "answer": "CreationPolicy + cfn-signal",
+    "service": "readiness",
+    "caveat": "Signal the actual bootstrap exit status; configure signal count and timeout. Creation readiness is different from rolling-update readiness."
+  },
+  {
+    "id": 9,
+    "options": [
+      2
+    ],
+    "requirement": "Block deletion or replacement of a critical table during updates",
+    "answer": "Stack policy denying Update:Delete and Update:Replace",
+    "service": "protection",
+    "caveat": "A stack policy protects stack updates, not DeleteStack or direct service deletion. Restrict policy overrides and direct IAM access; add backups and suitable retention policies."
+  },
+  {
+    "id": 10,
+    "options": [
+      1
+    ],
+    "requirement": "Generate and inject an RDS password without template plaintext",
+    "answer": "Secrets Manager + dynamic reference",
+    "service": "secrets",
+    "caveat": "The reference retrieves a secret; it does not generate one. Use AWS::SecretsManager::Secret with GenerateSecretString, or a supported RDS-managed secret pattern."
+  },
+  {
+    "id": 11,
+    "options": [
+      3
+    ],
+    "requirement": "Define infrastructure using Python or TypeScript classes",
+    "answer": "AWS CDK",
+    "service": "cdk",
+    "caveat": "Constructs synthesize into CloudFormation. Programming-language convenience does not automatically validate application security."
+  },
+  {
+    "id": 12,
+    "options": [
+      1
+    ],
+    "requirement": "Central configuration shared by stacks and applications",
+    "answer": "SSM Parameter Store",
+    "service": "parameters",
+    "caveat": "Consumers must retrieve updates or refresh caches. CloudFormation resolves deployment-time references during applicable operations; changing a parameter does not instantly update every resource."
+  },
+  {
+    "id": 13,
+    "options": [
+      2
+    ],
+    "requirement": "Split a large template into reusable deploy-together modules",
+    "answer": "Nested stacks",
+    "service": "stack-composition",
+    "caveat": "51,200 bytes is the direct request-body limit, not the S3-hosted template limit of 1 MB. A 60 KB template can be uploaded to S3; nesting addresses modularity, not every quota."
+  },
+  {
+    "id": 14,
+    "options": [
+      3
+    ],
+    "requirement": "Weekly build, test, and multi-Region distribution of Golden AMIs",
+    "answer": "EC2 Image Builder",
+    "service": "image-builder",
+    "caveat": "Define recipes, components, schedule, tests, and distribution settings. Published images do not automatically update existing instances."
+  },
+  {
+    "id": 15,
+    "options": [
+      2
+    ],
+    "requirement": "S3 bucket causes DELETE_FAILED",
+    "answer": "Empty objects, versions, and delete markers, then retry",
+    "service": "failure-recovery",
+    "caveat": "Confirm retention and backup requirements before deleting data. Object Lock or legal hold can prevent emptying; Retain is an alternative when data must survive."
+  },
+  {
+    "id": 16,
+    "options": [
+      1
+    ],
+    "requirement": "Apply private GitHub Ansible playbooks every 24 hours without SSH",
+    "answer": "State Manager + AWS-ApplyAnsiblePlaybooks",
+    "service": "state-manager",
+    "caveat": "Managed nodes need SSM Agent, IAM/network access, Ansible prerequisites, and secure private-repository authentication. Confirm the document supports the chosen source."
+  },
+  {
+    "id": 17,
+    "options": [
+      1
+    ],
+    "requirement": "Automated stack-drift notification to SNS",
+    "answer": "Config drift-check rule -> EventBridge -> SNS",
+    "service": "drift",
+    "caveat": "The managed cloudformation-stack-drift-detection-check rule is periodic. It does not guarantee immediate detection; supported resource properties and explicit template values limit coverage."
+  },
+  {
+    "id": 18,
+    "options": [
+      1
+    ],
+    "requirement": "Share proprietary CDK constructs through npm or pip",
+    "answer": "AWS CodeArtifact",
+    "service": "codeartifact",
+    "caveat": "Publish the required language packages; grant domain/repository permissions and authorization-token access. TypeScript packaging alone does not create every language binding."
+  },
+  {
+    "id": 19,
+    "options": [
+      1
+    ],
+    "requirement": "Gradually roll out Lambda configuration and roll back on alarm",
+    "answer": "AppConfig deployment strategy + CloudWatch alarm",
+    "service": "appconfig",
+    "caveat": "Configure validators, alarm permissions, growth duration, and bake time. Rollback is not zero-latency; application retrieval/caching determines when the restored value is used."
+  },
+  {
+    "id": 20,
+    "options": [
+      1
+    ],
+    "requirement": "Remove classic export locks while retaining modular templates",
+    "answer": "Nested stacks with parent-wired outputs and parameters",
+    "service": "stack-composition",
+    "caveat": "Parent orchestration removes the classic ImportValue lock; it does not make replacing a VPC non-disruptive or eliminate dependency ordering. Plan dependent resource changes."
+  },
+  {
+    "id": 21,
+    "options": [
+      1
+    ],
+    "requirement": "Share approved portfolios with current and future OU accounts",
+    "answer": "Service Catalog Organizations sharing",
+    "service": "catalog",
+    "caveat": "Enable organizational integration and share to the correct node. Recipient user access, launch-role availability, and applicable constraints still require configuration."
+  },
+  {
+    "id": 22,
+    "options": [
+      1
+    ],
+    "requirement": "Detect and remove internet-open SSH with little custom code",
+    "answer": "Config rule + SSM security-group remediation",
+    "service": "config-remediation",
+    "caveat": "Configure authorized ports so port 22 is not allowed; select a runbook whose actions match the requirement. Review IPv4/IPv6 scope and avoid removing legitimate access. Detection is not instantaneous."
+  },
+  {
+    "id": 23,
+    "options": [
+      1
+    ],
+    "requirement": "Keep StackSet resources when an account leaves the target OU",
+    "answer": "AutoDeployment RetainStacksOnAccountRemoval=true",
+    "service": "stacksets",
+    "caveat": "The key uses AccountRemovalBehavior=RETAIN wording; the CloudFormation AutoDeployment API property is RetainStacksOnAccountRemoval. Retained stacks stop being managed by that StackSet."
+  },
+  {
+    "id": 24,
+    "options": [
+      2
+    ],
+    "requirement": "Provision OS users, files, and packages in Beanstalk",
+    "answer": "Root .ebextensions/*.config files",
+    "service": "beanstalk",
+    "caveat": "Use supported YAML keys and idempotent actions. Platform hooks are another platform-specific customization surface; do not assume every older instruction works on every platform."
+  },
+  {
+    "id": 25,
+    "options": [
+      1
+    ],
+    "requirement": "Expand custom template shorthand before provisioning",
+    "answer": "CloudFormation macros",
+    "service": "macros",
+    "caveat": "Macros transform template fragments. They do not replace runtime custom resources. Inspect processed templates and acknowledge required capabilities when applicable."
+  },
+  {
+    "id": 26,
+    "options": [
+      2
+    ],
+    "requirement": "Approve Dev patches now but delay Prod patches seven days",
+    "answer": "Separate patch baselines mapped to patch groups",
+    "service": "patch-manager",
+    "caveat": "Use supported patch-group tags and baseline registrations, or the relevant patch policy. Approval delay controls eligibility, not installation timing; schedule installation separately."
+  },
+  {
+    "id": 27,
+    "options": [
+      1
+    ],
+    "requirement": "Rollback cannot complete because a custom-resource role was deleted",
+    "answer": "Restore required role, then ContinueUpdateRollback",
+    "service": "failure-recovery",
+    "caveat": "Recreate required name, permissions, and trust; a recreated role has a new identity that may require policy repairs. Skip resources only as a last resort, then reconcile template and actual state."
+  },
+  {
+    "id": 28,
+    "options": [
+      1
+    ],
+    "requirement": "Reference an unrotated encrypted API key in an ECS deployment",
+    "answer": "Quiz key: Parameter Store ssm-secure dynamic reference",
+    "service": "parameters",
+    "caveat": "The syntax is valid only for supported CloudFormation properties; ECS TaskDefinition environment properties are not on the ssm-secure support list. Use container Secrets with a parameter ARN and execution-role permissions instead."
+  },
+  {
+    "id": 29,
+    "options": [
+      1
+    ],
+    "requirement": "Keep an RDS database running after deleting its stack",
+    "answer": "DeletionPolicy: Retain",
+    "service": "protection",
+    "caveat": "The resource remains billable and becomes unmanaged by the deleted stack. This does not preserve an old resource replaced during an update; use UpdateReplacePolicy for that lifecycle."
+  },
+  {
+    "id": 30,
+    "options": [
+      1
+    ],
+    "requirement": "Central installed-software inventory with SQL queries",
+    "answer": "SSM Inventory + resource data sync + S3 + Athena",
+    "service": "inventory",
+    "caveat": "Inventory collects metadata, not software repair or a complete vulnerability scan. Configure collection schedules, S3 access, catalog/schema, and Athena queries."
+  },
+  {
+    "id": 31,
+    "options": [
+      1
+    ],
+    "requirement": "Let local admins add products to a shared portfolio",
+    "answer": "Quiz key: Service Catalog delegated administration",
+    "service": "catalog",
+    "caveat": "Recipient admins cannot change products or constraints in an imported shared portfolio. Use a local portfolio for local products; delegated organization administration is not write access to every imported portfolio."
+  },
+  {
+    "id": 32,
+    "options": [
+      2
+    ],
+    "requirement": "Install a critical patch without changing the normal delay baseline",
+    "answer": "AWS-RunPatchBaseline with InstallOverrideList",
+    "service": "patch-manager",
+    "caveat": "Use a valid supported-platform YAML patch list URL and Operation=Install. The actual patch must exist and be accessible; CVE publication alone does not guarantee a patch or a 24-hour completion SLA."
+  },
+  {
+    "id": 33,
+    "options": [
+      1
+    ],
+    "requirement": "Deletion waits for a missing custom-resource provider",
+    "answer": "Quiz key: PUT a valid response to the request ResponseURL",
+    "service": "custom-resource",
+    "caveat": "Do not assume the full ResponseURL is recoverable from CloudTrail. Recover the actual request from available provider logs or restore the provider; perform required cleanup and send matching request IDs and physical ID. Never claim SUCCESS for failed cleanup."
+  },
+  {
+    "id": 34,
+    "options": [
+      1
+    ],
+    "requirement": "NGINX upload-size customization on Beanstalk Amazon Linux 2",
+    "answer": "Root .platform/nginx/conf.d/*.conf",
+    "service": "beanstalk",
+    "caveat": "Use the documented proxy-extension directory. .ebextensions remains supported for other OS/application settings; the quiz wording should not be read as a blanket removal of .ebextensions."
+  },
+  {
+    "id": 35,
+    "options": [
+      1
+    ],
+    "requirement": "Least privilege to trigger an existing deployment pipeline",
+    "answer": "Quiz key: iam:PassRole",
+    "service": "pipeline-access",
+    "caveat": "Triggering an already-configured pipeline normally requires codepipeline:StartPipelineExecution, not caller PassRole. PassRole is needed when a principal assigns or passes a service role; execution permissions belong to pipeline/action roles."
+  },
+  {
+    "id": 36,
+    "options": [
+      1
+    ],
+    "requirement": "Preview CDK infrastructure changes",
+    "answer": "cdk diff",
+    "service": "cdk",
+    "caveat": "Review replacement-sensitive changes; a diff is a preview, not proof of zero downtime or a complete drift-remediation plan. Use CloudFormation change sets for deployment review as appropriate."
+  },
+  {
+    "id": 37,
+    "options": [
+      1
+    ],
+    "requirement": "Domain joining and SSM Agent updates for newly launched instances",
+    "answer": "State Manager associations",
+    "service": "state-manager",
+    "caveat": "Configure supported OS documents, domain permissions, tags/targets, SSM bootstrap, and connectivity. Association execution occurs after the node is managed; it is not universally instantaneous at boot."
+  },
+  {
+    "id": 38,
+    "options": [
+      1
+    ],
+    "requirement": "Run kubectl against a private EKS API from CodePipeline",
+    "answer": "VPC-attached CodeBuild + EKS authorization",
+    "service": "private-eks",
+    "caveat": "Network reachability and authorization are separate. Provide subnet/SG/DNS connectivity, required AWS endpoints or NAT, and EKS access entries or applicable aws-auth/RBAC mapping."
+  },
+  {
+    "id": 39,
+    "options": [
+      1
+    ],
+    "requirement": "Deploy Dev, QA, and Prod in the same account and Region",
+    "answer": "Omit fixed physical names or use unique names",
+    "service": "naming",
+    "caveat": "CloudFormation-generated names avoid many collisions. Uniquely parameterized names are also valid; S3 names must be globally unique. Isolated names alone do not isolate shared external dependencies."
+  },
+  {
+    "id": 40,
+    "options": [
+      1
+    ],
+    "requirement": "Bucket policy applied before its bucket exists",
+    "answer": "DependsOn when there is no implicit dependency",
+    "service": "readiness",
+    "caveat": "Ref/GetAtt/Sub resource references already establish dependencies. YAML resource order does not control deployment order; explicit DependsOn is useful only for missing relationships."
+  },
+  {
+    "id": 41,
+    "options": [
+      1
+    ],
+    "requirement": "Automatically add Environment=Unknown to noncompliant instances",
+    "answer": "Config rule + SSM tagging remediation",
+    "service": "config-remediation",
+    "caveat": "Use an appropriate tagging runbook, resource ID mapping, tags, and Automation role. Enable automatic remediation and validate current state before changing it."
+  },
+  {
+    "id": 42,
+    "options": [
+      1
+    ],
+    "requirement": "Check IAM properties during CDK synthesis",
+    "answer": "CDK Aspect with a failing validation gate",
+    "service": "cdk",
+    "caveat": "An Aspect only enforces what its implementation checks. Fail synthesis on unacceptable findings; understand tokens and generated policies rather than blindly rewriting every wildcard."
+  },
+  {
+    "id": 43,
+    "options": [
+      1
+    ],
+    "requirement": "Recover a manually deleted StackSet subnet",
+    "answer": "Quiz key: drift detection + targeted UpdateStackInstances",
+    "service": "drift",
+    "caveat": "Drift detection reports, not repairs. Do not assume an unchanged StackSet update recreates a deleted subnet; select a supported repair or replacement plan and reconcile dependencies. The API uses ParameterOverrides, not a generic Override argument."
+  },
+  {
+    "id": 44,
+    "options": [
+      1
+    ],
+    "requirement": "Encrypted Beanstalk credentials absent from console plaintext",
+    "answer": "Secrets Manager fetched at runtime using the instance role",
+    "service": "secrets",
+    "caveat": "Allow GetSecretValue and required customer-managed KMS key use. Avoid logs/plaintext environment copies; design caching and refresh for rotated secrets."
+  },
+  {
+    "id": 45,
+    "options": [
+      1
+    ],
+    "requirement": "Keep a bucket on stack deletion but allow update replacement",
+    "answer": "DeletionPolicy: Retain; separate UpdateReplacePolicy",
+    "service": "protection",
+    "caveat": "DeletionPolicy does not block replacement. Default UpdateReplacePolicy deletes the old resource after replacement; a nonempty bucket can still prevent that deletion."
+  },
+  {
+    "id": 46,
+    "options": [
+      1
+    ],
+    "requirement": "Apply each successfully built Golden AMI to Beanstalk",
+    "answer": "Image Builder SNS -> Lambda -> UpdateEnvironment",
+    "service": "image-builder",
+    "caveat": "Use a successful image event, the correct Region AMI, and the aws:autoscaling:launchconfiguration ImageId option. Validate platform compatibility and deploy using a safe environment update strategy."
+  },
+  {
+    "id": 47,
+    "options": [
+      1
+    ],
+    "requirement": "Reuse legacy Chef recipes on AWS",
+    "answer": "Legacy quiz key: OpsWorks for Chef Automate",
+    "service": "chef-legacy",
+    "caveat": "AWS OpsWorks for Chef Automate reached end of life on May 5, 2024. Preserve this historical reference key, but use a supported Chef deployment or migration approach for current designs."
+  },
+  {
+    "id": 48,
+    "options": [
+      1
+    ],
+    "requirement": "Generate an RDS password and rotate it every 30 days",
+    "answer": "Secrets Manager secret + attachment + rotation schedule",
+    "service": "secrets",
+    "caveat": "GenerateSecretString generates; a dynamic reference retrieves; SecretTargetAttachment adds connection details; RotationSchedule configures rotation. Add the rotation function/permissions and order it after attachment. The quiz omits these distinctions."
+  },
+  {
+    "id": 49,
+    "options": [
+      1
+    ],
+    "requirement": "Initialize an RDS schema from CDK",
+    "answer": "Custom resource / AwsCustomResource SDK integration",
+    "service": "custom-resource",
+    "caveat": "AwsCustomResource makes AWS SDK calls; it is not a general SQL runner. Invoke a suitable Lambda or supported database API, ensure connectivity and completion semantics, and make migrations idempotent."
+  },
+  {
+    "id": 50,
+    "options": [
+      1
+    ],
+    "requirement": "Detect missing CostCenter tags and apply Unassigned",
+    "answer": "Config required-tags + SSM Automation",
+    "service": "config-remediation",
+    "caveat": "required-tags detects rather than prevents creation. Configure tag parameters, remediation permissions, and scope. Use IAM/SCP request-tag conditions for preventive requirements where supported."
+  }
+];
+
+    function el(tag, text, className) {
+      const node = document.createElement(tag);
+      if (text !== undefined) node.textContent = text;
+      if (className) node.className = className;
+      return node;
+    }
+    function link(text, id) {
+      const node = el("a", text);
+      node.href = "#" + id;
+      return node;
+    }
+    function table(headers, rows) {
+      const wrap = el("div", undefined, "table-wrap");
+      const node = el("table");
+      const head = el("thead");
+      const headRow = el("tr");
+      headers.forEach(value => headRow.append(el("th", value)));
+      head.append(headRow);
+      const body = el("tbody");
+      rows.forEach(values => {
+        const row = el("tr");
+        values.forEach(value => row.append(el("td", value)));
+        body.append(row);
+      });
+      node.append(head, body);
+      wrap.append(node);
+      return wrap;
+    }
+    function searchable(node, text) { node.dataset.search = text.toLowerCase(); }
+
+    const serviceList = document.getElementById("service-list");
+    const keywordRows = document.getElementById("keyword-rows");
+    const questionList = document.getElementById("question-list");
+    const byService = new Map(services.map(service => [service.id, service]));
+    services.forEach(service => {
+      const card = el("article", undefined, "service");
+      card.id = service.id;
+      searchable(card, [service.name, service.memory, service.purpose, service.why, ...service.questions.map(n => "Q" + n), ...service.examples.flat(), ...service.mappings.flat(), ...service.caveats].join(" "));
+      card.append(el("h2", service.name), el("div", service.memory, "memory"));
+      const chips = el("div", undefined, "chips");
+      service.questions.forEach(n => chips.append(link("Q" + n, "q" + n)));
+      card.append(chips, el("h3", "What does it do?"), el("p", service.purpose), el("h3", "Why use it?"), el("p", service.why), el("h3", "Examples from our questions"));
+      const examples = el("ul", undefined, "examples");
+      service.examples.forEach(([n, text]) => {
+        const item = el("li");
+        item.append(link("Q" + n, "q" + n), document.createTextNode(" - " + text));
+        examples.append(item);
+      });
+      card.append(examples, el("pre", service.flow, "flow"), el("h3", "Exam keyword -> service mapping"), table(["If the requirement says...", "Think of..."], service.mappings));
+      const details = el("details");
+      details.append(el("summary", "Important caveats / exam traps"));
+      const list = el("ul");
+      service.caveats.forEach(text => list.append(el("li", text)));
+      details.append(list);
+      card.append(details);
+      serviceList.append(card);
+
+      const row = el("tr");
+      const phrases = service.mappings.map(mapping => mapping[0]).join("; ");
+      searchable(row, [phrases, service.name, service.memory, ...service.questions.map(n => "Q" + n)].join(" "));
+      const mapped = el("td"); mapped.append(link(service.name, service.id));
+      const refs = el("td");
+      service.questions.forEach((n, index) => { if (index) refs.append(document.createTextNode(", ")); refs.append(link("Q" + n, "q" + n)); });
+      row.append(el("td", phrases), mapped, refs);
+      keywordRows.append(row);
+    });
+    questions.forEach(question => {
+      const item = el("details", undefined, "question");
+      item.id = "q" + question.id;
+      const service = byService.get(question.service);
+      searchable(item, ["Q" + question.id, question.requirement, question.answer, question.caveat, service.name, service.memory].join(" "));
+      item.append(el("summary", "Q" + question.id + " - " + question.requirement));
+      item.append(el("p", "Reference key: Option" + (question.options.length > 1 ? "s " : " ") + question.options.join(", "), "answer"));
+      item.append(el("div", question.requirement + " -> " + question.answer, "memory"));
+      const serviceRef = el("p"); serviceRef.append(document.createTextNode("Review service: "), link(service.name, service.id));
+      item.append(serviceRef, el("p", question.caveat, "caution"));
+      questionList.append(item);
+    });
+    const search = document.getElementById("search");
+    function matches(node, term) {
+      if (/^q\d+$/i.test(term)) return new RegExp("\\b" + term + "\\b", "i").test(node.dataset.search);
+      return node.dataset.search.includes(term);
+    }
+    function filter() {
+      const term = search.value.trim().toLowerCase();
+      const groups = [
+        [Array.from(serviceList.children), "empty-services"],
+        [Array.from(keywordRows.children), "empty-keywords"],
+        [Array.from(questionList.children), "empty-questions"]
+      ];
+      const counts = groups.map(([nodes, empty]) => {
+        let visible = 0;
+        nodes.forEach(node => { node.hidden = !matches(node, term); if (!node.hidden) visible++; });
+        document.getElementById(empty).hidden = visible !== 0;
+        return visible;
+      });
+      document.getElementById("status").textContent = counts[0] + " service cards / " + counts[2] + " questions" + (term ? " match" : "");
+    }
+    search.addEventListener("input", filter);
+    document.getElementById("clear").addEventListener("click", () => { search.value = ""; filter(); search.focus(); });
+    document.getElementById("expand").addEventListener("click", () => Array.from(questionList.children).forEach(node => { if (!node.hidden) node.open = true; }));
+    document.getElementById("collapse").addEventListener("click", () => Array.from(questionList.children).forEach(node => { node.open = false; }));
+    let printState;
+    window.addEventListener("beforeprint", () => {
+      printState = Array.from(document.querySelectorAll("details")).map(node => [node, node.open]);
+      printState.forEach(([node]) => { if (!node.hidden) node.open = true; });
+    });
+    window.addEventListener("afterprint", () => { if (printState) printState.forEach(([node, open]) => { node.open = open; }); });
+    document.getElementById("print").addEventListener("click", () => window.print());
+    function revealTarget() {
+      const target = document.getElementById(location.hash.slice(1));
+      if (!target) return;
+      if (target.hidden) { search.value = ""; filter(); }
+      if (target.matches("details")) target.open = true;
+      requestAnimationFrame(() => target.scrollIntoView({block:"start"}));
+    }
+    window.addEventListener("hashchange", revealTarget);
+    document.addEventListener("click", event => {
+      const anchor = event.target.closest("a");
+      if (anchor && anchor.getAttribute("href") === location.hash) revealTarget();
+    });
+    filter();
+    if (location.hash) revealTarget();
+  </script>
 </body>
 </html>

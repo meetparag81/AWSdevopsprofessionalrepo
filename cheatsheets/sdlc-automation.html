@@ -1,248 +1,1354 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWS DOP-C02 Cheat Sheet: SDLC Automation</title>
-    <link rel="stylesheet" href="cheat-sheet.css">
-    <style>
-        body { font-family: system-ui, -apple-system, sans-serif; background-color: #0f172a; color: #e2e8f0; }
-        .keyword-badge { 
-            background-color: rgba(245, 158, 11, 0.15); 
-            color: #fbbf24; 
-            font-weight: 600; 
-            padding: 0.25rem 0.5rem; 
-            border-radius: 0.25rem; 
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            font-family: monospace;
-            font-size: 0.875rem;
-            display: inline-block;
-            margin: 0.25rem 0.25rem 0 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AWS DOP-C02 SDLC Automation: 22 service and feature summaries, 35 reference-question mappings, deployment comparisons, and technical caveats.">
+  <title>AWS DOP-C02 | SDLC Automation Exam Memory</title>
+  <style>
+    :root { color-scheme: dark; --bg:#0b1220; --panel:#152133; --line:#334155; --text:#e2e8f0; --muted:#b4c2d5; --accent:#7dd3fc; --gold:#fbbf24; --green:#6ee7b7; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; scroll-padding-top:150px; }
+    body { margin:0; background:var(--bg); color:var(--text); font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:3px; }
+    a:hover { color:white; }
+    button,input { font:inherit; }
+    button { cursor:pointer; }
+    :focus-visible { outline:3px solid var(--gold); outline-offset:4px; }
+    .skip { position:absolute; left:12px; top:-80px; background:var(--panel); padding:8px; z-index:10; }
+    .skip:focus { top:12px; }
+    header,.wrap { max-width:1240px; margin:auto; padding:24px; }
+    header { padding-bottom:14px; }
+    h1 { font-size:clamp(1.8rem,4vw,2.8rem); line-height:1.2; margin:8px 0 16px; }
+    h2 { font-size:1.55rem; margin-top:0; line-height:1.35; }
+    h3 { color:var(--accent); font-size:1.08rem; margin:22px 0 8px; }
+    p { margin:8px 0 14px; }
+    .eyebrow,.tag { color:var(--gold); font-weight:700; }
+    .muted { color:var(--muted); }
+    .toolbar { position:sticky; top:0; z-index:3; background:#0b1220f5; border-block:1px solid var(--line); }
+    .tools { max-width:1240px; margin:auto; padding:12px 24px; display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+    input { min-width:160px; flex:1; background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:9px 12px; }
+    button,.nav a { border:1px solid var(--line); background:var(--panel); color:var(--text); border-radius:8px; padding:8px 12px; text-decoration:none; }
+    .nav { display:flex; flex-wrap:wrap; gap:8px; }
+    .nav a { display:inline-block; }
+    section { margin-bottom:32px; }
+    .panel,.service { background:var(--panel); border:1px solid var(--line); padding:24px; border-radius:14px; }
+    .service { margin-bottom:20px; }
+    .memory { border-left:4px solid var(--gold); padding:12px 16px; background:#fbbf2410; color:#fde68a; margin:14px 0; font-weight:650; }
+    .note { border-left:4px solid var(--accent); padding:10px 14px; background:#7dd3fc0b; }
+    .caution { border-left:4px solid var(--gold); padding:10px 14px; background:#fbbf240b; }
+    .flow { white-space:pre-wrap; font:14px/1.8 ui-monospace,Consolas,monospace; padding:14px; background:var(--bg); border:1px solid var(--line); border-radius:8px; overflow-wrap:anywhere; }
+    .table-wrap { overflow-x:auto; }
+    table { border-collapse:collapse; width:100%; font-size:.94rem; }
+    th,td { text-align:left; vertical-align:top; border-bottom:1px solid var(--line); padding:12px; }
+    th { color:var(--accent); background:#0b122070; }
+    tbody tr:last-child td { border-bottom:0; }
+    code { font: .9em ui-monospace,Consolas,monospace; color:#fde68a; overflow-wrap:anywhere; }
+    .chips { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+    .chips a { border:1px solid var(--line); padding:3px 10px; border-radius:20px; text-decoration:none; font-size:.9rem; }
+    .examples { padding-left:22px; }
+    .examples li { padding:5px 0; }
+    .badge { display:inline-block; font-size:.78rem; padding:2px 8px; border:1px solid var(--gold); color:var(--gold); border-radius:12px; margin-bottom:6px; }
+    .answer { color:var(--green); font-weight:650; }
+    details { border:1px solid var(--line); border-radius:8px; margin:12px 0; padding:10px 14px; }
+    summary { cursor:pointer; font-weight:650; color:var(--accent); }
+    .question { scroll-margin-top:160px; }
+    .question h3 { margin:12px 0 8px; }
+    .question p { margin:6px 0 12px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+    .grid .panel { padding:18px; }
+    [hidden] { display:none !important; }
+    .empty { padding:24px; border:1px dashed var(--gold); border-radius:10px; }
+    footer { border-top:1px solid var(--line); }
+    @media (max-width:640px) { header,.wrap { padding:16px; } .tools { padding:10px 16px; } .panel,.service { padding:16px; } th,td { padding:9px; } html { scroll-padding-top:200px; } }
+    @media print {
+      :root { color-scheme:light; --bg:white; --panel:white; --line:#bbb; --text:#111; --muted:#333; --accent:#164e63; --gold:#734b00; --green:#14532d; }
+      .toolbar,.skip,.no-print { display:none; }
+      body { font-size:11pt; }
+      .wrap,header { max-width:none; padding:12px; }
+      .service,.panel { border-radius:0; }
+      h2,h3,summary { break-after:avoid; }
+      tr,.memory,.examples li { break-inside:avoid; }
+      .flow,th { background:white; }
+      code,.memory { color:#333; }
+      a { color:#164e63; }
+    }
+  </style>
 </head>
-<body class="p-4 md:p-8 antialiased text-base bg-slate-900 text-slate-200">
-    <nav aria-label="Study navigation" style="max-width: 80rem; margin: 0 auto 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem;">
-        <a href="../index.html" style="color: #7dd3fc; text-decoration: underline;">Study portal home</a>
-        <a href="../index.html#sdlc" style="color: #7dd3fc; text-decoration: underline;">SDLC Automation study resources</a>
-    </nav>
-
-    <div class="max-w-7xl mx-auto space-y-12">
-        
-        <!-- Header -->
-        <div class="text-center mb-12">
-            <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-3">AWS Certified DevOps Engineer - Professional</h1>
-            <p class="text-amber-500 font-bold text-lg md:text-2xl tracking-wide uppercase">Master Cheat Sheet: SDLC Automation</p>
-        </div>
-
-        <!-- SECTION 1: Core Monitoring & Logging Services -->
-        <section>
-            <h2 class="text-2xl md:text-3xl font-bold text-white border-b-2 border-slate-700 pb-3 mb-6 text-amber-500 flex items-center">
-                <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                1. Core Services & Analogies
-            </h2>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                
-                <!-- 1. AWS CloudFormation -->
-                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
-                    <h3 class="text-xl font-bold text-white mb-4">1. AWS CloudFormation</h3>
-                    <div class="space-y-3">
-                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Infrastructure as Code (IaC) templating and deployment service.</p>
-                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To automate infrastructure provisioning, prevent accidental deletion of stateful resources (Stack Policies), and deploy across multiple accounts/regions simultaneously (StackSets).</p>
-                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Real Estate Blueprint.</strong> A Stack is the built house. A Stack Policy is the bodyguard standing outside your master bedroom (RDS database) preventing the contractor from bulldozing it during a remodel.</p>
-                        <div>
-                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
-                            <span class="keyword-badge">Update:Replace</span>
-                            <span class="keyword-badge">DeletionPolicy: Retain</span>
-                            <span class="keyword-badge">service-managed permissions</span>
-                            <span class="keyword-badge">Change Set</span>
-                            <span class="keyword-badge">parameter overrides</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 2. AWS CodeDeploy -->
-                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
-                    <h3 class="text-xl font-bold text-white mb-4">2. AWS CodeDeploy</h3>
-                    <div class="space-y-3">
-                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Automated application deployment service to Amazon EC2, AWS Fargate, and AWS Lambda.</p>
-                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To shift traffic safely (Canary/Linear deployments), execute scripts during deployment transitions (Lifecycle hooks), and automatically roll back to the last known good revision on failure.</p>
-                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Two Houses.</strong> Blue/Green deployments are like buying a fully furnished new house (Green) while keeping the old one (Blue). You move in instantly, and if the plumbing breaks, you just drive back to the old house. No downtime.</p>
-                        <div>
-                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
-                            <span class="keyword-badge">BeforeAllowTraffic</span>
-                            <span class="keyword-badge">LambdaLinear10PercentEvery3Minutes</span>
-                            <span class="keyword-badge">Retain the content</span>
-                            <span class="keyword-badge">latest successful revision</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3. AWS CodePipeline -->
-                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
-                    <h3 class="text-xl font-bold text-white mb-4">3. AWS CodePipeline</h3>
-                    <div class="space-y-3">
-                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Fully managed continuous delivery service that automates release pipelines.</p>
-                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To orchestrate builds, enforce manual approval gates, integrate Step Functions for complex/long integration tests, and manage cross-region/cross-account deployments securely.</p>
-                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Factory Conveyor Belt.</strong> It moves code from the warehouse to the assembly station (CodeBuild), pauses the belt completely for a manager's signature (Manual Approval), and then ships it (CodeDeploy).</p>
-                        <div>
-                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
-                            <span class="keyword-badge">Customer Managed KMS Key (CMK)</span>
-                            <span class="keyword-badge">cross-region actions</span>
-                            <span class="keyword-badge">Step Functions action</span>
-                            <span class="keyword-badge">Manual Approval</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 4. AWS CodeBuild -->
-                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
-                    <h3 class="text-xl font-bold text-white mb-4">4. AWS CodeBuild</h3>
-                    <div class="space-y-3">
-                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Fully managed continuous integration service that compiles source code, runs tests, and produces software packages.</p>
-                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To run automated tests natively, cache large dependencies (like Maven or npm) in S3 to speed up build times, securely authenticate to ECR, and connect directly to private VPCs.</p>
-                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Secure Factory.</strong> To deliver a package (Docker image) to a highly secure warehouse (ECR), the factory worker must first get a temporary VIP pass (aws ecr get-login-password) in the pre-build phase before pushing.</p>
-                        <div>
-                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
-                            <span class="keyword-badge">reports section</span>
-                            <span class="keyword-badge">S3 cache</span>
-                            <span class="keyword-badge">target VPC ID</span>
-                            <span class="keyword-badge">env: secrets-manager</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 5. AWS SAM -->
-                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
-                    <h3 class="text-xl font-bold text-white mb-4">5. AWS Serverless Application Model (SAM)</h3>
-                    <div class="space-y-3">
-                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Open-source framework used to build, test, and deploy serverless applications on AWS.</p>
-                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To define Lambda functions, API Gateways, and DynamoDB tables using shorthand syntax, and to easily package and upload deployment artifacts to S3 while rewriting template URIs.</p>
-                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Kitchen & Shipping Dept.</strong> `sam build` is the prep cook gathering all ingredients. `sam package` is the shipping department zipping them up, putting them in an S3 warehouse, and generating your updated receipt (a new CloudFormation template).</p>
-                        <div>
-                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
-                            <span class="keyword-badge">sam build followed by sam package</span>
-                            <span class="keyword-badge">DeploymentPreference: Canary</span>
-                            <span class="keyword-badge">Traffic splitting</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 6. AWS CodeArtifact -->
-                <div class="bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
-                    <h3 class="text-xl font-bold text-white mb-4">6. AWS CodeArtifact</h3>
-                    <div class="space-y-3">
-                        <p><strong class="text-sky-400 block mb-1">Function:</strong> Fully managed artifact repository service designed to securely store and share software packages.</p>
-                        <p><strong class="text-sky-400 block mb-1">Why it's used:</strong> To allow internal development teams to consume semantic-versioned shared libraries and securely cache open-source dependencies pulled from the internet.</p>
-                        <p class="bg-slate-900/50 p-3 rounded-lg border border-slate-700"><strong class="text-emerald-400 block mb-1">Simple Example:</strong> <strong>The Internal Library.</strong> Instead of every single developer downloading the same package from the public internet every time, CodeArtifact downloads it once, stores a secure copy in your AWS account, and serves it internally.</p>
-                        <div>
-                            <strong class="text-sky-400 block mb-2">Exam Keywords:</strong>
-                            <span class="keyword-badge">aws codeartifact login</span>
-                            <span class="keyword-badge">semantic versioned package</span>
-                            <span class="keyword-badge">cache open source packages</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- SECTION 2: CodeDeploy Lifecycle Hooks Deep Dive -->
-        <section>
-            <h2 class="text-2xl md:text-3xl font-bold text-white border-b-2 border-slate-700 pb-3 mb-6 text-amber-500 flex items-center">
-                <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                2. CodeDeploy Lifecycle Hooks (Strict Execution Order)
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
-                    <span class="text-sky-400 font-extrabold text-xl block mb-3">1. ApplicationStop</span>
-                    <p class="text-slate-300 leading-relaxed">The very first hook. Used to gracefully shut down the currently running application (e.g., <code>pm2 stop app</code> or stopping Nginx) before anything else happens.</p>
-                </div>
-                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
-                    <span class="text-amber-500 font-extrabold text-xl block mb-3">DownloadBundle (Native)</span>
-                    <p class="text-slate-300 leading-relaxed"><em>Not scriptable in appspec.yml.</em> The CodeDeploy agent securely downloads the new revision files from Amazon S3 or GitHub to a temporary directory.</p>
-                </div>
-                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
-                    <span class="text-sky-400 font-extrabold text-xl block mb-3">2. BeforeInstall</span>
-                    <p class="text-slate-300 leading-relaxed">Execute pre-installation tasks. Commonly used to decrypt sensitive files, back up old directories, or run <code>aws codeartifact login</code> to prepare for dependencies.</p>
-                </div>
-                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
-                    <span class="text-amber-500 font-extrabold text-xl block mb-3">Install (Native)</span>
-                    <p class="text-slate-300 leading-relaxed"><em>Not scriptable.</em> The CodeDeploy agent copies the unzipped revision files from the temporary directory to their final destination on the instance.</p>
-                </div>
-                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
-                    <span class="text-sky-400 font-extrabold text-xl block mb-3">3. AfterInstall</span>
-                    <p class="text-slate-300 leading-relaxed">Configure the application and resolve dependencies. This is where you typically run <code>npm install</code>, <code>pip install -r requirements.txt</code>, or fix file permissions.</p>
-                </div>
-                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
-                    <span class="text-sky-400 font-extrabold text-xl block mb-3">4. ApplicationStart & ValidateService</span>
-                    <p class="text-slate-300 leading-relaxed"><strong>ApplicationStart:</strong> Starts the newly installed application process. <br/><strong>ValidateService:</strong> Runs tests to verify the application is healthy before passing the deployment.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 3: Pro-Tips / Exam Scenarios -->
-        <section class="mt-12 pb-12">
-            <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-6 md:p-10 border border-amber-500/30 shadow-2xl">
-                <h2 class="text-2xl md:text-3xl font-bold text-white mb-8 flex items-center border-b border-slate-700 pb-4">
-                    <span class="bg-amber-500 text-slate-900 rounded-full w-10 h-10 flex items-center justify-center mr-4 text-xl">💡</span>
-                    3. Pro-Tips / Exam Scenarios (Key Takeaways)
-                </h2>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 text-slate-200">
-                    
-                    <!-- CodePipeline & Artifacts -->
-                    <div>
-                        <h3 class="text-sky-400 font-bold mb-4 text-xl border-b border-slate-700/50 pb-2">CodePipeline & Artifacts</h3>
-                        <ul class="space-y-4 list-disc pl-5 marker:text-amber-500">
-                            <li><strong class="text-white">Cross-Region Deployments:</strong> You <strong>must</strong> configure a local S3 artifact bucket in the destination region and encrypt the entire pipeline using a <strong>Customer Managed KMS Key (CMK)</strong>.</li>
-                            <li><strong class="text-white">Cross-Account CodePipeline:</strong> The pipeline in Account A must assume a cross-account IAM role in Account B. The artifact bucket must also use a CMK, as default AWS managed keys cannot be shared across accounts.</li>
-                            <li><strong class="text-white">Manual Approvals + CloudFormation:</strong> To allow an architect to review infrastructure changes before deployment, sequence the actions as: <code>Create Change Set</code> -> <code>Manual Approval</code> -> <code>Execute Change Set</code>.</li>
-                            <li><strong class="text-white">Enforcing PR Approvals:</strong> Do not use CodePipeline manual approvals to enforce GitHub/CodeCommit PR checks. Natively enforce this by attaching a <strong>CodeCommit Approval Rule Template</strong> requiring specific IAM group sign-offs.</li>
-                            <li><strong class="text-white">Long Running Integration Tests:</strong> If a test takes hours and requires complex branching logic, use an <strong>AWS Step Functions</strong> action directly in CodePipeline instead of CodeBuild.</li>
-                        </ul>
-                    </div>
-
-                    <!-- Deployment Strategies -->
-                    <div>
-                        <h3 class="text-sky-400 font-bold mb-4 text-xl border-b border-slate-700/50 pb-2">Deployment Strategies</h3>
-                        <ul class="space-y-4 list-disc pl-5 marker:text-amber-500">
-                            <li><strong class="text-white">ECS Blue/Green Data Validation:</strong> To run a test script against the new Green container <em>before</em> live customer traffic hits it, use the <strong>BeforeAllowTraffic</strong> hook in CodeDeploy.</li>
-                            <li><strong class="text-white">Auto Scaling CodeDeploy Integration:</strong> If an ASG scales out, CodeDeploy natively intercepts the boot process and automatically deploys the <strong>latest successful revision</strong> before placing it in service.</li>
-                            <li><strong class="text-white">Elastic Beanstalk Canary:</strong> The native way to shift fractional traffic (e.g., 15%) to a new version for a timed evaluation period is using the <strong>Traffic splitting deployment</strong> policy.</li>
-                            <li><strong class="text-white">CodeDeploy Automatic Rollbacks:</strong> CodeDeploy does not "undo" steps or run rollback scripts. It simply initiates a brand new deployment using the <strong>last known good application revision</strong>.</li>
-                            <li><strong class="text-white">Retaining Manual Hotfixes:</strong> By default, CodeDeploy deletes files not tracked in the previous deployment. To prevent wiping out manual hotfixes, choose the <strong>Retain the content</strong> deployment option.</li>
-                        </ul>
-                    </div>
-
-                    <!-- CodeBuild & Testing -->
-                    <div>
-                        <h3 class="text-sky-400 font-bold mb-4 text-xl border-b border-slate-700/50 pb-2">CodeBuild & Testing</h3>
-                        <ul class="space-y-4 list-disc pl-5 marker:text-amber-500">
-                            <li><strong class="text-white">Slow Builds (Dependency Downloads):</strong> If CodeBuild takes 20 minutes downloading Maven/npm packages, dramatically speed it up by specifying an <strong>S3 cache</strong> path in the <code>buildspec.yml</code> file.</li>
-                            <li><strong class="text-white">CodeBuild inside a VPC:</strong> To run integration tests against a private RDS database, you must configure the CodeBuild project with the <strong>VPC ID, private subnets, and Security Groups</strong>.</li>
-                            <li><strong class="text-white">Visualizing Test Results:</strong> To see JUnit test pass/fail charts directly in the AWS Console, define a <strong>reports</strong> block in the <code>buildspec.yml</code> pointing to the XML files.</li>
-                            <li><strong class="text-white">Secure Passwords in CodeBuild:</strong> Never pass passwords via CodePipeline environment variables (plaintext). Reference AWS Secrets Manager natively using the <strong>env: secrets-manager</strong> mapping in the buildspec.</li>
-                            <li><strong class="text-white">Pushing to ECR:</strong> The IAM Service role needs <code>ecr:GetAuthorizationToken</code> permissions, and the buildspec must run <code>aws ecr get-login-password</code> piped to <code>docker login</code> in the pre_build phase.</li>
-                        </ul>
-                    </div>
-
-                    <!-- Automation Security & Hooks -->
-                    <div>
-                        <h3 class="text-sky-400 font-bold mb-4 text-xl border-b border-slate-700/50 pb-2">Automation Security & Alerts</h3>
-                        <ul class="space-y-4 list-disc pl-5 marker:text-amber-500">
-                            <li><strong class="text-white">CodeGuru Security Review:</strong> Run Amazon CodeGuru in the <strong>Build Stage</strong> to fail the pipeline immediately if SAST vulnerabilities are detected, preventing buggy code from deploying.</li>
-                            <li><strong class="text-white">Slack Notifications for CodeDeploy:</strong> Route native CodeDeploy deployment state-change events (Success/Fail) through <strong>Amazon EventBridge</strong> to trigger a Lambda function that posts to Slack.</li>
-                            <li><strong class="text-white">CloudFormation Drift Detection Alerting:</strong> The lowest overhead way to alert on manual out-of-band changes to a stack is using <strong>AWS Config (cloudformation-stack-drift-detection-check)</strong> routed via EventBridge to SNS.</li>
-                            <li><strong class="text-white">Pull Request Auto-Testing:</strong> When using CodeConnections to a Git repo, configure CodeBuild <strong>webhook filters</strong> for PR created/updated events to trigger unit tests natively on PRs.</li>
-                        </ul>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
+<body>
+  <a href="#main" class="skip">Skip to cheatsheet</a>
+  <header id="top">
+    <div class="eyebrow">AWS DOP-C02 / SDLC AUTOMATION</div>
+    <h1>Understand the service.<br>Recognize the requirement. Recall the answer.</h1>
+    <p>One consolidated revision sheet for <strong>35 mapped reference questions</strong>: service functions first, numbered examples next, then keyword mappings and comparison tables.</p>
+    <p class="muted">Question numbers and option numbers refer to the supplied master questionnaire, not an official AWS exam. Prepared 9 November 2026. Option order can change in other quizzes.</p>
+    <p><a href="https://meetparag81.github.io/AWSdevopsprofessionalrepo/index.html">Study portal home</a> | <a href="https://meetparag81.github.io/AWSdevopsprofessionalrepo/SDLC35%20questionsnew.html">Open the reference questionnaire</a> <span class="muted">(online links; internet connection required)</span></p>
+  </header>
+  <div class="toolbar">
+    <div class="tools">
+      <label for="search">Find a keyword:</label>
+      <input id="search" type="search" placeholder="e.g. Q11, canary, BeforeAllowTraffic, artifacts, reports" autocomplete="off">
+      <button id="clear" type="button">Clear</button>
+      <button id="print" type="button">Print / save PDF</button>
+      <nav class="nav" aria-label="Cheatsheet sections">
+        <a href="#services">Services</a><a href="#keywords">Keywords</a><a href="#comparisons">Comparisons</a><a href="#questions">Q1-35</a>
+      </nav>
+      <span id="status" class="muted" role="status" aria-live="polite"></span>
     </div>
+  </div>
+  <main id="main" class="wrap">
+    <section class="panel" id="how-to"><h2>How to choose the right release control</h2><div class="grid"><div><h3>1. Identify the release step</h3><p>Source/merge, build/test, store packages, approve, provision, deploy, shift traffic, or recover?</p></div><div><h3>2. Identify the target</h3><p>EC2 fleet, ECS task set, Lambda alias, Beanstalk environment, or CloudFormation stack?</p></div><div><h3>3. Identify the boundary</h3><p>Host availability or request percentage? Merge approval or release approval? Another account, another Region, or a private VPC?</p></div></div><div class="memory">CodeBuild builds and tests. CodePipeline orchestrates. CodeDeploy deploys and shifts supported traffic. CodeArtifact stores packages.</div><p class="caution">Option numbers preserve the supplied 35-question reference, not official AWS exam answers. Multi-select entries retain every keyed option. Amber caveats correct incomplete, ambiguous, or retired-service guidance without modifying the quiz.</p></section>
+    <section id="services">
+      <h2>Service functions + numbered examples</h2>
+      <p class="muted">Each card explains what the service does, why to use it, where it appears in these questions, and the requirement that should trigger recall.</p>
+      <div id="service-list"></div>
+      <p id="empty-services" class="empty" hidden>No matching service cards. Try a shorter keyword or a question number such as Q23.</p>
+    </section>
+    <section id="keywords" class="panel">
+      <h2>Exam requirement -&gt; service index</h2>
+      <div class="table-wrap">
+        <table><thead><tr><th>When the requirement says...</th><th>Recall this service / feature</th><th>Questions</th></tr></thead><tbody id="keyword-rows"></tbody></table>
+      </div>
+      <p id="empty-keywords" class="empty" hidden>No matching keyword mappings.</p>
+    </section>
+    <section id="comparisons" class="panel"><h2>High-value comparison tables</h2><article class="comparison"><h3>1. Buildspec surfaces</h3><div class="table-wrap"><table><thead><tr><th>Requirement</th><th>Buildspec / project setting</th><th>Trap</th></tr></thead><tbody><tr><td>Execute unit tests</td><td>phases commands</td><td>Test exit status must propagate</td></tr><tr><td>Save generated files</td><td>artifacts + artifact output mode</td><td>Not a test dashboard</td></tr><tr><td>JUnit pass/fail and durations</td><td>reports + JUNITXML</td><td>Does not execute the test suite</td></tr><tr><td>Reuse Maven dependencies</td><td>cache paths + project cache</td><td>Not a release artifact</td></tr><tr><td>Inject encrypted test password</td><td>env: secrets-manager</td><td>Do not echo values</td></tr><tr><td>Push Docker image</td><td>pre_build login + IAM + Docker environment</td><td>Token permission alone cannot push</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>2. Deployment percentages and timing</h3><div class="table-wrap"><table><thead><tr><th>Platform / need</th><th>Configuration</th><th>Memory</th></tr></thead><tbody><tr><td>ECS: 10% for five minutes then rest</td><td>CodeDeployDefault.ECSCanary10Percent5Minutes</td><td>CANARY = sample then final cutover</td></tr><tr><td>Lambda: repeated 10% increments every three minutes</td><td>CodeDeployDefault.LambdaLinear10PercentEvery3Minutes</td><td>LINEAR = repeated increments</td></tr><tr><td>SAM Lambda: 10% for ten minutes then rest</td><td>Canary10Percent10Minutes + AutoPublishAlias + alarms</td><td>SAM creates deployment plumbing</td></tr><tr><td>Beanstalk: 15% for fifteen minutes</td><td>Traffic splitting + percentage/evaluation settings</td><td>Health evaluates temporary fleet</td></tr><tr><td>EC2: minimum healthy hosts 50%</td><td>Custom EC2 deployment configuration</td><td>Host count, not request percentage</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>3. Lifecycle hooks by compute platform</h3><div class="table-wrap"><table><thead><tr><th>Purpose</th><th>EC2 / on-premises</th><th>Lambda / ECS</th></tr></thead><tbody><tr><td>Stop old process</td><td>ApplicationStop script from prior revision</td><td>No equivalent local process-stop script</td></tr><tr><td>Prepare before file installation</td><td>BeforeInstall</td><td>Not an EC2 file-install lifecycle</td></tr><tr><td>Configure installed files/dependencies</td><td>AfterInstall</td><td>Validate the replacement workload via Lambda hook</td></tr><tr><td>Before production traffic</td><td>BeforeAllowTraffic where applicable</td><td>BeforeAllowTraffic Lambda hook</td></tr><tr><td>Signal validation outcome</td><td>Script exit status</td><td>PutLifecycleEventHookExecutionStatus</td></tr><tr><td>Native non-scriptable events</td><td>DownloadBundle and Install</td><td>Platform-specific deployment events</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>4. Recovery and protection</h3><div class="table-wrap"><table><thead><tr><th>Control</th><th>What it does</th><th>Does not do</th></tr></thead><tbody><tr><td>CodeDeploy rollback</td><td>New deployment of known-good revision</td><td>Reverse all scripts or data migrations</td></tr><tr><td>RETAIN existing-file behavior</td><td>Keep qualifying untracked collision content</td><td>Back up every hotfix or managed file</td></tr><tr><td>CloudFormation stack policy</td><td>Deny selected update actions</td><td>Block DeleteStack or direct API deletion</td></tr><tr><td>DeletionPolicy: Retain</td><td>Keep resource on stack deletion/removal</td><td>Preserve old replacement resource automatically</td></tr><tr><td>Drift-check rule</td><td>Detect supported actual/template differences</td><td>Prevent or repair arbitrary changes</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>5. Cross-Region versus cross-account</h3><div class="table-wrap"><table><thead><tr><th>Boundary</th><th>Configuration</th><th>Critical distinction</th></tr></thead><tbody><tr><td>Cross-Region actions</td><td>ArtifactStores with bucket/key in each action Region</td><td>Input artifacts are copied between Regions</td></tr><tr><td>Cross-account deployment</td><td>Target role + AssumeRole trust/permission</td><td>Correct role alone cannot decrypt artifacts</td></tr><tr><td>Cross-account S3/KMS artifacts</td><td>Bucket policy + customer-managed key policy + IAM</td><td>Key existence is not authorization</td></tr><tr><td>Strict no-Region-transfer residency</td><td>Independent regional sourcing/build and data-placement review</td><td>Destination-local bucket is insufficient</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>6. Approval and deployment review</h3><div class="table-wrap"><table><thead><tr><th>Gate</th><th>Feature</th><th>Placement</th></tr></thead><tbody><tr><td>Two senior approvals before merge</td><td>CodeCommit approval rule template</td><td>Repository PR destination branch</td></tr><tr><td>Human approval before production</td><td>CodePipeline manual approval</td><td>Before production stage/action</td></tr><tr><td>Review infrastructure changes</td><td>Create change set -&gt; approve -&gt; execute</td><td>Approval precedes Execute Change Set</td></tr><tr><td>Block vulnerable code before release</td><td>Supported SAST build gate</td><td>Before production deployment</td></tr><tr><td>Catch runtime API regression</td><td>Post-deploy smoke test + configured rollback</td><td>After deployment, with explicit recovery</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>7. Workflow execution model</h3><div class="table-wrap"><table><thead><tr><th>Requirement</th><th>Choose</th><th>Constraint</th></tr></thead><tbody><tr><td>Short high-volume parallel S3 processing</td><td>Async Express + Parallel</td><td>Five-minute maximum; at-least-once</td></tr><tr><td>Two-hour branching tests</td><td>Standard Step Functions pipeline action</td><td>Configure action/workflow timeout and failures</td></tr><tr><td>Many records from a collection</td><td>Map state</td><td>Parallel is for fixed independent branches</td></tr><tr><td>Wait for supported external job</td><td>Standard supported .sync integration</td><td>Not every SDK call waits for job completion</td></tr><tr><td>Check prerequisite before traffic</td><td>Validation hook or earlier pipeline workflow</td><td>Respect callback and Lambda invocation timeouts</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>8. Reference-key traps to remember</h3><div class="table-wrap"><table><thead><tr><th>Question</th><th>Shortcut to avoid</th><th>Correction</th></tr></thead><tbody><tr><td>Q3</td><td>CodeGuru Security as a current service</td><td>Retired November 20, 2025; use supported SAST</td></tr><tr><td>Q9</td><td>Regional buckets mean artifacts never cross Regions</td><td>CodePipeline copies action inputs between Regions</td></tr><tr><td>Q11</td><td>50% healthy hosts means 50% traffic</td><td>Availability count is not request percentage</td></tr><tr><td>Q12</td><td>CodeDeploy deletes every destination file</td><td>Cleanup tracks deployed files; RETAIN handles qualifying collisions</td></tr><tr><td>Q13</td><td>Approve after production deployment</td><td>Approval must be before protected production action</td></tr><tr><td>Q17</td><td>Key plus role is a complete artifact fix</td><td>Bucket policy, key policy, and IAM must also align</td></tr></tbody></table></div></article></section>
+    <section id="questions" class="panel">
+      <h2>All 35 questions: recall and answer index</h2>
+      <p>Each entry includes the reference answer number, a requirement-based shortcut, and relevant technical corrections. Search Q followed by a number to jump between its examples and index entry.</p>
+      <button id="expand" class="no-print" type="button">Expand all question details</button>
+      <button id="collapse" class="no-print" type="button">Collapse all question details</button>
+      <div id="question-list"></div>
+      <p id="empty-questions" class="empty" hidden>No matching questions.</p>
+    </section>
+    <section class="panel" id="glossary"><h2>Supporting terms and official caveat references</h2><div class="table-wrap"><table><thead><tr><th>Term</th><th>Meaning</th><th>Recall</th></tr></thead><tbody><tr><td>buildspec.yml / appspec.yml</td><td>Build commands and outputs / deployment resources and hooks</td><td>Build != deploy</td></tr><tr><td>Canary / linear / blue-green</td><td>Sample then cut over / repeated increments / replacement environment</td><td>Environment strategy != traffic schedule</td></tr><tr><td>Artifact / package / cache / report</td><td>Release files / versioned library / reusable dependencies / test evidence</td><td>Different outputs and storage purposes</td></tr><tr><td>Lambda version / alias</td><td>Immutable published code / routed version pointer</td><td>Alias enables traffic shifting</td></tr><tr><td>Standard / asynchronous Express</td><td>Long workflow / short high-throughput workflow</td><td>Express has five-minute execution maximum</td></tr><tr><td>IAM role / resource policy / KMS key policy</td><td>Caller permission / resource-owner access / key authorization</td><td>Cross-account access needs all applicable layers</td></tr><tr><td>SAST / smoke test / integration test</td><td>Static code analysis / basic runtime check / system interaction tests</td><td>Test at the correct release stage</td></tr></tbody></table></div><h3>Official documentation for disputed or incomplete keys</h3><ul><li><a href="https://docs.aws.amazon.com/cli/latest/reference/codeguru-security/">CodeGuru Security retirement notice</a></li><li><a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/actions-create-cross-region.html">Cross-Region artifact copying</a></li><li><a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations.html">Deployment configurations and minimum healthy hosts</a></li><li><a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments-rollback-and-redeploy.html">Rollback and file cleanup behavior</a></li><li><a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-StepFunctions.html">CodePipeline Step Functions action</a></li></ul><p class="muted">Documentation links require internet access. The summaries and all question mappings work offline.</p></section>
+    <noscript><p class="caution">Enable JavaScript to display the service cards and all 35 question mappings. The static comparison tables and glossary remain available without JavaScript.</p></noscript>
+  </main>
+  <footer class="wrap"><p><a href="#top">Back to top</a> | Standalone HTML: no CDN, login, analytics, or external runtime dependencies.</p><p class="muted">Reference: MonitoringWebsite/SDLC35 questionsnew.html. All 35 option numbers match that reference. Technical caveats do not alter quiz questions, keys, sign-in, or saved progress. Prepared 9 November 2026.</p></footer>
+  <script>
+    "use strict";
+    const services = [
+  {
+    "id": "codebuild",
+    "name": "AWS CodeBuild: CI, artifacts, and reports",
+    "memory": "COMMANDS test; ARTIFACTS save files; REPORTS visualize",
+    "purpose": "Run build/test commands, collect output artifacts, and parse supported test-report formats.",
+    "why": "Trigger CI on repository changes and give downstream stages outputs plus reviewers test evidence.",
+    "flow": "Repository event -> CodeBuild commands -> artifacts to S3 / pipeline -> reports to report group",
+    "mappings": [
+      [
+        "Pull-request tests with status",
+        "Provider-supported webhook filters + build status reporting"
+      ],
+      [
+        "Store generated output files",
+        "artifacts"
+      ],
+      [
+        "JUnit dashboard",
+        "reports + JUNITXML"
+      ]
+    ],
+    "caveats": [
+      "Project artifact mode and named pipeline artifacts must align.",
+      "A report does not automatically fail a build: the test command must signal failure."
+    ],
+    "questions": [
+      1,
+      7,
+      31
+    ],
+    "examples": [
+      [
+        1,
+        "Test pull requests, report status, and save test output -> CodeBuild PR webhook + status reporting + artifacts + service role"
+      ],
+      [
+        7,
+        "Save generated build files for downstream stages -> S3 artifact output + buildspec artifacts + write permissions"
+      ],
+      [
+        31,
+        "Show JUnit pass rate and duration in the CodeBuild console -> buildspec reports + report group"
+      ]
+    ]
+  },
+  {
+    "id": "ecs-deploy",
+    "name": "CodeDeploy for ECS blue/green",
+    "memory": "GREEN tasks -> VALIDATE -> SHIFT traffic",
+    "purpose": "Create a replacement task set and shift supported load-balancer traffic using deployment configurations.",
+    "why": "Observe a small new-version sample and roll back when health/latency gates fail.",
+    "flow": "Green task set -> Lambda validation hook -> ECS canary -> latency alarm -> complete / rollback",
+    "mappings": [
+      [
+        "10% for five minutes then rest",
+        "CodeDeployDefault.ECSCanary10Percent5Minutes"
+      ],
+      [
+        "Check green before production traffic",
+        "BeforeAllowTraffic Lambda hook"
+      ]
+    ],
+    "caveats": [
+      "Target the right traffic metric and configure automatic rollback.",
+      "Minimum healthy hosts is an EC2 concept, not the ECS traffic percentage."
+    ],
+    "questions": [
+      2,
+      22
+    ],
+    "examples": [
+      [
+        2,
+        "Expose a small ECS traffic sample and roll back on latency -> ECSCanary10Percent5Minutes + ALB TargetResponseTime alarm"
+      ],
+      [
+        22,
+        "Validate green ECS tasks before production traffic -> BeforeAllowTraffic Lambda validation hook"
+      ]
+    ]
+  },
+  {
+    "id": "quality-gates",
+    "name": "Build security and runtime smoke-test gates",
+    "memory": "SCAN before; TEST after; configure ROLLBACK",
+    "purpose": "Block unacceptable static-analysis results before deployment and check runtime behavior afterward.",
+    "why": "Catch vulnerable code and runtime API failures at different points in the release flow.",
+    "flow": "Build -> supported SAST scanner -> fail unacceptable findings -> deploy -> smoke test -> configured recovery",
+    "mappings": [
+      [
+        "Vulnerabilities before release",
+        "Failing SAST build gate"
+      ],
+      [
+        "API behaves incorrectly after release",
+        "Nonzero smoke test + explicit rollback mechanism"
+      ]
+    ],
+    "caveats": [
+      "CodeGuru Security was retired November 20, 2025; retain Q3 as a historical key only.",
+      "An arbitrary failed action does not magically undo deployment or data changes."
+    ],
+    "questions": [
+      3
+    ],
+    "examples": [
+      [
+        3,
+        "Fail insecure builds and detect runtime API failures -> Build-stage SAST gate + post-deployment smoke test + rollback"
+      ]
+    ]
+  },
+  {
+    "id": "codeartifact",
+    "name": "AWS CodeArtifact",
+    "memory": "Versioned PACKAGE repository, not pipeline output storage",
+    "purpose": "Store supported internal packages and retrieve/cache dependencies through repository/upstream configuration.",
+    "why": "Share internal releases using package managers instead of distributing ad hoc build ZIPs.",
+    "flow": "Build role publishes version -> CodeArtifact -> EC2 role obtains token -> npm installs package",
+    "mappings": [
+      [
+        "Semantic-versioned internal library",
+        "CodeArtifact + CodeBuild publishing"
+      ],
+      [
+        "EC2 package authentication",
+        "Instance profile + aws codeartifact login"
+      ]
+    ],
+    "caveats": [
+      "Configure public external connections and repository graph where required.",
+      "Temporary token access needs domain/repository permissions and service bearer-token authorization."
+    ],
+    "questions": [
+      4,
+      5
+    ],
+    "examples": [
+      [
+        4,
+        "Publish versioned internal packages and cache public dependencies -> CodeBuild publishes to CodeArtifact with upstream configuration"
+      ],
+      [
+        5,
+        "Install private Node.js packages on deployment instances -> EC2 instance profile + CodeArtifact permissions + login hook"
+      ]
+    ]
+  },
+  {
+    "id": "workflows",
+    "name": "AWS Step Functions + prerequisite gates",
+    "memory": "PARALLEL tasks; STANDARD for long workflows",
+    "purpose": "Coordinate tasks, branching, retries, and completion before dependent deployment work begins.",
+    "why": "Avoid custom orchestration and prevent traffic from arriving before prerequisite processing completes.",
+    "flow": "S3 EventBridge -> Parallel workflow | Pipeline -> Standard integration tests -> success/failure -> deployment",
+    "mappings": [
+      [
+        "Independent short event tasks",
+        "Asynchronous Express + Parallel"
+      ],
+      [
+        "Two-hour branching tests",
+        "Standard workflow + pipeline invoke action"
+      ],
+      [
+        "Pre-traffic prerequisite check",
+        "BeforeAllowTraffic validation"
+      ]
+    ],
+    "caveats": [
+      "Express maximum duration is five minutes; asynchronous Express is at-least-once.",
+      "Standard .sync integrations can wait for supported jobs; unbounded polling inside Lambda is not a long-running workflow design."
+    ],
+    "questions": [
+      6,
+      8,
+      19
+    ],
+    "examples": [
+      [
+        6,
+        "Run independent S3 object-processing tasks concurrently -> S3 EventBridge event -> asynchronous Express Parallel workflow"
+      ],
+      [
+        8,
+        "Do not route Lambda traffic until a prerequisite workflow finishes -> BeforeAllowTraffic validation hook"
+      ],
+      [
+        19,
+        "Two-hour branching integration tests inside a pipeline -> Standard Step Functions workflow invoked by CodePipeline"
+      ]
+    ]
+  },
+  {
+    "id": "pipeline-regions",
+    "name": "CodePipeline cross-Region actions",
+    "memory": "One ARTIFACT STORE per action Region; artifacts are COPIED",
+    "purpose": "Run supported AWS-provider actions in Regions other than the pipeline Region.",
+    "why": "Coordinate geographically distributed deployment from one pipeline when data-transfer rules permit it.",
+    "flow": "Pipeline Region artifact -> copied input artifact -> destination Region artifact store -> action",
+    "mappings": [
+      [
+        "Regional build/deploy actions",
+        "Cross-Region action + ArtifactStores"
+      ],
+      [
+        "Strict data must never leave Region",
+        "Regionally isolated sourcing/build design"
+      ]
+    ],
+    "caveats": [
+      "Console can configure default buckets; CLI/IaC must supply stores.",
+      "Cross-Region artifacts cross boundaries; local destination storage alone is not residency proof."
+    ],
+    "questions": [
+      9,
+      28
+    ],
+    "examples": [
+      [
+        9,
+        "Coordinate regional builds/deployments under residency constraints -> Quiz key: CodePipeline cross-Region actions"
+      ],
+      [
+        28,
+        "Deploy one pipeline artifact into two Regions -> Cross-Region actions + per-Region ArtifactStores"
+      ]
+    ]
+  },
+  {
+    "id": "cloudformation",
+    "name": "CloudFormation in release pipelines",
+    "memory": "PARAMETERIZE -> PREVIEW -> APPROVE -> EXECUTE",
+    "purpose": "Provision templates, reuse environment inputs, protect selected update operations, and distribute templates with StackSets.",
+    "why": "Apply consistent infrastructure changes while keeping review and resource-protection boundaries explicit.",
+    "flow": "Template + parameter overrides -> change set -> manual approval -> execute | StackSet -> OU/Regions",
+    "mappings": [
+      [
+        "Reusable environments",
+        "Parameters/mappings + overrides"
+      ],
+      [
+        "Deny RDS replacement",
+        "Stack policy Update:Replace deny"
+      ],
+      [
+        "Current and future organization baseline",
+        "Service-managed StackSets + automatic deployment"
+      ],
+      [
+        "Review exact proposed changes",
+        "Create change set -> approve -> execute"
+      ]
+    ],
+    "caveats": [
+      "Stack policy, DeletionPolicy, UpdateReplacePolicy, and termination protection apply to different operations.",
+      "StackSets require trusted access/targets; a change set does not guarantee a safe runtime outcome."
+    ],
+    "questions": [
+      10,
+      16,
+      23,
+      33
+    ],
+    "examples": [
+      [
+        10,
+        "Reuse one infrastructure template across environments -> CloudFormation parameters/mappings + pipeline parameter overrides"
+      ],
+      [
+        16,
+        "Allow stack updates but prevent RDS replacement -> Stack policy denying Update:Replace for the RDS logical ID"
+      ],
+      [
+        23,
+        "Infrastructure baseline in current and future organization accounts -> Service-managed CloudFormation StackSets + auto-deployment"
+      ],
+      [
+        33,
+        "Architect reviews proposed infrastructure changes before execution -> Create change set -> manual approval -> execute change set"
+      ]
+    ]
+  },
+  {
+    "id": "ec2-bluegreen",
+    "name": "CodeDeploy EC2 blue/green",
+    "memory": "NEW fleet; host availability is NOT request percentage",
+    "purpose": "Deploy to replacement instances, validate them, reroute load-balancer traffic, and retain/terminate the original fleet as configured.",
+    "why": "Isolate new code from the old environment and reduce in-place release risk.",
+    "flow": "Create green fleet -> install/validate -> BeforeAllowTraffic cleanup -> reroute -> retain or terminate blue",
+    "mappings": [
+      [
+        "New instances before deployment cutover",
+        "EC2 blue/green"
+      ],
+      [
+        "Cleanup before load-balancer traffic",
+        "BeforeAllowTraffic"
+      ]
+    ],
+    "caveats": [
+      "50% minimum healthy hosts does not mean 50% of requests.",
+      "Keep sufficient drain/rollback time before terminating blue; blue/green alone is not a zero-downtime guarantee."
+    ],
+    "questions": [
+      11
+    ],
+    "examples": [
+      [
+        11,
+        "New EC2 fleet, pre-traffic cleanup, and old-fleet termination -> EC2 blue/green + BeforeAllowTraffic + termination settings"
+      ]
+    ]
+  },
+  {
+    "id": "rollback",
+    "name": "CodeDeploy rollback and existing files",
+    "memory": "ROLLBACK = NEW deployment, not an UNDO",
+    "purpose": "Redeploy a known-good revision on configured failures/alarms, using normal deployment lifecycle behavior.",
+    "why": "Recover application code while understanding file cleanup and irreversible side effects.",
+    "flow": "Failed deployment -> new rollback deployment ID -> prior revision -> hooks / validation",
+    "mappings": [
+      [
+        "Failed ValidateService",
+        "Automatic rollback to known-good revision"
+      ],
+      [
+        "Untracked destination-file collision",
+        "Review FAIL / OVERWRITE / RETAIN file behavior"
+      ]
+    ],
+    "caveats": [
+      "Cleanup removes tracked deployed files, not every file in the directory.",
+      "RETAIN is collision behavior, not backup/versioning or guaranteed preservation of a manual file that later becomes managed."
+    ],
+    "questions": [
+      12,
+      35
+    ],
+    "examples": [
+      [
+        12,
+        "Preserve out-of-band hotfix files during redeployment -> Quiz key: retain existing content"
+      ],
+      [
+        35,
+        "Recover from failed EC2 ValidateService using known-good code -> CodeDeploy creates a new deployment of the known-good revision"
+      ]
+    ]
+  },
+  {
+    "id": "manual-approval",
+    "name": "CodePipeline manual approval",
+    "memory": "DEPLOYMENT approval comes BEFORE production",
+    "purpose": "Pause pipeline execution for an authorized human response, with optional SNS notification.",
+    "why": "Enforce production review even when automated checks pass.",
+    "flow": "Tests -> nonproduction validation -> manual approval -> production deployment",
+    "mappings": [
+      [
+        "Human sign-off before production",
+        "Manual approval action"
+      ]
+    ],
+    "caveats": [
+      "Use stage/run order to prevent parallel bypass; approvals expire after seven days.",
+      "This is not a repository merge rule; restrict pipeline edits and approval permissions."
+    ],
+    "questions": [
+      13
+    ],
+    "examples": [
+      [
+        13,
+        "Require human approval before production even after tests pass -> CodePipeline manual approval before the production deploy action"
+      ]
+    ]
+  },
+  {
+    "id": "lambda-deploy",
+    "name": "CodeDeploy Lambda traffic shifting",
+    "memory": "LINEAR repeats; CANARY samples then cuts over",
+    "purpose": "Shift alias-routed invocations between published function versions using predefined/custom deployment configurations.",
+    "why": "Expose new Lambda behavior to a subset of users before full rollout.",
+    "flow": "Publish version -> alias -> validation -> repeated 10% shifts every three minutes -> full traffic",
+    "mappings": [
+      [
+        "Repeated increments over time",
+        "LambdaLinear10PercentEvery3Minutes"
+      ],
+      [
+        "Initial sample then remaining traffic",
+        "Lambda canary"
+      ]
+    ],
+    "caveats": [
+      "Clients must use the managed alias rather than an unqualified function or fixed version.",
+      "Configure alarms and lifecycle callback outcomes; shifts and rollback are not instantaneous health guarantees."
+    ],
+    "questions": [
+      14
+    ],
+    "examples": [
+      [
+        14,
+        "Automated Lambda tests and repeated incremental traffic shifts -> CodePipeline + CodeBuild + LambdaLinear10PercentEvery3Minutes"
+      ]
+    ]
+  },
+  {
+    "id": "events",
+    "name": "EventBridge deployment notifications",
+    "memory": "EVENT routing != deployment ROLLBACK",
+    "purpose": "Match CodeDeploy state-change events and invoke notification targets such as Lambda.",
+    "why": "Tell operators about failures without coupling notifications to recovery configuration.",
+    "flow": "CodeDeploy state change -> EventBridge rule -> Lambda -> Slack; CodeDeploy separately manages rollback",
+    "mappings": [
+      [
+        "React to deployment failure",
+        "EventBridge rule + notification target"
+      ]
+    ],
+    "caveats": [
+      "Store webhook credentials securely and configure retries/failure handling.",
+      "A successful notification does not prove deployment recovery succeeded."
+    ],
+    "questions": [
+      15
+    ],
+    "examples": [
+      [
+        15,
+        "Notify Slack of failed deployments and roll back automatically -> CodeDeploy rollback + EventBridge -> Lambda notification"
+      ]
+    ]
+  },
+  {
+    "id": "pipeline-crossaccount",
+    "name": "Cross-account pipeline IAM, S3, and KMS",
+    "memory": "ROLE trust + BUCKET access + KEY access",
+    "purpose": "Allow a source pipeline to assume a target deployment role and read encrypted artifacts with explicit cross-account permissions.",
+    "why": "Deploy across account boundaries without sharing broad permanent credentials.",
+    "flow": "Pipeline role -> target role trust -> artifact bucket read -> customer-managed key decrypt -> deployment",
+    "mappings": [
+      [
+        "Artifact AccessDenied across accounts",
+        "Check role assumption + S3 bucket policy + KMS key policy"
+      ],
+      [
+        "Share KMS-encrypted pipeline artifacts",
+        "Customer-managed KMS key"
+      ]
+    ],
+    "caveats": [
+      "An AWS-managed key cannot be edited to grant the required cross-account key access.",
+      "A customer-managed key alone does not authorize the reader; caller IAM and resource policies must align."
+    ],
+    "questions": [
+      17
+    ],
+    "examples": [
+      [
+        17,
+        "Fix cross-account pipeline deployment artifact AccessDenied -> Customer-managed artifact KMS key + trusted target-account role"
+      ]
+    ]
+  },
+  {
+    "id": "build-cache",
+    "name": "CodeBuild dependency caching",
+    "memory": "CACHE speeds reuse; it is not a RELEASE artifact",
+    "purpose": "Cache specified dependency paths between builds using configured S3 or supported local caching.",
+    "why": "Reduce repetitive dependency downloads when those downloads dominate build time.",
+    "flow": "Buildspec cache paths + project S3 cache -> restored dependencies -> build -> updated cache",
+    "mappings": [
+      [
+        "Repeated Maven dependency downloads",
+        "S3 cache + actual Maven local repository path"
+      ]
+    ],
+    "caveats": [
+      "Cache hits are conditional; use suitable keys and avoid stale/unsafe cache contents.",
+      "Measure the real build-time reduction instead of assuming every cache is faster."
+    ],
+    "questions": [
+      18
+    ],
+    "examples": [
+      [
+        18,
+        "Avoid repeated downloads of Maven dependencies -> CodeBuild S3 cache + Maven repository cache path"
+      ]
+    ]
+  },
+  {
+    "id": "sam",
+    "name": "AWS SAM CLI and safe Lambda deployment",
+    "memory": "BUILD -> PACKAGE -> DEPLOY; alias controls traffic",
+    "purpose": "Build dependencies and package serverless artifacts; describe CodeDeploy-backed safe deployments in SAM templates.",
+    "why": "Automate serverless release packaging and configure staged Lambda traffic shifts.",
+    "flow": "sam build -> sam package built template -> sam deploy | AutoPublishAlias + DeploymentPreference + alarms",
+    "mappings": [
+      [
+        "Compile and output S3 template URIs",
+        "sam build followed by sam package"
+      ],
+      [
+        "10% for ten minutes then rest",
+        "Canary10Percent10Minutes"
+      ]
+    ],
+    "caveats": [
+      "Build/package alone do not execute a deployment.",
+      "DeploymentPreference needs alias/version plumbing, alarm configuration, and permissions."
+    ],
+    "questions": [
+      20,
+      34
+    ],
+    "examples": [
+      [
+        20,
+        "Lambda 10% traffic for ten minutes, then the remaining 90% -> SAM DeploymentPreference Canary10Percent10Minutes"
+      ],
+      [
+        34,
+        "Compile dependencies, upload packaged artifacts, rewrite template URIs -> sam build -> sam package"
+      ]
+    ]
+  },
+  {
+    "id": "build-secrets",
+    "name": "CodeBuild secret injection",
+    "memory": "SECRET reference, not plaintext buildspec",
+    "purpose": "Retrieve authorized Secrets Manager values through the buildspec environment mapping.",
+    "why": "Give tests credentials without committing the password or displaying it in ordinary configuration.",
+    "flow": "env: secrets-manager -> build service role -> secret / KMS authorization -> runtime variable",
+    "mappings": [
+      [
+        "Secure database password during tests",
+        "env: secrets-manager"
+      ]
+    ],
+    "caveats": [
+      "Do not echo or transform secrets into logs/artifacts; masking has limits.",
+      "Do not grant production secret access to builds running untrusted pull-request code."
+    ],
+    "questions": [
+      21
+    ],
+    "examples": [
+      [
+        21,
+        "Give CodeBuild a secret password without buildspec plaintext -> buildspec env: secrets-manager"
+      ]
+    ]
+  },
+  {
+    "id": "ec2-hooks",
+    "name": "CodeDeploy EC2 hooks and ASG launch integration",
+    "memory": "STOP -> PREPARE -> CONFIGURE -> START -> VALIDATE",
+    "purpose": "Run AppSpec scripts around native file-transfer/install events and integrate deployments with ASG scale-out.",
+    "why": "Start applications predictably on releases and newly launched instances.",
+    "flow": "ApplicationStop -> DownloadBundle -> BeforeInstall -> Install -> AfterInstall -> ApplicationStart -> ValidateService",
+    "mappings": [
+      [
+        "Install dependencies for new files",
+        "AfterInstall"
+      ],
+      [
+        "Gracefully stop existing process",
+        "ApplicationStop"
+      ],
+      [
+        "Deploy code on ASG scale-out",
+        "Configured CodeDeploy/ASG launch integration"
+      ]
+    ],
+    "caveats": [
+      "DownloadBundle and Install are not scriptable hooks.",
+      "ApplicationStop uses the prior successful revision and is absent on a first deployment."
+    ],
+    "questions": [
+      24,
+      27
+    ],
+    "examples": [
+      [
+        24,
+        "Stop Node.js, prepare install, configure dependencies, start -> ApplicationStop -> BeforeInstall -> AfterInstall -> ApplicationStart"
+      ],
+      [
+        27,
+        "Install the correct application during ASG scale-out -> CodeDeploy/Auto Scaling integration deploys successful revision"
+      ]
+    ]
+  },
+  {
+    "id": "ecr",
+    "name": "CodeBuild Docker publishing to Amazon ECR",
+    "memory": "IAM authorizes APIs; Docker still needs LOGIN",
+    "purpose": "Build/tag container images and push layers/manifests to an authorized ECR repository.",
+    "why": "Publish immutable or versioned image artifacts for container deployments.",
+    "flow": "pre_build: get-login-password -> docker login --password-stdin -> build -> tag -> push",
+    "mappings": [
+      [
+        "ECR image push from CodeBuild",
+        "Token/login + repository push permissions"
+      ]
+    ],
+    "caveats": [
+      "GetAuthorizationToken alone cannot upload layers or PutImage.",
+      "Enable privileged mode when the chosen Docker-in-Docker environment requires it; scope permissions instead of ecr:*."
+    ],
+    "questions": [
+      25
+    ],
+    "examples": [
+      [
+        25,
+        "Build and push a Docker image to ECR -> Push permissions + get-login-password piped to docker login"
+      ]
+    ]
+  },
+  {
+    "id": "vpc-build",
+    "name": "VPC-connected CodeBuild",
+    "memory": "PRIVATE network path + security groups + AWS dependencies",
+    "purpose": "Attach build ENIs to configured VPC subnets so build commands can reach private resources.",
+    "why": "Test against private RDS without exposing its database endpoint publicly.",
+    "flow": "CodeBuild VPC ENI -> permitted DB-port route/SG -> private RDS; endpoints/NAT -> build dependencies",
+    "mappings": [
+      [
+        "Integration tests against private RDS",
+        "VPC ID + subnets + SGs + ENI permissions"
+      ]
+    ],
+    "caveats": [
+      "VPC attachment does not automatically add internet egress.",
+      "Check DNS, database ingress, build egress, source/artifact access, and credentials separately."
+    ],
+    "questions": [
+      26
+    ],
+    "examples": [
+      [
+        26,
+        "Run CodeBuild integration tests against private RDS -> VPC project configuration with subnets and security groups"
+      ]
+    ]
+  },
+  {
+    "id": "codecommit",
+    "name": "CodeCommit pull-request approval rules",
+    "memory": "MERGE gate, not production release gate",
+    "purpose": "Associate approval rule templates that specify destination branches, eligible approvers, and required approval counts.",
+    "why": "Require two senior approvals before a protected pull request is merged.",
+    "flow": "Pull request to main -> matched approval rule -> two eligible approvals -> allowed merge",
+    "mappings": [
+      [
+        "Two senior developers before PR merge",
+        "CodeCommit approval rule template"
+      ]
+    ],
+    "caveats": [
+      "Use supported IAM principal/assumed-role patterns, not an assumed generic IAM-group approver setting.",
+      "Protect rule overrides and direct branch writes; pipeline approvals do not enforce merges."
+    ],
+    "questions": [
+      29
+    ],
+    "examples": [
+      [
+        29,
+        "Require two senior approvals before merging main pull requests -> CodeCommit approval rule template"
+      ]
+    ]
+  },
+  {
+    "id": "drift",
+    "name": "Config-backed CloudFormation drift alerts",
+    "memory": "PERIODIC detection, not prevention or repair",
+    "purpose": "Use the Config managed drift-check rule and route compliance changes to notification targets.",
+    "why": "Detect supported out-of-band stack changes without custom per-stack polling scripts.",
+    "flow": "Periodic Config drift check -> NON_COMPLIANT -> EventBridge -> SNS / Lambda -> Slack",
+    "mappings": [
+      [
+        "Out-of-band stack configuration change",
+        "cloudformation-stack-drift-detection-check"
+      ]
+    ],
+    "caveats": [
+      "Configure recording, coverage, permissions, and expected detection latency.",
+      "A noncompliant alert does not revert a resource; detection excludes unsupported or untracked properties."
+    ],
+    "questions": [
+      30
+    ],
+    "examples": [
+      [
+        30,
+        "Notify Slack when CloudFormation resources drift -> Config drift-check rule -> EventBridge -> SNS/Lambda"
+      ]
+    ]
+  },
+  {
+    "id": "beanstalk",
+    "name": "Elastic Beanstalk traffic splitting",
+    "memory": "Temporary new fleet + fractional traffic + health evaluation",
+    "purpose": "Deploy a new version to temporary instances and route a configured traffic sample during evaluation.",
+    "why": "Perform a canary-style rollout using a native Beanstalk deployment policy.",
+    "flow": "New instances -> 15% traffic for 15 minutes -> healthy promotion / failed rollout recovery",
+    "mappings": [
+      [
+        "Beanstalk percentage and evaluation time",
+        "Traffic splitting deployment"
+      ]
+    ],
+    "caveats": [
+      "Requires a supported ALB environment and relevant enhanced-health setup.",
+      "Rolling, immutable, and separate-environment blue/green deployments are distinct policies/patterns."
+    ],
+    "questions": [
+      32
+    ],
+    "examples": [
+      [
+        32,
+        "Beanstalk 15% traffic for fifteen minutes, then full rollout -> Traffic splitting deployment policy"
+      ]
+    ]
+  }
+];
+    const questions = [
+  {
+    "id": 1,
+    "options": [
+      1,
+      4,
+      6
+    ],
+    "requirement": "Test pull requests, report status, and save test output",
+    "answer": "CodeBuild PR webhook + status reporting + artifacts + service role",
+    "service": "codebuild",
+    "caveat": "Configure provider-supported PR events and main-branch filters, S3 artifact output, and repository/log/artifact permissions. The artifacts block saves files; reports produces test dashboards. A connection alone does not guarantee every provider supports PR status reporting."
+  },
+  {
+    "id": 2,
+    "options": [
+      2,
+      4
+    ],
+    "requirement": "Expose a small ECS traffic sample and roll back on latency",
+    "answer": "ECSCanary10Percent5Minutes + ALB TargetResponseTime alarm",
+    "service": "ecs-deploy",
+    "caveat": "Configure automatic rollback and the correct ALB/target-group dimensions, threshold, period, and evaluation count. A fleet-wide average can hide green-task latency; alarm detection and rollback are not instantaneous."
+  },
+  {
+    "id": 3,
+    "options": [
+      3,
+      4
+    ],
+    "requirement": "Fail insecure builds and detect runtime API failures",
+    "answer": "Build-stage SAST gate + post-deployment smoke test + rollback",
+    "service": "quality-gates",
+    "caveat": "Historical key: CodeGuru Security, retired November 20, 2025. Use a supported scanner for current pipelines. A nonzero smoke-test exit fails its action; configure the appropriate stage/deployment rollback mechanism explicitly. CodeDeploy does not automatically undo any arbitrary pipeline script."
+  },
+  {
+    "id": 4,
+    "options": [
+      3
+    ],
+    "requirement": "Publish versioned internal packages and cache public dependencies",
+    "answer": "CodeBuild publishes to CodeArtifact with upstream configuration",
+    "service": "codeartifact",
+    "caveat": "Configure the repository graph and applicable external connection for public packages. Authenticate using the build role, publish supported package versions, and enforce your versioning rules; CodeArtifact does not choose semantic versions for you."
+  },
+  {
+    "id": 5,
+    "options": [
+      3
+    ],
+    "requirement": "Install private Node.js packages on deployment instances",
+    "answer": "EC2 instance profile + CodeArtifact permissions + login hook",
+    "service": "codeartifact",
+    "caveat": "Allow required repository/domain access, codeartifact:GetAuthorizationToken and sts:GetServiceBearerToken. Run aws codeartifact login for the right tool/domain/repository/Region; do not embed long-lived access keys."
+  },
+  {
+    "id": 6,
+    "options": [
+      1,
+      5
+    ],
+    "requirement": "Run independent S3 object-processing tasks concurrently",
+    "answer": "S3 EventBridge event -> asynchronous Express Parallel workflow",
+    "service": "workflows",
+    "caveat": "Enable S3 delivery to EventBridge and authorize the target to start executions. Express runs for at most five minutes and asynchronous Express is at-least-once: make tasks idempotent. Use Standard for longer processing; Parallel is different from Map over many items."
+  },
+  {
+    "id": 7,
+    "options": [
+      1
+    ],
+    "requirement": "Save generated build files for downstream stages",
+    "answer": "S3 artifact output + buildspec artifacts + write permissions",
+    "service": "codebuild",
+    "caveat": "For a standalone project configure S3 output. In a CodePipeline-integrated build use CODEPIPELINE artifact mode and connect named output/input artifacts; do not assume a standalone S3 output is automatically wired into later stages."
+  },
+  {
+    "id": 8,
+    "options": [
+      1
+    ],
+    "requirement": "Do not route Lambda traffic until a prerequisite workflow finishes",
+    "answer": "BeforeAllowTraffic validation hook",
+    "service": "workflows",
+    "caveat": "The Lambda hook must report its outcome with PutLifecycleEventHookExecutionStatus. Avoid unbounded polling inside one Lambda invocation; respect Lambda and CodeDeploy hook timeouts. A prerequisite that may run for hours should complete in an earlier Standard workflow pipeline action."
+  },
+  {
+    "id": 9,
+    "options": [
+      4
+    ],
+    "requirement": "Coordinate regional builds/deployments under residency constraints",
+    "answer": "Quiz key: CodePipeline cross-Region actions",
+    "service": "pipeline-regions",
+    "caveat": "CodePipeline copies input artifacts between Regions; destination buckets do not prove that files never crossed a Region boundary. Console-created buckets differ from CLI/IaC-supplied ArtifactStores. Strict no-transfer requirements need a regionally isolated sourcing/build design and separate review of user-data placement."
+  },
+  {
+    "id": 10,
+    "options": [
+      3
+    ],
+    "requirement": "Reuse one infrastructure template across environments",
+    "answer": "CloudFormation parameters/mappings + pipeline parameter overrides",
+    "service": "cloudformation",
+    "caveat": "Pass environment-specific values rather than editing source templates. Keep secrets out of plaintext overrides, and use unique physical names or generated names to avoid collisions."
+  },
+  {
+    "id": 11,
+    "options": [
+      2
+    ],
+    "requirement": "New EC2 fleet, pre-traffic cleanup, and old-fleet termination",
+    "answer": "EC2 blue/green + BeforeAllowTraffic + termination settings",
+    "service": "ec2-bluegreen",
+    "caveat": "Minimum healthy hosts=50% controls host availability/deployment success, not 50% of request traffic. EC2 blue/green traffic rerouting is not the ECS/Lambda percentage-canary mechanism. Validate cleanup and drain connections; immediate old-fleet termination reduces rollback options."
+  },
+  {
+    "id": 12,
+    "options": [
+      3
+    ],
+    "requirement": "Preserve out-of-band hotfix files during redeployment",
+    "answer": "Quiz key: retain existing content",
+    "service": "rollback",
+    "caveat": "CodeDeploy does not indiscriminately delete all destination files. Cleanup tracks files installed by prior deployments; RETAIN governs collisions with existing files not tracked by the previous successful deployment. A manual file later included in a revision can become managed and be removed. Version hotfixes and test collision/rollback behavior."
+  },
+  {
+    "id": 13,
+    "options": [
+      2
+    ],
+    "requirement": "Require human approval before production even after tests pass",
+    "answer": "CodePipeline manual approval before the production deploy action",
+    "service": "manual-approval",
+    "caveat": "The key wording places approval after a deploy action: that is safe only when the earlier deployment is nonproduction. Put approval before the protected production action, with a later run order or stage. Approval expires after seven days; restrict bypass and update permissions."
+  },
+  {
+    "id": 14,
+    "options": [
+      1
+    ],
+    "requirement": "Automated Lambda tests and repeated incremental traffic shifts",
+    "answer": "CodePipeline + CodeBuild + LambdaLinear10PercentEvery3Minutes",
+    "service": "lambda-deploy",
+    "caveat": "Use published versions and a routed alias, compatible AppSpec, and CodeDeploy permissions. Linear adds traffic in repeated steps; canary makes an initial shift followed by one final shift. Only alias-routed invocations participate."
+  },
+  {
+    "id": 15,
+    "options": [
+      3
+    ],
+    "requirement": "Notify Slack of failed deployments and roll back automatically",
+    "answer": "CodeDeploy rollback + EventBridge -> Lambda notification",
+    "service": "events",
+    "caveat": "Configure rollback separately from notification routing. Store the Slack webhook securely and handle delivery errors/retries. Failure rollback redeploys a known-good revision; it does not guarantee instant recovery or reverse database migrations."
+  },
+  {
+    "id": 16,
+    "options": [
+      1
+    ],
+    "requirement": "Allow stack updates but prevent RDS replacement",
+    "answer": "Stack policy denying Update:Replace for the RDS logical ID",
+    "service": "cloudformation",
+    "caveat": "Stack policies govern updates, not DeleteStack or direct RDS deletion. A deny on replacement alone does not deny Update:Delete; protect that separately if required, restrict policy overrides, and keep backups."
+  },
+  {
+    "id": 17,
+    "options": [
+      1,
+      2
+    ],
+    "requirement": "Fix cross-account pipeline deployment artifact AccessDenied",
+    "answer": "Customer-managed artifact KMS key + trusted target-account role",
+    "service": "pipeline-crossaccount",
+    "caveat": "Also authorize AssumeRole on both sides, S3 reads through the bucket policy, and KMS Decrypt through caller IAM and owner key policy. Those two options are necessary parts, not a complete permission fix. Restrict grants to relevant roles and artifacts."
+  },
+  {
+    "id": 18,
+    "options": [
+      1
+    ],
+    "requirement": "Avoid repeated downloads of Maven dependencies",
+    "answer": "CodeBuild S3 cache + Maven repository cache path",
+    "service": "build-cache",
+    "caveat": "Configure the project cache and buildspec cache paths, suitable keys, and S3 permissions. Cache reuse is not guaranteed; verify the actual Maven local repository path and measure build time. A cache is not an output artifact or test report."
+  },
+  {
+    "id": 19,
+    "options": [
+      1
+    ],
+    "requirement": "Two-hour branching integration tests inside a pipeline",
+    "answer": "Standard Step Functions workflow invoked by CodePipeline",
+    "service": "workflows",
+    "caveat": "Use Standard for a two-hour execution; Express has a five-minute duration limit. Configure workflow/target permissions, action timeout, and meaningful test failures. A long linear shell test could run in CodeBuild; branching orchestration is the key requirement."
+  },
+  {
+    "id": 20,
+    "options": [
+      1
+    ],
+    "requirement": "Lambda 10% traffic for ten minutes, then the remaining 90%",
+    "answer": "SAM DeploymentPreference Canary10Percent10Minutes",
+    "service": "sam",
+    "caveat": "Add AutoPublishAlias so versions and alias traffic can be managed, list relevant alarms in DeploymentPreference, and configure required deployment roles. The type alone does not attach alarms or route callers through the alias."
+  },
+  {
+    "id": 21,
+    "options": [
+      1
+    ],
+    "requirement": "Give CodeBuild a secret password without buildspec plaintext",
+    "answer": "buildspec env: secrets-manager",
+    "service": "build-secrets",
+    "caveat": "Grant GetSecretValue and appropriate KMS key use. Never echo secrets or transformed copies; native masking is not a guarantee against application/debug logging. Use minimum access and avoid exposing secrets to untrusted pull-request builds."
+  },
+  {
+    "id": 22,
+    "options": [
+      1
+    ],
+    "requirement": "Validate green ECS tasks before production traffic",
+    "answer": "BeforeAllowTraffic Lambda validation hook",
+    "service": "ecs-deploy",
+    "caveat": "ECS AppSpec hooks invoke Lambda functions, not EC2-style local shell scripts. Connect to the new tasks using the appropriate test/network path and report Succeeded/Failed via PutLifecycleEventHookExecutionStatus. Enable rollback on deployment failure."
+  },
+  {
+    "id": 23,
+    "options": [
+      1
+    ],
+    "requirement": "Infrastructure baseline in current and future organization accounts",
+    "answer": "Service-managed CloudFormation StackSets + auto-deployment",
+    "service": "cloudformation",
+    "caveat": "Enable trusted access and automatic deployment; select organization root/OUs and all required Regions. Service-managed permissions alone do not imply that automatic deployment is enabled."
+  },
+  {
+    "id": 24,
+    "options": [
+      1
+    ],
+    "requirement": "Stop Node.js, prepare install, configure dependencies, start",
+    "answer": "ApplicationStop -> BeforeInstall -> AfterInstall -> ApplicationStart",
+    "service": "ec2-hooks",
+    "caveat": "This lists scriptable EC2 hooks, not every native event. DownloadBundle and Install occur between them. ApplicationStop uses the previous successful revision and is not run on the first deployment; install new revision dependencies after its files are present."
+  },
+  {
+    "id": 25,
+    "options": [
+      1,
+      2
+    ],
+    "requirement": "Build and push a Docker image to ECR",
+    "answer": "Push permissions + get-login-password piped to docker login",
+    "service": "ecr",
+    "caveat": "Use least-privilege token and repository upload/PutImage actions rather than blanket ecr:*. Configure an environment capable of Docker builds; common Docker-in-Docker setups require privileged mode. Authenticate to the correct account and Region, then build/tag/push."
+  },
+  {
+    "id": 26,
+    "options": [
+      1
+    ],
+    "requirement": "Run CodeBuild integration tests against private RDS",
+    "answer": "VPC project configuration with subnets and security groups",
+    "service": "vpc-build",
+    "caveat": "Permit database-port traffic between build ENIs and RDS, plus required ENI IAM permissions and DNS. Builds also need paths to source, logs, artifacts, secrets, and dependencies; private-subnet placement alone does not supply NAT or service endpoints."
+  },
+  {
+    "id": 27,
+    "options": [
+      1
+    ],
+    "requirement": "Install the correct application during ASG scale-out",
+    "answer": "CodeDeploy/Auto Scaling integration deploys successful revision",
+    "service": "ec2-hooks",
+    "caveat": "Associate the deployment group and ASG; new instances need a working agent, instance profile, artifact access, and launch integration. Consider scale-out during an active deployment separately; do not assume every instance always receives the same revision immediately."
+  },
+  {
+    "id": 28,
+    "options": [
+      1
+    ],
+    "requirement": "Deploy one pipeline artifact into two Regions",
+    "answer": "Cross-Region actions + per-Region ArtifactStores",
+    "service": "pipeline-regions",
+    "caveat": "Artifact buckets and configured keys must be in the action Region and pipeline account. CodePipeline copies the relevant input artifacts to the destination; cross-Region and cross-account permissions are separate concerns."
+  },
+  {
+    "id": 29,
+    "options": [
+      1
+    ],
+    "requirement": "Require two senior approvals before merging main pull requests",
+    "answer": "CodeCommit approval rule template",
+    "service": "codecommit",
+    "caveat": "Set destination-branch conditions, required approval count, and eligible principal ARNs/assumed-role patterns; associate the template with the repository. This is a merge gate, not a pipeline deployment approval. Restrict authorized overrides and direct branch-write bypasses."
+  },
+  {
+    "id": 30,
+    "options": [
+      1
+    ],
+    "requirement": "Notify Slack when CloudFormation resources drift",
+    "answer": "Config drift-check rule -> EventBridge -> SNS/Lambda",
+    "service": "drift",
+    "caveat": "The cloudformation-stack-drift-detection-check managed rule is periodic and covers supported recorded/explicit properties. It detects, not prevents or repairs, drift. Configure SNS/Lambda permissions, secure Slack delivery, and acceptable detection latency."
+  },
+  {
+    "id": 31,
+    "options": [
+      1
+    ],
+    "requirement": "Show JUnit pass rate and duration in the CodeBuild console",
+    "answer": "buildspec reports + report group",
+    "service": "codebuild",
+    "caveat": "Specify generated report files and file-format: JUNITXML with report-group permissions. A reports block parses results but does not run tests or force the command to fail on failed tests; retain raw reports longer if required."
+  },
+  {
+    "id": 32,
+    "options": [
+      1
+    ],
+    "requirement": "Beanstalk 15% traffic for fifteen minutes, then full rollout",
+    "answer": "Traffic splitting deployment policy",
+    "service": "beanstalk",
+    "caveat": "Use a supported Application Load Balancer environment and configure the traffic percentage, evaluation time, and enhanced-health behavior. Temporary capacity and connection draining matter; health-based promotion is not a promise of zero downtime."
+  },
+  {
+    "id": 33,
+    "options": [
+      1
+    ],
+    "requirement": "Architect reviews proposed infrastructure changes before execution",
+    "answer": "Create change set -> manual approval -> execute change set",
+    "service": "cloudformation",
+    "caveat": "Use the same named change set and correct run ordering across actions. Creating a change set does not apply it; approval must precede execution. Change sets do not predict every runtime failure or guarantee data safety."
+  },
+  {
+    "id": 34,
+    "options": [
+      1
+    ],
+    "requirement": "Compile dependencies, upload packaged artifacts, rewrite template URIs",
+    "answer": "sam build -> sam package",
+    "service": "sam",
+    "caveat": "Package the built template, for example .aws-sam/build/template.yaml, and supply the artifact bucket/output template. These commands do not themselves deploy; sam deploy is the separate deployment operation."
+  },
+  {
+    "id": 35,
+    "options": [
+      1
+    ],
+    "requirement": "Recover from failed EC2 ValidateService using known-good code",
+    "answer": "CodeDeploy creates a new deployment of the known-good revision",
+    "service": "rollback",
+    "caveat": "Rollback has a new deployment ID and normal lifecycle execution. It does not reverse script side effects, schema changes, external data, or all untracked files. A previous successful revision and working deployment prerequisites are required."
+  }
+];
+
+    function el(tag, text, className) {
+      const node = document.createElement(tag);
+      if (text !== undefined) node.textContent = text;
+      if (className) node.className = className;
+      return node;
+    }
+    function link(text, id) {
+      const node = el("a", text);
+      node.href = "#" + id;
+      return node;
+    }
+    function table(headers, rows) {
+      const wrap = el("div", undefined, "table-wrap");
+      const node = el("table");
+      const head = el("thead");
+      const headRow = el("tr");
+      headers.forEach(value => headRow.append(el("th", value)));
+      head.append(headRow);
+      const body = el("tbody");
+      rows.forEach(values => {
+        const row = el("tr");
+        values.forEach(value => row.append(el("td", value)));
+        body.append(row);
+      });
+      node.append(head, body);
+      wrap.append(node);
+      return wrap;
+    }
+    function searchable(node, text) { node.dataset.search = text.toLowerCase(); }
+
+    const serviceList = document.getElementById("service-list");
+    const keywordRows = document.getElementById("keyword-rows");
+    const questionList = document.getElementById("question-list");
+    const byService = new Map(services.map(service => [service.id, service]));
+    services.forEach(service => {
+      const card = el("article", undefined, "service");
+      card.id = service.id;
+      searchable(card, [service.name, service.memory, service.purpose, service.why, ...service.questions.map(n => "Q" + n), ...service.examples.flat(), ...service.mappings.flat(), ...service.caveats].join(" "));
+      card.append(el("h2", service.name), el("div", service.memory, "memory"));
+      const chips = el("div", undefined, "chips");
+      service.questions.forEach(n => chips.append(link("Q" + n, "q" + n)));
+      card.append(chips, el("h3", "What does it do?"), el("p", service.purpose), el("h3", "Why use it?"), el("p", service.why), el("h3", "Examples from our questions"));
+      const examples = el("ul", undefined, "examples");
+      service.examples.forEach(([n, text]) => {
+        const item = el("li");
+        item.append(link("Q" + n, "q" + n), document.createTextNode(" - " + text));
+        examples.append(item);
+      });
+      card.append(examples, el("pre", service.flow, "flow"), el("h3", "Exam keyword -> service mapping"), table(["If the requirement says...", "Think of..."], service.mappings));
+      const details = el("details");
+      details.append(el("summary", "Important caveats / exam traps"));
+      const list = el("ul");
+      service.caveats.forEach(text => list.append(el("li", text)));
+      details.append(list);
+      card.append(details);
+      serviceList.append(card);
+
+      const row = el("tr");
+      const phrases = service.mappings.map(mapping => mapping[0]).join("; ");
+      searchable(row, [phrases, service.name, service.memory, ...service.questions.map(n => "Q" + n)].join(" "));
+      const mapped = el("td"); mapped.append(link(service.name, service.id));
+      const refs = el("td");
+      service.questions.forEach((n, index) => { if (index) refs.append(document.createTextNode(", ")); refs.append(link("Q" + n, "q" + n)); });
+      row.append(el("td", phrases), mapped, refs);
+      keywordRows.append(row);
+    });
+    questions.forEach(question => {
+      const item = el("details", undefined, "question");
+      item.id = "q" + question.id;
+      const service = byService.get(question.service);
+      searchable(item, ["Q" + question.id, question.requirement, question.answer, question.caveat, service.name, service.memory].join(" "));
+      item.append(el("summary", "Q" + question.id + " - " + question.requirement));
+      item.append(el("p", "Reference key: Option" + (question.options.length > 1 ? "s " : " ") + question.options.join(", "), "answer"));
+      item.append(el("div", question.requirement + " -> " + question.answer, "memory"));
+      const serviceRef = el("p"); serviceRef.append(document.createTextNode("Review service: "), link(service.name, service.id));
+      item.append(serviceRef, el("p", question.caveat, "caution"));
+      questionList.append(item);
+    });
+    const search = document.getElementById("search");
+    function matches(node, term) {
+      if (/^q\d+$/i.test(term)) return new RegExp("\\b" + term + "\\b", "i").test(node.dataset.search);
+      return node.dataset.search.includes(term);
+    }
+    function filter() {
+      const term = search.value.trim().toLowerCase();
+      const groups = [
+        [Array.from(serviceList.children), "empty-services"],
+        [Array.from(keywordRows.children), "empty-keywords"],
+        [Array.from(questionList.children), "empty-questions"]
+      ];
+      const counts = groups.map(([nodes, empty]) => {
+        let visible = 0;
+        nodes.forEach(node => { node.hidden = !matches(node, term); if (!node.hidden) visible++; });
+        document.getElementById(empty).hidden = visible !== 0;
+        return visible;
+      });
+      document.getElementById("status").textContent = counts[0] + " service cards / " + counts[2] + " questions" + (term ? " match" : "");
+    }
+    search.addEventListener("input", filter);
+    document.getElementById("clear").addEventListener("click", () => { search.value = ""; filter(); search.focus(); });
+    document.getElementById("expand").addEventListener("click", () => Array.from(questionList.children).forEach(node => { if (!node.hidden) node.open = true; }));
+    document.getElementById("collapse").addEventListener("click", () => Array.from(questionList.children).forEach(node => { node.open = false; }));
+    let printState;
+    window.addEventListener("beforeprint", () => {
+      printState = Array.from(document.querySelectorAll("details")).map(node => [node, node.open]);
+      printState.forEach(([node]) => { if (!node.hidden) node.open = true; });
+    });
+    window.addEventListener("afterprint", () => { if (printState) printState.forEach(([node, open]) => { node.open = open; }); });
+    document.getElementById("print").addEventListener("click", () => window.print());
+    function revealTarget() {
+      const target = document.getElementById(location.hash.slice(1));
+      if (!target) return;
+      if (target.hidden) { search.value = ""; filter(); }
+      if (target.matches("details")) target.open = true;
+      requestAnimationFrame(() => target.scrollIntoView({block:"start"}));
+    }
+    window.addEventListener("hashchange", revealTarget);
+    document.addEventListener("click", event => {
+      const anchor = event.target.closest("a");
+      if (anchor && anchor.getAttribute("href") === location.hash) revealTarget();
+    });
+    filter();
+    if (location.hash) revealTarget();
+  </script>
 </body>
 </html>

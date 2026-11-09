@@ -1,245 +1,1836 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWS DOP-C02 Cheat Sheet: Monitoring & Security</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
-            margin: 0;
-            padding: 15px;
-            line-height: 1.5;
-        }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        h1 {
-            text-align: center;
-            color: #ff9900;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-        }
-        .card {
-            background-color: #1e1e1e;
-            border-left: 6px solid #ff9900;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.5);
-        }
-        .service-title {
-            color: #ffffff;
-            font-size: 1.4rem;
-            margin: 0 0 10px 0;
-            font-weight: 700;
-        }
-        .label {
-            font-weight: 600;
-            color: #4da6ff;
-            display: block;
-            margin-top: 12px;
-            font-size: 1.05rem;
-        }
-        .label-example {
-            font-weight: 600;
-            color: #00e676;
-            display: block;
-            margin-top: 12px;
-            font-size: 1.05rem;
-        }
-        .content {
-            margin-top: 4px;
-            font-size: 0.95rem;
-            color: #cccccc;
-        }
-        .keyword-container {
-            margin-top: 12px;
-        }
-        .keyword {
-            display: inline-block;
-            background-color: #2d2d2d;
-            color: #00ffcc;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            margin: 4px 4px 0 0;
-            border: 1px solid #404040;
-            font-family: monospace;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AWS DOP-C02 Monitoring and Logging: 31 service and feature summaries, all 45 Part A/B mappings, comparisons, and technical caveats.">
+  <title>AWS DOP-C02 | Monitoring &amp; Logging Exam Memory</title>
+  <style>
+    :root { color-scheme: dark; --bg:#0b1220; --panel:#152133; --line:#334155; --text:#e2e8f0; --muted:#b4c2d5; --accent:#7dd3fc; --gold:#fbbf24; --green:#6ee7b7; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; scroll-padding-top:150px; }
+    body { margin:0; background:var(--bg); color:var(--text); font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:3px; }
+    a:hover { color:white; }
+    button,input { font:inherit; }
+    button { cursor:pointer; }
+    :focus-visible { outline:3px solid var(--gold); outline-offset:4px; }
+    .skip { position:absolute; left:12px; top:-80px; background:var(--panel); padding:8px; z-index:10; }
+    .skip:focus { top:12px; }
+    header,.wrap { max-width:1240px; margin:auto; padding:24px; }
+    header { padding-bottom:14px; }
+    h1 { font-size:clamp(1.8rem,4vw,2.8rem); line-height:1.2; margin:8px 0 16px; }
+    h2 { font-size:1.55rem; margin-top:0; line-height:1.35; }
+    h3 { color:var(--accent); font-size:1.08rem; margin:22px 0 8px; }
+    p { margin:8px 0 14px; }
+    .eyebrow,.tag { color:var(--gold); font-weight:700; }
+    .muted { color:var(--muted); }
+    .toolbar { position:sticky; top:0; z-index:3; background:#0b1220f5; border-block:1px solid var(--line); }
+    .tools { max-width:1240px; margin:auto; padding:12px 24px; display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+    input { min-width:160px; flex:1; background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:9px 12px; }
+    button,.nav a { border:1px solid var(--line); background:var(--panel); color:var(--text); border-radius:8px; padding:8px 12px; text-decoration:none; }
+    .nav { display:flex; flex-wrap:wrap; gap:8px; }
+    .nav a { display:inline-block; }
+    section { margin-bottom:32px; }
+    .panel,.service { background:var(--panel); border:1px solid var(--line); padding:24px; border-radius:14px; }
+    .service { margin-bottom:20px; }
+    .memory { border-left:4px solid var(--gold); padding:12px 16px; background:#fbbf2410; color:#fde68a; margin:14px 0; font-weight:650; }
+    .note { border-left:4px solid var(--accent); padding:10px 14px; background:#7dd3fc0b; }
+    .caution { border-left:4px solid var(--gold); padding:10px 14px; background:#fbbf240b; }
+    .flow { white-space:pre-wrap; font:14px/1.8 ui-monospace,Consolas,monospace; padding:14px; background:var(--bg); border:1px solid var(--line); border-radius:8px; overflow-wrap:anywhere; }
+    .table-wrap { overflow-x:auto; }
+    table { border-collapse:collapse; width:100%; font-size:.94rem; }
+    th,td { text-align:left; vertical-align:top; border-bottom:1px solid var(--line); padding:12px; }
+    th { color:var(--accent); background:#0b122070; }
+    tbody tr:last-child td { border-bottom:0; }
+    code { font: .9em ui-monospace,Consolas,monospace; color:#fde68a; overflow-wrap:anywhere; }
+    .chips { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+    .chips a { border:1px solid var(--line); padding:3px 10px; border-radius:20px; text-decoration:none; font-size:.9rem; }
+    .examples { padding-left:22px; }
+    .examples li { padding:5px 0; }
+    .badge { display:inline-block; font-size:.78rem; padding:2px 8px; border:1px solid var(--gold); color:var(--gold); border-radius:12px; margin-bottom:6px; }
+    .answer { color:var(--green); font-weight:650; }
+    details { border:1px solid var(--line); border-radius:8px; margin:12px 0; padding:10px 14px; }
+    summary { cursor:pointer; font-weight:650; color:var(--accent); }
+    .question { scroll-margin-top:160px; }
+    .question h3 { margin:12px 0 8px; }
+    .question p { margin:6px 0 12px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+    .grid .panel { padding:18px; }
+    [hidden] { display:none !important; }
+    .empty { padding:24px; border:1px dashed var(--gold); border-radius:10px; }
+    footer { border-top:1px solid var(--line); }
+    @media (max-width:640px) { header,.wrap { padding:16px; } .tools { padding:10px 16px; } .panel,.service { padding:16px; } th,td { padding:9px; } html { scroll-padding-top:200px; } }
+    @media print {
+      :root { color-scheme:light; --bg:white; --panel:white; --line:#bbb; --text:#111; --muted:#333; --accent:#164e63; --gold:#734b00; --green:#14532d; }
+      .toolbar,.skip,.no-print { display:none; }
+      body { font-size:11pt; }
+      .wrap,header { max-width:none; padding:12px; }
+      .service,.panel { border-radius:0; }
+      h2,h3,summary { break-after:avoid; }
+      tr,.memory,.examples li { break-inside:avoid; }
+      .flow,th { background:white; }
+      code,.memory { color:#333; }
+      a { color:#164e63; }
+    }
+  </style>
 </head>
 <body>
-
-<div class="container">
-    <nav aria-label="Quiz navigation"><a href="../index.html" style="color: #4da6ff;">Study portal home</a>
-        &middot; <a href="index.html" style="color: #4da6ff;">All Monitoring and Logging quizzes</a></nav>
-    <h1>AWS DOP-C02: Monitoring & Security</h1>
-
-    <!-- AWS Config -->
-    <div class="card">
-        <h2 class="service-title">AWS Config</h2>
-        <span class="label">Function:</span>
-        <div class="content">Records resource configuration changes and continuously evaluates them against compliance rules.</div>
-        <span class="label">Why it's used:</span>
-        <div class="content">To audit historical resource states, enforce compliance (e.g., ensuring EBS volumes are encrypted), and trigger automated remediations via SSM.</div>
-        <span class="label-example">Simple Example:</span>
-        <div class="content">Imagine a security camera taking a snapshot every time someone changes a lock on a door. If a developer accidentally opens a database to the public internet, Config takes a snapshot of that change and can automatically trigger a script to lock it back down.</div>
-        <span class="label">Exam Keywords:</span>
-        <div class="keyword-container">
-            <span class="keyword">compliance breaches</span>
-            <span class="keyword">evaluate configuration</span>
-            <span class="keyword">auto-remediation</span>
-            <span class="keyword">Config Aggregator</span>
-        </div>
+  <a href="#main" class="skip">Skip to cheatsheet</a>
+  <header id="top">
+    <div class="eyebrow">AWS DOP-C02 / MONITORING &amp; LOGGING</div>
+    <h1>Understand the service.<br>Recognize the requirement. Recall the answer.</h1>
+    <p>One consolidated revision sheet for <strong>45 mapped reference questions</strong>: service functions first, numbered examples next, then keyword mappings and comparison tables.</p>
+    <p class="muted">Question numbers and option numbers refer to the supplied master questionnaire, not an official AWS exam. Prepared 9 November 2026. Option order can change in other quizzes.</p>
+    <p><a href="https://meetparag81.github.io/AWSdevopsprofessionalrepo/index.html">Study portal home</a> | <a href="https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html">Open Part A questionnaire</a> | <a href="https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html">Open Part B questionnaire</a> <span class="muted">(online links; internet connection required)</span></p>
+  </header>
+  <div class="toolbar">
+    <div class="tools">
+      <label for="search">Find a keyword:</label>
+      <input id="search" type="search" placeholder="e.g. Q37, Part B, IncomingBytes, data events, retention" autocomplete="off">
+      <button id="clear" type="button">Clear</button>
+      <button id="print" type="button">Print / save PDF</button>
+      <nav class="nav" aria-label="Cheatsheet sections">
+        <a href="#services">Services</a><a href="#keywords">Keywords</a><a href="#comparisons">Comparisons</a><a href="#questions">Q1-45</a>
+      </nav>
+      <span id="status" class="muted" role="status" aria-live="polite"></span>
     </div>
+  </div>
+  <main id="main" class="wrap">
+    <section class="panel" id="how-to"><h2>Choose the evidence, then the delivery path</h2><div class="grid"><div><h3>1. Identify the evidence</h3><p>API history, host/application logs, network flows, resource metrics, request traces, compliance, or sensitive data?</p></div><div><h3>2. Identify timing and storage</h3><p>Per-event processing, alarm state change, near-real-time stream, batch archive, indexed search, or seven-year retention?</p></div><div><h3>3. Identify the boundary</h3><p>One log group, container, account, Region, or organization? Which actor and resource policies authorize delivery?</p></div></div><div class="memory">Part A = Q1-25. Part B = Q26-45. Numbers and option order match the supplied files; Q26 is the first Part B question, not a renumbered Q1.</div><p>Search a question number or <strong>Part A</strong>/<strong>Part B</strong>. Every question links to its source questionnaire. Both similarly worded S3 audit questions, Q8 and Q25, are retained with their different option numbers.</p><p class="caution">Reference keys are not official AWS answers. Amber notes flag omitted permissions, data-event selectors, alarm steps, latency guarantees, and older service guidance. No questionnaire, sign-in, or saved progress is changed.</p></section>
+    <section id="services">
+      <h2>Service functions + numbered examples</h2>
+      <p class="muted">Each card explains what the service does, why to use it, where it appears in these questions, and the requirement that should trigger recall.</p>
+      <div id="service-list"></div>
+      <p id="empty-services" class="empty" hidden>No matching service cards. Try a shorter keyword or a question number such as Q23.</p>
+    </section>
+    <section id="keywords" class="panel">
+      <h2>Exam requirement -&gt; service index</h2>
+      <div class="table-wrap">
+        <table><thead><tr><th>When the requirement says...</th><th>Recall this service / feature</th><th>Questions</th></tr></thead><tbody id="keyword-rows"></tbody></table>
+      </div>
+      <p id="empty-keywords" class="empty" hidden>No matching keyword mappings.</p>
+    </section>
+    <section id="comparisons" class="panel"><h2>High-value comparison tables</h2><article class="comparison"><h3>1. What evidence is required?</h3><div class="table-wrap"><table><thead><tr><th>Question</th><th>Choose</th><th>Not a substitute</th></tr></thead><tbody><tr><td>Who called an AWS API?</td><td>CloudTrail</td><td>CloudWatch resource metrics</td></tr><tr><td>Who GET/PUT/DELETE accessed an S3 object?</td><td>CloudTrail S3 data events</td><td>Management events alone</td></tr><tr><td>Was a host user logged in through SSH?</td><td>Authentication logs collected by Agent</td><td>CloudTrail API history alone</td></tr><tr><td>Which service delayed a request?</td><td>X-Ray / OpenTelemetry traces</td><td>CPU dashboard alone</td></tr><tr><td>Sensitive data inside S3 objects?</td><td>Macie</td><td>An object access log</td></tr><tr><td>Actual supported resource configuration compliant?</td><td>AWS Config</td><td>Security score alone</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>2. Logs, metrics, and streams</h3><div class="table-wrap"><table><thead><tr><th>Requirement</th><th>Mechanism</th><th>Trap</th></tr></thead><tbody><tr><td>Count success/Critical log patterns</td><td>Metric filter -&gt; metric -&gt; alarm/dashboard</td><td>Filter does not notify directly</td></tr><tr><td>Process every relevant incoming log event</td><td>Logs subscription -&gt; target</td><td>Metric-state alarm is not a per-event trigger</td></tr><tr><td>Continuously archive logs to S3</td><td>Subscription -&gt; Firehose</td><td>Export can lag up to 12 hours</td></tr><tr><td>Archive namespace metrics</td><td>Metric stream -&gt; Firehose</td><td>Not a Logs subscription</td></tr><tr><td>Transform before S3</td><td>Firehose Lambda transform</td><td>S3 trigger is after delivery</td></tr><tr><td>Search logs already in CloudWatch</td><td>Logs Insights / suitable query</td><td>No search cluster required for every workload</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>3. Metric resolution, statistics, and history</h3><div class="table-wrap"><table><thead><tr><th>Need</th><th>Setting / service</th><th>Caveat</th></tr></thead><tbody><tr><td>Transactions per minute</td><td>Count samples; Sum period 60 seconds</td><td>Do not sum repeatedly emitted cumulative totals</td></tr><tr><td>One-second player samples</td><td>PutMetricData StorageResolution=1</td><td>Publish at the required cadence</td></tr><tr><td>Fast high-resolution alarm</td><td>Supported sub-minute alarm periods</td><td>Minimum is 10 seconds, not one second</td></tr><tr><td>Expected day/night behavior</td><td>Anomaly detection</td><td>Missing telemetry differs from naturally low values</td></tr><tr><td>Log ingestion volume</td><td>IncomingBytes + LogGroupName + Sum</td><td>Not the complete cost bill</td></tr><tr><td>Seven-year metric history</td><td>Stream and retain externally in S3</td><td>Native retention about 15 months; archive in advance</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>4. Security posture, findings, and proof</h3><div class="table-wrap"><table><thead><tr><th>Requirement</th><th>Choose</th><th>Boundary</th></tr></thead><tbody><tr><td>CIS benchmark score and control findings</td><td>Security Hub CSPM</td><td>Score is not certification or auto-repair</td></tr><tr><td>Unusual supported identity/workload activity</td><td>GuardDuty</td><td>Threat finding, not every raw audit event</td></tr><tr><td>Only High findings</td><td>Severity &gt;=7 and &lt;9</td><td>Exclude Critical 9.0-10.0</td></tr><tr><td>Central API baseline across accounts</td><td>Organization trail</td><td>Explicit data-event/Region coverage</td></tr><tr><td>Prove delivered CloudTrail integrity</td><td>Signed digests + validation</td><td>Does not itself prevent deletion</td></tr><tr><td>PII discovery and object access audit</td><td>Macie + CloudTrail data events</td><td>Two different evidence sources</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>5. Cross-account and compliance boundaries</h3><div class="table-wrap"><table><thead><tr><th>Surface</th><th>Required setup</th><th>Does not do automatically</th></tr></thead><tbody><tr><td>Logs destination</td><td>Source subscription + destination policy + target permissions</td><td>Onboard every future log group/account</td></tr><tr><td>EventBridge bus</td><td>Source rule + sending role + target bus policy</td><td>Create receiving rules/targets</td></tr><tr><td>Encrypted central archive</td><td>Caller/service IAM + S3 bucket + KMS authorization</td><td>A key alone does not grant decrypt</td></tr><tr><td>Config aggregator</td><td>Recording/rules + authorized source/Region coverage</td><td>Deploy or repair baseline resources</td></tr><tr><td>Retention exactly 365</td><td>Exact check + PutRetentionPolicy remediation</td><td>Guarantee exact deletion timestamp</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>6. Container and host troubleshooting</h3><div class="table-wrap"><table><thead><tr><th>Symptom</th><th>First suitable tool</th><th>Limit</th></tr></thead><tbody><tr><td>Ephemeral Fargate stderr</td><td>awslogs task logging</td><td>Cannot SSH to Fargate host</td></tr><tr><td>Container CPU/memory/network</td><td>Container Insights at required granularity</td><td>Not request traces or app stdout</td></tr><tr><td>Microservice request latency</td><td>Instrumented trace map</td><td>Collector alone cannot create traces</td></tr><tr><td>Kernel boot failure and no SSM</td><td>EC2 console system output</td><td>Not an interactive shell</td></tr><tr><td>HTTPS outbound break</td><td>Flow Logs + SG/NACL/routes + TLS checks</td><td>ACCEPT does not mean TLS succeeded</td></tr><tr><td>Expensive OpenSearch searches</td><td>Thresholded slow logs</td><td>Error logs alone miss costly queries</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>7. Query cost and latency</h3><div class="table-wrap"><table><thead><tr><th>Destination</th><th>Why choose it</th><th>Optimization / caveat</th></tr></thead><tbody><tr><td>CloudWatch Logs</td><td>Managed ingestion and Logs Insights</td><td>Retention/class/query volume matter</td></tr><tr><td>S3 + Athena</td><td>Low-cost archival and SQL analytics</td><td>Parquet + partitions + selective columns</td></tr><tr><td>OpenSearch</td><td>Indexed interactive/full-text search</td><td>Capacity, indexing, and retention cost</td></tr><tr><td>QuickSight</td><td>Analytical dashboard over prepared data</td><td>Dataset/refresh is not instant compliance</td></tr><tr><td>Flow Logs Parquet/Hive prefixes</td><td>Reduce scanned bytes and query overhead</td><td>Existing text data remains text</td></tr></tbody></table></div></article>
+<article class="comparison"><h3>8. Reference-key corrections</h3><div class="table-wrap"><table><thead><tr><th>Question</th><th>Reference wording</th><th>Practical correction</th></tr></thead><tbody><tr><td>Q3 / Part A</td><td>Daily termination satisfies immediate response</td><td>Use measured event-driven response when required</td></tr><tr><td>Q4 / Part A</td><td>Export logs for near-real-time archival</td><td>Use subscriptions; export may lag 12 hours</td></tr><tr><td>Q5 / Part A</td><td>Digest for every log file</td><td>Normally hourly signed digest containing log hashes</td></tr><tr><td>Q8/Q25 / Part A</td><td>Lambda logs S3 data events</td><td>Enable CloudTrail object data-event selectors first</td></tr><tr><td>Q17 / Part A</td><td>S3/QuickSight is near-real-time compliance</td><td>Refresh/recording latency must be verified</td></tr><tr><td>Q30 / Part B</td><td>Macie also audits all PII access</td><td>Use CloudTrail S3 data events for access</td></tr><tr><td>Q37 / Part B</td><td>One-second metric means one-second scaling alarm</td><td>High-resolution alarm minimum is 10 seconds</td></tr><tr><td>Q39 / Part B</td><td>Bus policy alone is enough</td><td>Current cross-account targets also need sending role</td></tr><tr><td>Q43 / Part B</td><td>Publishing alone enables slow-query evidence</td><td>Set suitable slow-log thresholds</td></tr></tbody></table></div></article></section>
+    <section id="questions" class="panel">
+      <h2>All 45 questions: recall and answer index</h2>
+      <p>Each entry includes the reference answer number, a requirement-based shortcut, and relevant technical corrections. Search Q followed by a number to jump between its examples and index entry.</p>
+      <button id="expand" class="no-print" type="button">Expand all question details</button>
+      <button id="collapse" class="no-print" type="button">Collapse all question details</button>
+      <div id="question-list"></div>
+      <p id="empty-questions" class="empty" hidden>No matching questions.</p>
+    </section>
+    <section class="panel" id="glossary"><h2>Supporting terms and official caveat references</h2><div class="table-wrap"><table><thead><tr><th>Term</th><th>Meaning</th><th>Recall</th></tr></thead><tbody><tr><td>Metric / log / trace</td><td>Time-series number / event record / request-path timing</td><td>Choose the actual evidence needed</td></tr><tr><td>Metric filter / subscription / metric stream</td><td>Log-to-metric / log forwarding / metric forwarding</td><td>Different input and delivery contracts</td></tr><tr><td>Agent / awslogs / Container Insights</td><td>Host collection / task stdout-stderr / resource performance</td><td>Not interchangeable container telemetry</td></tr><tr><td>Data event / management event</td><td>Resource data-plane activity / control-plane activity</td><td>Enable S3 object audit scope explicitly</td></tr><tr><td>Firehose / Kinesis Data Streams</td><td>Managed buffered delivery / stream consumption</td><td>Provision roles, buffering, and downstream processing</td></tr><tr><td>Retention / integrity / encryption</td><td>Keep evidence / prove unchanged / protect contents</td><td>Solve three separate requirements</td></tr><tr><td>CloudWatch Events / Personal Health Dashboard</td><td>Older names for EventBridge / AWS Health Dashboard</td><td>Recognize legacy exam wording</td></tr></tbody></table></div><h3>Official documentation for disputed or incomplete keys</h3><ul><li><a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/S3Export.html">CloudWatch Logs export latency and subscription guidance</a></li><li><a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html">Custom metric resolution and alarm cadence</a></li><li><a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html">CloudWatch metric retention</a></li><li><a href="https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings-severity.html">GuardDuty High and Critical severity ranges</a></li><li><a href="https://docs.aws.amazon.com/opensearch-service/latest/developerguide/createdomain-configure-slow-logs.html">OpenSearch slow-log publishing and thresholds</a></li><li><a href="https://docs.aws.amazon.com/xray/latest/devguide/xray-daemon.html">X-Ray daemon instrumentation and maintenance notice</a></li></ul><p class="muted">Documentation links require internet access. The summaries and all question mappings work offline.</p></section>
+    <noscript><p class="caution">Enable JavaScript to display the service cards and all 45 question mappings. The static comparison tables and glossary remain available without JavaScript.</p></noscript>
+  </main>
+  <footer class="wrap"><p><a href="#top">Back to top</a> | Standalone HTML: no CDN, login, analytics, or external runtime dependencies.</p><p class="muted">Reference: MonitoringWebsite/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html; MonitoringWebsite/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html. All 45 option numbers match these references. Technical caveats do not alter quiz questions, keys, sign-in, or saved progress. Prepared 9 November 2026.</p></footer>
+  <script>
+    "use strict";
+    const services = [
+  {
+    "id": "central-logs",
+    "name": "Cross-account CloudWatch Logs destinations",
+    "memory": "SUBSCRIBE source log groups; central destination forwards",
+    "purpose": "Forward source-account log events to an authorized central streaming destination.",
+    "why": "Centralize searchable or archived operational logs without manually downloading each account.",
+    "flow": "Source log group -> subscription -> authorized destination -> Kinesis / Firehose -> search / S3",
+    "mappings": [
+      [
+        "Indexed central log search",
+        "Kinesis + Lambda + OpenSearch"
+      ],
+      [
+        "Managed central archive",
+        "Firehose -> S3"
+      ]
+    ],
+    "caveats": [
+      "VPC Flow Logs need an appropriate delivery path before a Logs subscription applies.",
+      "Destination policies, source permissions, target roles, and future-account/group onboarding are separate requirements."
+    ],
+    "questions": [
+      1,
+      14
+    ],
+    "examples": [
+      [
+        1,
+        "Part A Q1: Central multi-account logs with indexed search -> Logs subscriptions -> audit-account Kinesis -> Lambda -> OpenSearch"
+      ],
+      [
+        14,
+        "Part A Q14: Archive CloudWatch Logs centrally with managed storage -> Cross-account Logs destination/subscriptions -> Firehose -> S3"
+      ]
+    ],
+    "reference": "Part A Q1; Part A Q14"
+  },
+  {
+    "id": "log-archive",
+    "name": "Amazon Data Firehose + S3 + Athena",
+    "memory": "DELIVER and transform; S3 stores; Athena queries",
+    "purpose": "Buffer and deliver supported streams to S3, optionally transforming records with Lambda.",
+    "why": "Archive logs cheaply and query structured, partitioned data without running a search cluster.",
+    "flow": "Agent / service logs -> Logs subscription or Firehose source -> Lambda transform -> S3 -> Athena",
+    "mappings": [
+      [
+        "Transform BEFORE S3 delivery",
+        "Firehose Lambda transformation"
+      ],
+      [
+        "Query low-cost log archive",
+        "Partitioned S3 data + Athena"
+      ]
+    ],
+    "caveats": [
+      "Buffers introduce latency; export jobs are not streaming delivery.",
+      "An S3 trigger processes an already delivered object and needs separate permissions, error handling, and schema."
+    ],
+    "questions": [
+      2,
+      7
+    ],
+    "examples": [
+      [
+        2,
+        "Part A Q2: Collect hybrid host logs and analyze a low-cost central archive -> CloudWatch Agent -> Logs subscription -> Firehose -> S3 -> Athena"
+      ],
+      [
+        7,
+        "Part A Q7: Transform Network Firewall flow logs before S3 delivery -> Firehose Lambda transformation -> existing S3 destination"
+      ]
+    ],
+    "reference": "Part A Q2; Part A Q7"
+  },
+  {
+    "id": "login-response",
+    "name": "Host login detection and response",
+    "memory": "AUTH logs prove login; choose event or metric response",
+    "purpose": "Collect relevant host authentication logs and detect successful-login patterns for alerting or controlled remediation.",
+    "why": "Find SSH activity that ordinary AWS API logs do not capture.",
+    "flow": "Auth file -> Agent -> Logs subscription -> event Lambda | metric filter -> alarm -> SNS",
+    "mappings": [
+      [
+        "SSH login event",
+        "Host auth-log collection"
+      ],
+      [
+        "Metric-based login notification",
+        "Filter + alarm + SNS"
+      ],
+      [
+        "Immediate response",
+        "Validated event-driven workflow, not daily cleanup"
+      ]
+    ],
+    "caveats": [
+      "Correct patterns, instance identity, and measured latency matter.",
+      "Preserve incident evidence and workload safety before irreversible actions."
+    ],
+    "questions": [
+      3,
+      9
+    ],
+    "examples": [
+      [
+        3,
+        "Part A Q3: Immediately respond when someone SSHs into production -> Quiz key: subscription Lambda tags instance; daily Lambda terminates"
+      ],
+      [
+        9,
+        "Part A Q9: Notify security when an EC2 login occurs -> Auth logs -> metric filter -> alarm -> SNS"
+      ]
+    ],
+    "reference": "Part A Q3; Part A Q9"
+  },
+  {
+    "id": "container-logs",
+    "name": "ECS / Fargate awslogs and ALB access logs",
+    "memory": "STDOUT/STDERR != load-balancer request logs",
+    "purpose": "Send container stdout/stderr to CloudWatch Logs and separately enable load-balancer access logs to S3.",
+    "why": "Keep application errors after ephemeral tasks disappear and distinguish frontend request evidence.",
+    "flow": "Task awslogs -> CloudWatch Logs -> subscription archive | ALB access logging -> S3",
+    "mappings": [
+      [
+        "Fargate error logs after exit",
+        "awslogs log driver"
+      ],
+      [
+        "Detailed ALB requests",
+        "ALB access logging"
+      ]
+    ],
+    "caveats": [
+      "Fargate uses task execution-role logging permissions; no host SSH is available.",
+      "awslogs does not automatically tail arbitrary files or guarantee unflushed output survives abrupt exit."
+    ],
+    "questions": [
+      4,
+      44
+    ],
+    "examples": [
+      [
+        4,
+        "Part A Q4: ECS application and ALB logs in S3 for near-real-time analysis -> awslogs + ALB access logs + streaming subscription delivery"
+      ],
+      [
+        44,
+        "Part B Q44: Keep Fargate error evidence after a container exits -> awslogs stdout/stderr -> CloudWatch Logs"
+      ]
+    ],
+    "reference": "Part A Q4; Part B Q44"
+  },
+  {
+    "id": "cloudtrail-integrity",
+    "name": "CloudTrail log-file integrity validation",
+    "memory": "Signed DIGESTS prove integrity; they do not preserve files",
+    "purpose": "Produce signed digest records containing delivered log hashes and validate the digest/log chain.",
+    "why": "Detect missing or modified delivered audit files without confusing encryption and retention.",
+    "flow": "CloudTrail logs -> hourly signed digest -> aws cloudtrail validate-logs",
+    "mappings": [
+      [
+        "Have audit logs been tampered with?",
+        "Log-file integrity validation"
+      ]
+    ],
+    "caveats": [
+      "Enable in advance for the period and actually run validation.",
+      "Object Lock preserves retained versions; KMS encrypts; neither is the same as signed integrity proof."
+    ],
+    "questions": [
+      5
+    ],
+    "examples": [
+      [
+        5,
+        "Part A Q5: Prove CloudTrail files have not been modified -> CloudTrail log-file integrity validation"
+      ]
+    ],
+    "reference": "Part A Q5"
+  },
+  {
+    "id": "tracing",
+    "name": "AWS X-Ray / OpenTelemetry traces",
+    "memory": "REQUEST path and latency, not just resource metrics",
+    "purpose": "Instrument application requests, propagate trace context, and collect distributed timing/error telemetry.",
+    "why": "Find which downstream microservice contributes to a slow end-to-end request.",
+    "flow": "App instrumentation -> context across services -> collector / legacy UDP 2000 daemon -> X-Ray service map",
+    "mappings": [
+      [
+        "Which request hop is slow?",
+        "Distributed traces and service map"
+      ],
+      [
+        "Legacy X-Ray segment receiver",
+        "Daemon on UDP 2000"
+      ]
+    ],
+    "caveats": [
+      "A collector without instrumentation does not create complete traces.",
+      "X-Ray SDKs/daemon entered maintenance mode February 25, 2026; prefer OpenTelemetry for new instrumentation."
+    ],
+    "questions": [
+      6,
+      11
+    ],
+    "examples": [
+      [
+        6,
+        "Part A Q6: Locate ECS latency through X-Ray instrumentation -> Instrument app + reachable X-Ray daemon / telemetry collector"
+      ],
+      [
+        11,
+        "Part A Q11: Identify slow services in a microservice request path -> Instrumented X-Ray traces and service map"
+      ]
+    ],
+    "reference": "Part A Q6; Part A Q11"
+  },
+  {
+    "id": "s3-audit",
+    "name": "CloudTrail S3 object data events",
+    "memory": "Object GET/PUT/DELETE = DATA events",
+    "purpose": "Record selected S3 object-level API activity for audit and investigation.",
+    "why": "Know the actor, time, API operation, and resource rather than only aggregate bucket activity.",
+    "flow": "Explicit S3 data-event selectors -> CloudTrail -> S3 audit archive / optional CloudWatch Logs",
+    "mappings": [
+      [
+        "Who accessed/deleted an S3 object?",
+        "CloudTrail S3 data events"
+      ]
+    ],
+    "caveats": [
+      "Management events alone do not cover every object action.",
+      "Optional EventBridge/Lambda processing cannot replace unconfigured audit recording; scope selectors and costs."
+    ],
+    "questions": [
+      8,
+      25
+    ],
+    "examples": [
+      [
+        8,
+        "Part A Q8: Audit S3 object PUT, GET, and DELETE activity -> CloudTrail with explicitly enabled S3 data events"
+      ],
+      [
+        25,
+        "Part A Q25: Audit patent-object PUT, GET, and DELETE operations -> CloudTrail S3 object data events"
+      ]
+    ],
+    "reference": "Part A Q8; Part A Q25"
+  },
+  {
+    "id": "metric-filters",
+    "name": "CloudWatch Logs metric filters",
+    "memory": "Pattern -> NUMBER; alarm -> notification",
+    "purpose": "Turn matching incoming log entries or JSON fields into metric values for dashboards and alarms.",
+    "why": "Count transactions or detect critical log patterns without writing a log-processing Lambda.",
+    "flow": "Incoming JSON / log pattern -> emitted Count metric -> Sum graph / alarm -> SNS",
+    "mappings": [
+      [
+        "Successful transaction count",
+        "Metric filter value 1 + Sum"
+      ],
+      [
+        "Critical firewall log alert",
+        "Filter -> alarm -> SNS"
+      ]
+    ],
+    "caveats": [
+      "No historical backfill; define correct JSON/severity patterns.",
+      "A metric filter does not notify directly, and an alarm state change is not one notification for every matching event."
+    ],
+    "questions": [
+      10,
+      21
+    ],
+    "examples": [
+      [
+        10,
+        "Part A Q10: Dashboard counts of successful JSON transactions -> Logs metric filter matching success -> Count metric -> dashboard"
+      ],
+      [
+        21,
+        "Part A Q21: Alert on Critical firewall log events -> Metric filter -> custom metric -> alarm -> SNS"
+      ]
+    ],
+    "reference": "Part A Q10; Part A Q21"
+  },
+  {
+    "id": "log-costs",
+    "name": "CloudWatch Logs ingestion-volume metrics",
+    "memory": "IncomingBytes identifies VOLUME by log group",
+    "purpose": "Measure incoming log bytes/events by log-group dimension for operational cost diagnosis.",
+    "why": "Find which applications send the most logs before reducing useful telemetry blindly.",
+    "flow": "AWS/Logs IncomingBytes -> LogGroupName -> comparable Sum graph -> volume investigation",
+    "mappings": [
+      [
+        "Top log-ingestion sources",
+        "IncomingBytes + LogGroupName"
+      ]
+    ],
+    "caveats": [
+      "Bytes are not the complete bill; include storage, query scan, retention, class, and pricing.",
+      "Compare matching periods/units, and confirm that retention changes satisfy evidence requirements."
+    ],
+    "questions": [
+      12
+    ],
+    "examples": [
+      [
+        12,
+        "Part A Q12: Find log groups driving ingestion volume and cost -> AWS/Logs IncomingBytes with LogGroupName"
+      ]
+    ],
+    "reference": "Part A Q12"
+  },
+  {
+    "id": "metric-streams",
+    "name": "CloudWatch metric streams",
+    "memory": "METRICS stream, not Logs subscription",
+    "purpose": "Continuously send selected CloudWatch metric updates to Firehose for storage and transformation.",
+    "why": "Include new namespace metrics automatically and retain a long-term external archive.",
+    "flow": "Namespace inclusion -> metric stream -> Firehose / transform -> S3 -> Athena -> QuickSight",
+    "mappings": [
+      [
+        "All current and future namespace metrics",
+        "Namespace-level metric-stream inclusion"
+      ],
+      [
+        "Seven-year metric history",
+        "Start S3 archival and configure long retention"
+      ]
+    ],
+    "caveats": [
+      "CloudWatch native history is about 15 months with aggregation, not seven years.",
+      "Streaming starts with available/new data and cannot manufacture expired historical samples."
+    ],
+    "questions": [
+      13,
+      15
+    ],
+    "examples": [
+      [
+        13,
+        "Part A Q13: Continuously export all current and future namespace metrics -> CloudWatch metric stream -> Firehose transform -> S3"
+      ],
+      [
+        15,
+        "Part A Q15: Retain and visualize metric history for seven years -> Metric stream -> Firehose -> S3 -> Athena/QuickSight"
+      ]
+    ],
+    "reference": "Part A Q13; Part A Q15"
+  },
+  {
+    "id": "trusted-advisor",
+    "name": "AWS Trusted Advisor recommendations",
+    "memory": "RECOMMENDATION != safe termination decision",
+    "purpose": "Review supported cost/operational checks and route eligible status changes or scheduled reports to operators.",
+    "why": "Spot underutilization and missing scaling policy while keeping owner exceptions and workload context.",
+    "flow": "Eligible account/check -> refresh/recommendations -> tags/owner review -> SNS / approved automation",
+    "mappings": [
+      [
+        "Underutilized resources",
+        "Trusted Advisor cost recommendations"
+      ],
+      [
+        "Recurring reminders",
+        "Scheduled supported refresh/reporting"
+      ]
+    ],
+    "caveats": [
+      "Check current support/API/Region entitlements; unchanged status may emit no new event.",
+      "EMR node termination must respect cluster scaling and data dependencies."
+    ],
+    "questions": [
+      16,
+      20
+    ],
+    "examples": [
+      [
+        16,
+        "Part A Q16: Optimize underutilized EC2 across tagged accounts -> Trusted Advisor recommendations + tagged, reviewed automation"
+      ],
+      [
+        20,
+        "Part A Q20: Receive recurring underutilization recommendations -> Scheduled Trusted Advisor refresh/review + SNS or metric alarms"
+      ]
+    ],
+    "reference": "Part A Q16; Part A Q20"
+  },
+  {
+    "id": "config",
+    "name": "AWS Config rules and remediation",
+    "memory": "CONFIGURATION history + checks + configured fix",
+    "purpose": "Record supported configuration and evaluate compliance against suitable rules.",
+    "why": "Audit CloudTrail state, EBS encryption, and configuration posture over time.",
+    "flow": "Recorder -> Config rule -> noncompliant event -> notification / configured remediation",
+    "mappings": [
+      [
+        "Is CloudTrail enabled?",
+        "cloud-trail-enabled rule"
+      ],
+      [
+        "Are attached EBS volumes encrypted?",
+        "encrypted-volumes rule"
+      ],
+      [
+        "Operational compliance view",
+        "Config / aggregator"
+      ]
+    ],
+    "caveats": [
+      "Rule scope and recording coverage matter; not every rule checks every unattached resource.",
+      "Config detects after the fact and does not universally prevent changes or encrypt old EBS volumes in place."
+    ],
+    "questions": [
+      17,
+      26,
+      29
+    ],
+    "examples": [
+      [
+        17,
+        "Part A Q17: Near-real-time configuration-compliance dashboard -> Quiz key: Config snapshots in S3 visualized by QuickSight"
+      ],
+      [
+        26,
+        "Part B Q26: Detect disabled CloudTrail and automatically restore logging -> Config cloud-trail-enabled rule + event-triggered remediation"
+      ],
+      [
+        29,
+        "Part B Q29: Audit and alert on unencrypted EBS volumes over time -> Config encryption rule -> EventBridge notification"
+      ]
+    ],
+    "reference": "Part A Q17; Part B Q26; Part B Q29"
+  },
+  {
+    "id": "health-events",
+    "name": "AWS Health + EventBridge",
+    "memory": "AWS maintenance / resource-health EVENTS",
+    "purpose": "Expose AWS service health and affected-resource notifications that can trigger event routing.",
+    "why": "Tell operators about scheduled maintenance and AWS-initiated resource changes.",
+    "flow": "AWS Health event -> matched EventBridge rule -> Lambda / messaging integration -> Slack",
+    "mappings": [
+      [
+        "AWS-scheduled maintenance",
+        "AWS Health events"
+      ],
+      [
+        "Older Personal Health Dashboard / CloudWatch Events",
+        "AWS Health Dashboard / EventBridge"
+      ]
+    ],
+    "caveats": [
+      "Configure account/organization and Region coverage; event visibility is not every possible resource symptom.",
+      "Protect messaging secrets and report delivery failures explicitly."
+    ],
+    "questions": [
+      18
+    ],
+    "examples": [
+      [
+        18,
+        "Part A Q18: Send AWS-scheduled maintenance events to Slack -> AWS Health -> EventBridge -> Lambda notification"
+      ]
+    ],
+    "reference": "Part A Q18"
+  },
+  {
+    "id": "deployment-events",
+    "name": "CodeDeploy state events and rollback",
+    "memory": "NOTIFY through EventBridge; ROLLBACK in CodeDeploy",
+    "purpose": "Route deployment status to operators while deployment groups handle configured recovery.",
+    "why": "Distinguish a failed release notification from a completed return to known-good code.",
+    "flow": "CodeDeploy failure -> EventBridge -> Slack notification; rollback -> new known-good deployment",
+    "mappings": [
+      [
+        "Deployment state changes",
+        "EventBridge CodeDeploy rule"
+      ],
+      [
+        "Automatic release recovery",
+        "CodeDeploy failure/alarm rollback settings"
+      ]
+    ],
+    "caveats": [
+      "Rollback is a new deployment, not instant reversal of external state.",
+      "Notification and deployment roles, retries, and credentials require separate configuration."
+    ],
+    "questions": [
+      19
+    ],
+    "examples": [
+      [
+        19,
+        "Part A Q19: Notify Slack of deployment failure and automatically roll back -> CodeDeploy rollback + EventBridge -> Lambda"
+      ]
+    ],
+    "reference": "Part A Q19"
+  },
+  {
+    "id": "flow-logs",
+    "name": "VPC Flow Logs + Parquet analytics",
+    "memory": "NETWORK metadata; Parquet reduces column scans",
+    "purpose": "Capture accepted/rejected network-flow metadata and deliver supported formats to S3/Logs destinations.",
+    "why": "Investigate connectivity and reduce Athena scan costs on large network archives.",
+    "flow": "Flow records -> REJECT investigation | S3 Parquet + partition prefixes -> selective Athena query",
+    "mappings": [
+      [
+        "Outbound HTTPS rejected",
+        "Flow Logs + SG/NACL/routes investigation"
+      ],
+      [
+        "Large Athena network-log cost",
+        "Parquet + Hive-compatible prefixes + partitions"
+      ]
+    ],
+    "caveats": [
+      "ACCEPT does not prove TLS/application success; Flow Logs do not capture payload.",
+      "Existing text objects do not change format automatically; measure actual scanned bytes and query duration."
+    ],
+    "questions": [
+      22,
+      38
+    ],
+    "examples": [
+      [
+        22,
+        "Part A Q22: HTTP-to-HTTPS change breaks EC2 outbound API calls -> Inspect Flow Log REJECT records and security-group egress 443"
+      ],
+      [
+        38,
+        "Part B Q38: Reduce Athena scans of large Flow Log archives -> S3 Parquet Flow Logs + Hive-compatible prefixes/partitions"
+      ]
+    ],
+    "reference": "Part A Q22; Part B Q38"
+  },
+  {
+    "id": "inventory",
+    "name": "SSM Inventory + managed-node coverage",
+    "memory": "COLLECT packages; compare node COVERAGE",
+    "purpose": "Collect software/system metadata from managed nodes and synchronize supported inventory to S3.",
+    "why": "Audit installed packages and identify current/future instances missing collection prerequisites.",
+    "flow": "SSM Agent + association -> Inventory -> resource data sync -> S3; EC2/SSM comparison -> missing-node alert",
+    "mappings": [
+      [
+        "Installed software across fleet",
+        "SSM Inventory"
+      ],
+      [
+        "Instances not tracked correctly",
+        "Scheduled EC2 versus managed-node comparison"
+      ]
+    ],
+    "caveats": [
+      "Configure data sync and collection targets; software collection is not patch remediation.",
+      "Use paginated multi-account/Region queries and explicitly deliver missing-coverage notifications."
+    ],
+    "questions": [
+      23
+    ],
+    "examples": [
+      [
+        23,
+        "Part A Q23: Inventory installed packages and detect unmanaged instances -> SSM Inventory + data sync + scheduled EC2/SSM comparison"
+      ]
+    ],
+    "reference": "Part A Q23"
+  },
+  {
+    "id": "s3-access",
+    "name": "S3 server access logs + Athena",
+    "memory": "REQUEST patterns, not complete security audit",
+    "purpose": "Deliver best-effort S3 request-access records to a logging destination for query analysis.",
+    "why": "Analyze popular objects and request patterns using inexpensive archive queries.",
+    "flow": "S3 access logging -> destination bucket -> partitioned Athena table -> GET/object analysis",
+    "mappings": [
+      [
+        "Most accessed S3 objects",
+        "Server access logging + Athena"
+      ]
+    ],
+    "caveats": [
+      "Delivery can be delayed or incomplete; use CloudTrail data events for the required API audit scope.",
+      "CDN cache hits and real user video-view counts require other telemetry."
+    ],
+    "questions": [
+      24
+    ],
+    "examples": [
+      [
+        24,
+        "Part A Q24: Analyze popular S3 object access patterns cheaply -> S3 server access logging + Athena"
+      ]
+    ],
+    "reference": "Part A Q24"
+  },
+  {
+    "id": "guardduty",
+    "name": "Amazon GuardDuty + finding workflows",
+    "memory": "THREATS and numeric severity; enrich identities",
+    "purpose": "Detect suspicious supported account/workload activity and emit findings for event-driven responses.",
+    "why": "Notify relevant staff or create third-party tickets for precisely selected severity/type.",
+    "flow": "{\n  \"source\": [\n    \"aws.guardduty\"\n  ],\n  \"detail-type\": [\n    \"GuardDuty Finding\"\n  ],\n  \"detail\": {\n    \"severity\": [\n      {\n        \"numeric\": [\n          \">=\",\n          7,\n          \"<\",\n          9\n        ]\n      }\n    ]\n  }\n}\n-> Lambda enrichment -> High-only ticket API",
+    "mappings": [
+      [
+        "Unusual IAM identity behavior",
+        "GuardDuty anomaly finding + lookup"
+      ],
+      [
+        "Only High severity",
+        "Numeric severity >=7 and <9"
+      ]
+    ],
+    "caveats": [
+      "High is 7.0-8.9; Critical is 9.0-10.0, so >=7 alone is too broad.",
+      "Roles/federated identities need appropriate mapping; finding updates require ticket deduplication and safe retries."
+    ],
+    "questions": [
+      27,
+      45
+    ],
+    "examples": [
+      [
+        27,
+        "Part B Q27: Notify an anomalous IAM identity and their team leader -> GuardDuty organization admin -> EventBridge -> identity-lookup Lambda"
+      ],
+      [
+        45,
+        "Part B Q45: Create external tickets only for High GuardDuty findings -> EventBridge numeric severity filter -> ticketing Lambda"
+      ]
+    ],
+    "reference": "Part B Q27; Part B Q45"
+  },
+  {
+    "id": "custom-metrics",
+    "name": "CloudWatch custom metrics and resolution",
+    "memory": "PUBLISH sample cadence; resolution is not alarm cadence",
+    "purpose": "Publish application counts/gauges through PutMetricData or supported telemetry integrations.",
+    "why": "Track business transactions and rapidly changing player counts beyond standard AWS service metrics.",
+    "flow": "Namespace + dimensions + timestamp + value -> StorageResolution 60/1 -> graph / alarm -> SNS",
+    "mappings": [
+      [
+        "Per-minute payments/refunds",
+        "Count data + Sum period 60"
+      ],
+      [
+        "One-second custom metric",
+        "StorageResolution=1"
+      ]
+    ],
+    "caveats": [
+      "A cumulative gauge is not a per-period count.",
+      "One-second data does not create a one-second alarm; high-resolution alarms have a minimum supported period of 10 seconds."
+    ],
+    "questions": [
+      28,
+      37
+    ],
+    "examples": [
+      [
+        28,
+        "Part B Q28: Count payments and refunds per minute and alert -> Custom CloudWatch Count metrics -> alarms -> SNS"
+      ],
+      [
+        37,
+        "Part B Q37: Publish ConcurrentPlayers at one-second resolution -> PutMetricData StorageResolution=1"
+      ]
+    ],
+    "reference": "Part B Q28; Part B Q37"
+  },
+  {
+    "id": "macie",
+    "name": "Amazon Macie",
+    "memory": "Sensitive CONTENTS in S3, not every access record",
+    "purpose": "Classify sensitive object contents and assess supported bucket/data-security risks.",
+    "why": "Discover PII with suitable managed/custom identifiers and route findings to security staff.",
+    "flow": "Selected discovery coverage/job -> Macie finding -> EventBridge -> notification",
+    "mappings": [
+      [
+        "New PII in S3 files",
+        "Macie sensitive-data discovery"
+      ],
+      [
+        "Who GET/PUT/DELETE accessed it?",
+        "CloudTrail S3 data events"
+      ]
+    ],
+    "caveats": [
+      "Discovery is not immediate scanning of every new object automatically.",
+      "Match supported file types, identifiers, permissions, and the actual access-audit requirement."
+    ],
+    "questions": [
+      30
+    ],
+    "examples": [
+      [
+        30,
+        "Part B Q30: Discover new PII and audit access to it in S3 -> Macie discovery + findings; CloudTrail for object access"
+      ]
+    ],
+    "reference": "Part B Q30"
+  },
+  {
+    "id": "anomaly",
+    "name": "CloudWatch anomaly detection",
+    "memory": "HISTORY-aware band instead of one static threshold",
+    "purpose": "Model expected metric behavior and alarm on deviations from the learned band.",
+    "why": "Reduce predictable day/night traffic false positives while still monitoring genuine abnormal drops.",
+    "flow": "Representative history -> learned band -> anomaly alarm -> notification",
+    "mappings": [
+      [
+        "Normal nightly traffic variation",
+        "Anomaly-detection alarm"
+      ]
+    ],
+    "caveats": [
+      "Tune sensitivity and exclude anomalous training periods.",
+      "Missing data, a low value, and an actual outage are distinct cases."
+    ],
+    "questions": [
+      31
+    ],
+    "examples": [
+      [
+        31,
+        "Part B Q31: Avoid false alerts from predictable nightly traffic drops -> CloudWatch anomaly-detection alarm"
+      ]
+    ],
+    "reference": "Part B Q31"
+  },
+  {
+    "id": "ec2-boot",
+    "name": "EC2 console system output",
+    "memory": "Read BOOT evidence without guest connectivity",
+    "purpose": "Retrieve available instance console output for low-level startup/kernel diagnosis.",
+    "why": "Investigate an instance whose networking or SSM Agent never becomes usable.",
+    "flow": "EC2 console system log / GetConsoleOutput -> boot/kernel evidence -> supported deeper diagnostics",
+    "mappings": [
+      [
+        "Cannot boot or connect via SSM",
+        "EC2 system log first"
+      ]
+    ],
+    "caveats": [
+      "Not a full shell, full filesystem log archive, or guarantee every kernel message was captured.",
+      "Serial-console and offline-volume options have their own platform/access prerequisites."
+    ],
+    "questions": [
+      32
+    ],
+    "examples": [
+      [
+        32,
+        "Part B Q32: Read kernel/boot messages when private EC2 cannot start SSM -> EC2 console system log / GetConsoleOutput"
+      ]
+    ],
+    "reference": "Part B Q32"
+  },
+  {
+    "id": "container-insights",
+    "name": "CloudWatch Container Insights",
+    "memory": "RESOURCE telemetry, separate from app logs/traces",
+    "purpose": "Collect supported ECS/Fargate/EKS task/container performance metrics and views.",
+    "why": "Monitor CPU/memory/network resource behavior without building custom collectors for every task.",
+    "flow": "Enabled cluster feature -> performance telemetry -> CloudWatch dashboards",
+    "mappings": [
+      [
+        "Fargate container/task CPU and memory",
+        "Container Insights / required enhanced observability"
+      ]
+    ],
+    "caveats": [
+      "Choose feature level for required granularity and current launch-type support.",
+      "Application stdout logs use awslogs; cross-service request causality uses traces."
+    ],
+    "questions": [
+      33
+    ],
+    "examples": [
+      [
+        33,
+        "Part B Q33: Container/task performance dashboards for ECS Fargate -> CloudWatch Container Insights"
+      ]
+    ],
+    "reference": "Part B Q33"
+  },
+  {
+    "id": "agent",
+    "name": "Unified CloudWatch Agent",
+    "memory": "CONFIGURE collection paths, destinations, and access",
+    "purpose": "Read configured host log files and publish supported host telemetry to CloudWatch.",
+    "why": "Bring EC2/on-premises application and authentication files into searchable managed log groups.",
+    "flow": "logs.logs_collected.files.collect_list -> file_path / group / stream -> load config -> ingestion",
+    "mappings": [
+      [
+        "Local application text file",
+        "Agent logs JSON configuration"
+      ]
+    ],
+    "caveats": [
+      "Filename/path can be customized; validate and activate the selected configuration.",
+      "The agent still needs file permissions, IAM, network connectivity, and correctly targeted log groups."
+    ],
+    "questions": [
+      34
+    ],
+    "examples": [
+      [
+        34,
+        "Part B Q34: Define the local file and destination for CloudWatch Agent logs -> Agent configuration JSON logs collect_list"
+      ]
+    ],
+    "reference": "Part B Q34"
+  },
+  {
+    "id": "security-hub",
+    "name": "AWS Security Hub CSPM",
+    "memory": "STANDARDS/control findings and score",
+    "purpose": "Evaluate enabled security standards/controls and centralize integrated posture findings.",
+    "why": "Review CIS benchmark failures and remediation guidance in a managed compliance view.",
+    "flow": "Enabled CIS standards + required integrations -> control findings -> score -> remediation review",
+    "mappings": [
+      [
+        "CIS AWS Foundations score",
+        "Security Hub CSPM standards/controls"
+      ]
+    ],
+    "caveats": [
+      "Enable the relevant version and required recording coverage.",
+      "A score is not certification and instructions are not automatic repairs."
+    ],
+    "questions": [
+      35
+    ],
+    "examples": [
+      [
+        35,
+        "Part B Q35: Recurring CIS checks with compliance score and remediation guidance -> AWS Security Hub CSPM standards/controls"
+      ]
+    ],
+    "reference": "Part B Q35"
+  },
+  {
+    "id": "cloudtrail-org",
+    "name": "CloudTrail organization trails",
+    "memory": "ORGANIZATION baseline; configure event scope explicitly",
+    "purpose": "Record configured activity across member accounts and selected Regions into a central audit destination.",
+    "why": "Prevent member-account admins from modifying the centrally managed organization trail.",
+    "flow": "Organization admin -> multi-Region trail -> management/data selectors -> central S3/KMS",
+    "mappings": [
+      [
+        "All member accounts and Regions",
+        "Multi-Region organization trail"
+      ],
+      [
+        "Object activity also required",
+        "Explicit relevant data-event selectors"
+      ]
+    ],
+    "caveats": [
+      "Data events are not all selected by default.",
+      "Authorized organization administrators retain control; restrict central changes and configure delivery permissions."
+    ],
+    "questions": [
+      36
+    ],
+    "examples": [
+      [
+        36,
+        "Part B Q36: Central CloudTrail for all member accounts and Regions -> Multi-Region organization trail with explicit event selectors"
+      ]
+    ],
+    "reference": "Part B Q36"
+  },
+  {
+    "id": "eventbridge",
+    "name": "EventBridge cross-account buses",
+    "memory": "SOURCE rule + sending ROLE + target BUS policy",
+    "purpose": "Forward matched operational events to an authorized bus in another account.",
+    "why": "Centralize selected security events without granting every account unrestricted event access.",
+    "flow": "Source rule -> trusted sending role events:PutEvents -> receiving bus policy -> receiving rule/target",
+    "mappings": [
+      [
+        "Cross-account operational events",
+        "Rule target bus + sender role + resource policy"
+      ]
+    ],
+    "caveats": [
+      "The receiver also needs rules/targets; bus delivery does not execute arbitrary downstream work.",
+      "Configure retry/dead-letter handling and restrict event scope and principals."
+    ],
+    "questions": [
+      39
+    ],
+    "examples": [
+      [
+        39,
+        "Part B Q39: Securely route operational events to another account bus -> Source rule -> target bus policy + sending IAM role"
+      ]
+    ],
+    "reference": "Part B Q39"
+  },
+  {
+    "id": "log-retention",
+    "name": "Config + SSM log-group retention enforcement",
+    "memory": "Exactly 365 days != minimum 365 days",
+    "purpose": "Check log-group retention values and invoke authorized remediation for nonmatching groups.",
+    "why": "Apply a consistent retention policy across existing and future account/Region log groups.",
+    "flow": "Config exact-equality check -> Automation -> PutRetentionPolicy 365 -> reevaluate",
+    "mappings": [
+      [
+        "Strict 365-day policy",
+        "Exact-match Config rule + SSM remediation"
+      ]
+    ],
+    "caveats": [
+      "A minimum-retention check cannot enforce exact equality.",
+      "Reducing retention can delete evidence; deletion after expiry is asynchronous and not an exact time guarantee."
+    ],
+    "questions": [
+      40
+    ],
+    "examples": [
+      [
+        40,
+        "Part B Q40: Enforce exactly 365-day retention on every log group -> Organization Config exact-match rule + SSM remediation"
+      ]
+    ],
+    "reference": "Part B Q40"
+  },
+  {
+    "id": "synthetics",
+    "name": "CloudWatch Synthetics",
+    "memory": "OUTSIDE-IN scripted user journeys",
+    "purpose": "Run scheduled browser/API canaries, collect metrics/artifacts, and alarm on failed flows or latency.",
+    "why": "Proactively discover broken login/cart journeys before relying solely on real-user complaints.",
+    "flow": "Regional scheduled browser canary -> login/navigation/cart steps -> metrics + S3 screenshots -> alarm",
+    "mappings": [
+      [
+        "Simulate journey every five minutes",
+        "Synthetics browser canary"
+      ],
+      [
+        "Multiple AWS Regions",
+        "Deploy/configure canaries in each required Region"
+      ]
+    ],
+    "caveats": [
+      "Screenshots require suitable browser steps/settings, not just any API check.",
+      "Protect test credentials and sensitive screenshot/artifact contents."
+    ],
+    "questions": [
+      41
+    ],
+    "examples": [
+      [
+        41,
+        "Part B Q41: Run multi-Region user journeys with alarms and screenshots -> CloudWatch Synthetics browser canaries"
+      ]
+    ],
+    "reference": "Part B Q41"
+  },
+  {
+    "id": "config-aggregator",
+    "name": "AWS Config aggregator",
+    "memory": "Central COMPLIANCE view, not deployment engine",
+    "purpose": "Aggregate authorized configuration/compliance data from source accounts and Regions.",
+    "why": "View organization-wide posture without signing into each source account.",
+    "flow": "Source recorders/rules -> authorized aggregation -> central compliance dashboard",
+    "mappings": [
+      [
+        "Unified cross-account Config dashboard",
+        "Organization/source Config aggregator"
+      ]
+    ],
+    "caveats": [
+      "Does not deploy rules, enable recording, or fix resources.",
+      "Coverage, authorization, and data freshness remain explicit prerequisites."
+    ],
+    "questions": [
+      42
+    ],
+    "examples": [
+      [
+        42,
+        "Part B Q42: View Config compliance across accounts and Regions -> AWS Config aggregator"
+      ]
+    ],
+    "reference": "Part B Q42"
+  },
+  {
+    "id": "opensearch",
+    "name": "OpenSearch indexed search and slow logs",
+    "memory": "INDEX logs; THRESHOLDS expose costly searches",
+    "purpose": "Provide indexed log search and publish supported domain request/shard slow logs for diagnostics.",
+    "why": "Find costly queries without relying only on aggregate CPU or error messages.",
+    "flow": "Relevant search slow-log thresholds + log publishing + Logs resource policy -> diagnostic records",
+    "mappings": [
+      [
+        "Queries time out and CPU spikes",
+        "Selective slow-log thresholds + CloudWatch publishing"
+      ]
+    ],
+    "caveats": [
+      "Publishing alone is insufficient if thresholds are disabled.",
+      "Choose request/shard logs supported by the domain version; logging adds overhead/cost and may contain sensitive query data."
+    ],
+    "questions": [
+      43
+    ],
+    "examples": [
+      [
+        43,
+        "Part B Q43: Find expensive OpenSearch queries through native diagnostics -> Publish slow logs to CloudWatch and set slow-log thresholds"
+      ]
+    ],
+    "reference": "Part B Q43"
+  }
+];
+    const questions = [
+  {
+    "id": 1,
+    "options": [
+      1
+    ],
+    "requirement": "Central multi-account logs with indexed search",
+    "answer": "Logs subscriptions -> audit-account Kinesis -> Lambda -> OpenSearch",
+    "service": "central-logs",
+    "caveat": "Put VPC Flow Logs into CloudWatch Logs first if using that subscription path. Configure a cross-account Logs destination, destination policy, source permissions, stream/Lambda roles, and OpenSearch access. Onboard future accounts explicitly; control buffering, retries, and indexing cost.",
+    "reference": "Part A Q1",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 2,
+    "options": [
+      1
+    ],
+    "requirement": "Collect hybrid host logs and analyze a low-cost central archive",
+    "answer": "CloudWatch Agent -> Logs subscription -> Firehose -> S3 -> Athena",
+    "service": "log-archive",
+    "caveat": "Agents require configuration, permissions, and network paths on both EC2 and on-premises nodes. Configure subscription delivery and cross-account S3 access; an optional S3-triggered Lambda processes data after arrival, not before delivery. Athena needs a suitable schema and partitions.",
+    "reference": "Part A Q2",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 3,
+    "options": [
+      1
+    ],
+    "requirement": "Immediately respond when someone SSHs into production",
+    "answer": "Quiz key: subscription Lambda tags instance; daily Lambda terminates",
+    "service": "login-response",
+    "caveat": "Daily termination does not satisfy immediate termination. Use a validated event-driven response when required, with exact instance identity and least privilege; consider isolation and evidence preservation before irreversible termination. Configure auth-log collection first. CloudTrail alone does not record SSH shell logins.",
+    "reference": "Part A Q3",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 4,
+    "options": [
+      1,
+      2,
+      3
+    ],
+    "requirement": "ECS application and ALB logs in S3 for near-real-time analysis",
+    "answer": "awslogs + ALB access logs + streaming subscription delivery",
+    "service": "container-logs",
+    "caveat": "awslogs collects container stdout/stderr without a separate host Logs agent for those streams. Fargate uses the task execution role; EC2 uses the applicable host/task logging setup. Export tasks can lag up to 12 hours and are not near-real-time streaming; use subscriptions/Firehose for continuous archival. ALB access logs have separate delivery latency.",
+    "reference": "Part A Q4",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 5,
+    "options": [
+      1
+    ],
+    "requirement": "Prove CloudTrail files have not been modified",
+    "answer": "CloudTrail log-file integrity validation",
+    "service": "cloudtrail-integrity",
+    "caveat": "CloudTrail normally delivers signed digest files hourly containing hashes of delivered log files, not one digest per log file. Enable validation for the period and run aws cloudtrail validate-logs; enabling digest delivery alone does not perform validation or prevent deletion.",
+    "reference": "Part A Q5",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 6,
+    "options": [
+      1
+    ],
+    "requirement": "Locate ECS latency through X-Ray instrumentation",
+    "answer": "Instrument app + reachable X-Ray daemon / telemetry collector",
+    "service": "tracing",
+    "caveat": "A daemon image and UDP port 2000 alone do not instrument requests. Configure SDK/OpenTelemetry instrumentation, trace context propagation, network reachability, and IAM. X-Ray SDKs/daemon entered maintenance mode February 25, 2026; prefer OpenTelemetry for new work. The X-Ray service itself is not retired.",
+    "reference": "Part A Q6",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 7,
+    "options": [
+      1
+    ],
+    "requirement": "Transform Network Firewall flow logs before S3 delivery",
+    "answer": "Firehose Lambda transformation -> existing S3 destination",
+    "service": "log-archive",
+    "caveat": "Select a supported Network Firewall Firehose logging destination and configure transformation/roles. Lambda must return the Firehose transformation response contract. Set buffers and failure handling; an S3 object-created trigger runs after delivery and cannot meet before-delivery processing.",
+    "reference": "Part A Q7",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 8,
+    "options": [
+      1
+    ],
+    "requirement": "Audit S3 object PUT, GET, and DELETE activity",
+    "answer": "CloudTrail with explicitly enabled S3 data events",
+    "service": "s3-audit",
+    "caveat": "The key omits data-event selectors. A Lambda cannot create missing CloudTrail audit evidence retroactively. Enable relevant object data events; deliver directly to S3 and optionally CloudWatch Logs for search. EventBridge/Lambda is optional processing, not a substitute for enabling data events; assess event-volume costs.",
+    "reference": "Part A Q8",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 9,
+    "options": [
+      1
+    ],
+    "requirement": "Notify security when an EC2 login occurs",
+    "answer": "Auth logs -> metric filter -> alarm -> SNS",
+    "service": "login-response",
+    "caveat": "The keyed option omits the CloudWatch alarm between metric and SNS. Metric filters alone cannot notify subscribers. Choose real authentication log patterns, successful-login semantics, and tested latency; alarm evaluation is not an immediate per-login event guarantee.",
+    "reference": "Part A Q9",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 10,
+    "options": [
+      1
+    ],
+    "requirement": "Dashboard counts of successful JSON transactions",
+    "answer": "Logs metric filter matching success -> Count metric -> dashboard",
+    "service": "metric-filters",
+    "caveat": "Match the actual JSON field, emit value 1, and graph Sum over the desired period. Filters apply to incoming logs, not historical backfill. A dashboard graphs a metric; it does not automatically create an alarm.",
+    "reference": "Part A Q10",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 11,
+    "options": [
+      1
+    ],
+    "requirement": "Identify slow services in a microservice request path",
+    "answer": "Instrumented X-Ray traces and service map",
+    "service": "tracing",
+    "caveat": "Trace all required hops and propagate context; sampling limits coverage. Container performance metrics show resource utilization, not complete request causality. Use trace timing and errors to isolate the relevant service.",
+    "reference": "Part A Q11",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 12,
+    "options": [
+      1
+    ],
+    "requirement": "Find log groups driving ingestion volume and cost",
+    "answer": "AWS/Logs IncomingBytes with LogGroupName",
+    "service": "log-costs",
+    "caveat": "Graph Sum for a comparable time range and group by log group. IncomingBytes measures ingestion volume, not the complete bill: storage, retention, class, queries, and pricing also matter. IncomingLogEvents counts events rather than bytes.",
+    "reference": "Part A Q12",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 13,
+    "options": [
+      1
+    ],
+    "requirement": "Continuously export all current and future namespace metrics",
+    "answer": "CloudWatch metric stream -> Firehose transform -> S3",
+    "service": "metric-streams",
+    "caveat": "Use namespace-level inclusion so new matching metric names are included; name-specific filters can exclude them. Configure metric-stream/Firehose IAM, supported record format, transformation, and buffering. A metric stream is not a CloudWatch Logs subscription.",
+    "reference": "Part A Q13",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 14,
+    "options": [
+      1
+    ],
+    "requirement": "Archive CloudWatch Logs centrally with managed storage",
+    "answer": "Cross-account Logs destination/subscriptions -> Firehose -> S3",
+    "service": "central-logs",
+    "caveat": "The source log groups subscribe to the destination ARN; the destination points to the supported delivery target. Configure destination/source policies and target-role/bucket/KMS access. Subscription forwarding is not automatically enabled for every future log group or member account.",
+    "reference": "Part A Q14",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 15,
+    "options": [
+      1
+    ],
+    "requirement": "Retain and visualize metric history for seven years",
+    "answer": "Metric stream -> Firehose -> S3 -> Athena/QuickSight",
+    "service": "metric-streams",
+    "caveat": "Native CloudWatch metric retention is about 15 months with older data aggregated. Start archival before data expires; a stream does not recover seven years of nonexistent history. Configure seven-year retention/lifecycle and a partitioned analytics schema, plus dashboard refresh requirements.",
+    "reference": "Part A Q15",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 16,
+    "options": [
+      2
+    ],
+    "requirement": "Optimize underutilized EC2 across tagged accounts",
+    "answer": "Trusted Advisor recommendations + tagged, reviewed automation",
+    "service": "trusted-advisor",
+    "caveat": "Confirm current support-plan, API, account, Region, and check availability. Low utilization is not proof an instance is safe to terminate; require workload-owner exceptions, dependency checks, and approvals. For EMR, configure supported cluster scaling rather than blindly terminating cluster nodes.",
+    "reference": "Part A Q16",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 17,
+    "options": [
+      4
+    ],
+    "requirement": "Near-real-time configuration-compliance dashboard",
+    "answer": "Quiz key: Config snapshots in S3 visualized by QuickSight",
+    "service": "config",
+    "caveat": "Config is the compliance recorder/evaluator; QuickSight over S3 requires ingestion/schema and refresh configuration. Snapshots and cached dashboards do not guarantee near-real-time status. A Config aggregator/native compliance view is often a better fit for operational cross-account review.",
+    "reference": "Part A Q17",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 18,
+    "options": [
+      1
+    ],
+    "requirement": "Send AWS-scheduled maintenance events to Slack",
+    "answer": "AWS Health -> EventBridge -> Lambda notification",
+    "service": "health-events",
+    "caveat": "Personal Health Dashboard and CloudWatch Events are older names for AWS Health Dashboard and EventBridge. Match account/resource-specific Health events, configure relevant Regions/organization aggregation, and protect Slack credentials. Notification delivery requires retry/error handling.",
+    "reference": "Part A Q18",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 19,
+    "options": [
+      3
+    ],
+    "requirement": "Notify Slack of deployment failure and automatically roll back",
+    "answer": "CodeDeploy rollback + EventBridge -> Lambda",
+    "service": "deployment-events",
+    "caveat": "Configure rollback independently of notifications. A rollback is a new deployment of a known-good revision, not an instant reversal of all data/script side effects. Secure webhook credentials and handle delivery failures.",
+    "reference": "Part A Q19",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 20,
+    "options": [
+      3,
+      5,
+      6
+    ],
+    "requirement": "Receive recurring underutilization recommendations",
+    "answer": "Scheduled Trusted Advisor refresh/review + SNS or metric alarms",
+    "service": "trusted-advisor",
+    "caveat": "Status-change events do not produce reminders for unchanged findings. Schedule the required refresh/reporting using supported APIs and support entitlements, and implement notification separately. CloudWatch metric filters still need alarms; recommendations do not define a safe EMR scale-down policy.",
+    "reference": "Part A Q20",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 21,
+    "options": [
+      3
+    ],
+    "requirement": "Alert on Critical firewall log events",
+    "answer": "Metric filter -> custom metric -> alarm -> SNS",
+    "service": "metric-filters",
+    "caveat": "Match the actual severity field rather than unrelated text; configure a nonzero metric and the appropriate alarm period/threshold. Confirm email subscriptions and missing-data behavior. This is a metric-state alarm, not guaranteed one notification per log entry.",
+    "reference": "Part A Q21",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 22,
+    "options": [
+      1
+    ],
+    "requirement": "HTTP-to-HTTPS change breaks EC2 outbound API calls",
+    "answer": "Inspect Flow Log REJECT records and security-group egress 443",
+    "service": "flow-logs",
+    "caveat": "Flow Logs show network metadata and accept/reject decisions, not TLS payloads. REJECT does not uniquely identify security groups versus NACLs. Check routes, DNS, TCP 443, certificates, and application behavior; ACCEPT does not prove successful TLS or API processing.",
+    "reference": "Part A Q22",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 23,
+    "options": [
+      1,
+      5
+    ],
+    "requirement": "Inventory installed packages and detect unmanaged instances",
+    "answer": "SSM Inventory + data sync + scheduled EC2/SSM comparison",
+    "service": "inventory",
+    "caveat": "Install/configure SSM Agent and target collection associations to current/future nodes. Configure resource data sync for S3; inventory alone does not upload everything automatically. Compare paginated EC2 and managed-node results in each account/Region, then explicitly send notifications for missing coverage.",
+    "reference": "Part A Q23",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 24,
+    "options": [
+      2
+    ],
+    "requirement": "Analyze popular S3 object access patterns cheaply",
+    "answer": "S3 server access logging + Athena",
+    "service": "s3-access",
+    "caveat": "Server access logging is best-effort and can be delayed; it is not a complete real-time security audit. Configure a separate destination, schema, and query partitions. GET requests/downloads are not necessarily video views; CDN cache hits may require CloudFront/application logs.",
+    "reference": "Part A Q24",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 25,
+    "options": [
+      2
+    ],
+    "requirement": "Audit patent-object PUT, GET, and DELETE operations",
+    "answer": "CloudTrail S3 object data events",
+    "service": "s3-audit",
+    "caveat": "Same decision as Q8, but preserve the different reference option number. Enable object-level data-event selectors explicitly; management events alone miss these calls. Prefer direct trail delivery with suitable search over an unnecessary Lambda copy unless processing is required.",
+    "reference": "Part A Q25",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartA.html"
+  },
+  {
+    "id": 26,
+    "options": [
+      1
+    ],
+    "requirement": "Detect disabled CloudTrail and automatically restore logging",
+    "answer": "Config cloud-trail-enabled rule + event-triggered remediation",
+    "service": "config",
+    "caveat": "Retain configuration/compliance history and configure remediation permissions. StartLogging can restore a stopped existing trail, but cannot recreate a deleted trail by itself. Reactive Config checks are not universal prevention; protect logging changes with suitable IAM/SCP controls.",
+    "reference": "Part B Q26",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 27,
+    "options": [
+      1
+    ],
+    "requirement": "Notify an anomalous IAM identity and their team leader",
+    "answer": "GuardDuty organization admin -> EventBridge -> identity-lookup Lambda",
+    "service": "guardduty",
+    "caveat": "Match the precise finding type and configure member/Region coverage. Finding identities can involve roles or federated sessions, not only directly mappable IAM user names. Validate identity mapping, protect messaging credentials, and deduplicate repeated finding updates.",
+    "reference": "Part B Q27",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 28,
+    "options": [
+      1
+    ],
+    "requirement": "Count payments and refunds per minute and alert",
+    "answer": "Custom CloudWatch Count metrics -> alarms -> SNS",
+    "service": "custom-metrics",
+    "caveat": "Publish counts with consistent namespace/dimensions and timestamps; use Sum over 60 seconds. Do not repeatedly publish a cumulative total and sum it as if it were a per-period count. Configure the actual threshold and notification subscribers.",
+    "reference": "Part B Q28",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 29,
+    "options": [
+      1
+    ],
+    "requirement": "Audit and alert on unencrypted EBS volumes over time",
+    "answer": "Config encryption rule -> EventBridge notification",
+    "service": "config",
+    "caveat": "Select suitable scope: the encrypted-volumes managed rule checks attached volumes. Include unattached volumes through additional coverage if the requirement includes them. Detection does not encrypt an existing volume in place; default EBS encryption applies to new volumes.",
+    "reference": "Part B Q29",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 30,
+    "options": [
+      1
+    ],
+    "requirement": "Discover new PII and audit access to it in S3",
+    "answer": "Macie discovery + findings; CloudTrail for object access",
+    "service": "macie",
+    "caveat": "Macie classifies sensitive contents and bucket risks; it is not a per-object access audit log. Configure suitable discovery jobs/coverage and identifiers. Use CloudTrail S3 data events for GET/PUT/DELETE access; discovery timing is not guaranteed for every newly written object immediately.",
+    "reference": "Part B Q30",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 31,
+    "options": [
+      1
+    ],
+    "requirement": "Avoid false alerts from predictable nightly traffic drops",
+    "answer": "CloudWatch anomaly-detection alarm",
+    "service": "anomaly",
+    "caveat": "Train on representative history and set the band/sensitivity and comparison direction. Low normal traffic is different from missing telemetry. Configure missing-data handling and exclude unusual training periods as appropriate; a statistical anomaly is not proof of an outage.",
+    "reference": "Part B Q31",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 32,
+    "options": [
+      1
+    ],
+    "requirement": "Read kernel/boot messages when private EC2 cannot start SSM",
+    "answer": "EC2 console system log / GetConsoleOutput",
+    "service": "ec2-boot",
+    "caveat": "Works without an in-guest SSM connection, but depends on available console output and supported instance behavior. It is not a full interactive shell or arbitrary file reader. Use supported serial-console or offline-volume diagnostics when more investigation is needed.",
+    "reference": "Part B Q32",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 33,
+    "options": [
+      1
+    ],
+    "requirement": "Container/task performance dashboards for ECS Fargate",
+    "answer": "CloudWatch Container Insights",
+    "service": "container-insights",
+    "caveat": "Enable the appropriate cluster setting and enhanced observability when container-level granularity requires it. Application stdout/stderr logging remains a separate awslogs setup. Metrics availability and charges depend on launch type and enabled feature level.",
+    "reference": "Part B Q33",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 34,
+    "options": [
+      1
+    ],
+    "requirement": "Define the local file and destination for CloudWatch Agent logs",
+    "answer": "Agent configuration JSON logs collect_list",
+    "service": "agent",
+    "caveat": "Configure logs.logs_collected.files.collect_list with file_path, log_group_name, and log_stream_name. amazon-cloudwatch-agent.json is a common filename, not a universally fixed path. Validate/load the configuration and supply IAM/network access plus file-read permissions.",
+    "reference": "Part B Q34",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 35,
+    "options": [
+      1
+    ],
+    "requirement": "Recurring CIS checks with compliance score and remediation guidance",
+    "answer": "AWS Security Hub CSPM standards/controls",
+    "service": "security-hub",
+    "caveat": "Enable the applicable CIS benchmark version and required recording/service integrations. A security score and remediation instructions are not certification or proof all resources comply; failing controls do not automatically repair themselves.",
+    "reference": "Part B Q35",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 36,
+    "options": [
+      2
+    ],
+    "requirement": "Central CloudTrail for all member accounts and Regions",
+    "answer": "Multi-Region organization trail with explicit event selectors",
+    "service": "cloudtrail-org",
+    "caveat": "Organization member admins cannot modify the organization trail, but authorized organization administrators can. Enable multi-Region coverage and management/data-event selectors explicitly: data events are not all logged by default. Configure central S3/KMS permissions and protect organization-level changes.",
+    "reference": "Part B Q36",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 37,
+    "options": [
+      2
+    ],
+    "requirement": "Publish ConcurrentPlayers at one-second resolution",
+    "answer": "PutMetricData StorageResolution=1",
+    "service": "custom-metrics",
+    "caveat": "Publish at the desired cadence; resolution alone cannot invent samples. One-second metric storage/retrieval does not enable a one-second CloudWatch alarm: high-resolution alarms use supported sub-minute periods, with 10 seconds as the minimum. Older high-resolution data is aggregated, and publication/alarms incur charges.",
+    "reference": "Part B Q37",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 38,
+    "options": [
+      2
+    ],
+    "requirement": "Reduce Athena scans of large Flow Log archives",
+    "answer": "S3 Parquet Flow Logs + Hive-compatible prefixes/partitions",
+    "service": "flow-logs",
+    "caveat": "Create the appropriate new/replacement flow-log configuration rather than assuming every existing delivery field can be edited. Existing text objects do not become Parquet automatically. Register/project partitions and select relevant columns/time ranges, then verify bytes scanned and query time.",
+    "reference": "Part B Q38",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 39,
+    "options": [
+      1
+    ],
+    "requirement": "Securely route operational events to another account bus",
+    "answer": "Source rule -> target bus policy + sending IAM role",
+    "service": "eventbridge",
+    "caveat": "The key omits the sending role required for current cross-account event-bus targets. Configure a trusted EventBridge role with events:PutEvents, plus target-bus resource policy. Match only required events and add downstream receiving rules/targets with retries and appropriate permissions.",
+    "reference": "Part B Q39",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 40,
+    "options": [
+      3
+    ],
+    "requirement": "Enforce exactly 365-day retention on every log group",
+    "answer": "Organization Config exact-match rule + SSM remediation",
+    "service": "log-retention",
+    "caveat": "A minimum-retention managed check is not exact equality. Cover current/future groups in applicable accounts/Regions and authorize PutRetentionPolicy. Reducing retention can delete data; check legal holds/archive needs first. CloudWatch deletion can lag after expiry, so this is a configured retention value, not an exact deletion-time guarantee.",
+    "reference": "Part B Q40",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 41,
+    "options": [
+      3
+    ],
+    "requirement": "Run multi-Region user journeys with alarms and screenshots",
+    "answer": "CloudWatch Synthetics browser canaries",
+    "service": "synthetics",
+    "caveat": "Deploy canaries in each required Region, schedule every five minutes, and configure browser steps, screenshot capture, artifact S3, and alarms. Use safe test credentials and avoid sensitive data in screenshots. API-only checks do not automatically produce browser UI screenshots.",
+    "reference": "Part B Q41",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 42,
+    "options": [
+      1
+    ],
+    "requirement": "View Config compliance across accounts and Regions",
+    "answer": "AWS Config aggregator",
+    "service": "config-aggregator",
+    "caveat": "An aggregator collects authorized source configuration/compliance views; it does not deploy rules, enable recording, or remediate resources. Configure organization/source authorization and Region coverage. Aggregation freshness is not zero-latency synchronization.",
+    "reference": "Part B Q42",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 43,
+    "options": [
+      2
+    ],
+    "requirement": "Find expensive OpenSearch queries through native diagnostics",
+    "answer": "Publish slow logs to CloudWatch and set slow-log thresholds",
+    "service": "opensearch",
+    "caveat": "Publishing alone is insufficient when slow-log thresholds remain disabled. Configure relevant search request or shard query/fetch thresholds for the supported domain version and indexes. Logging has overhead/cost; use selective thresholds and protect sensitive query contents. Error logs do not identify every slow query.",
+    "reference": "Part B Q43",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 44,
+    "options": [
+      2
+    ],
+    "requirement": "Keep Fargate error evidence after a container exits",
+    "answer": "awslogs stdout/stderr -> CloudWatch Logs",
+    "service": "container-logs",
+    "caveat": "Configure the log group/Region/stream prefix and task execution-role permissions. Only emitted stdout/stderr is collected; local file logs need another supported path. Buffering or abrupt termination can still lose unflushed output; do not depend on SSH to a Fargate host.",
+    "reference": "Part B Q44",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  },
+  {
+    "id": 45,
+    "options": [
+      2
+    ],
+    "requirement": "Create external tickets only for High GuardDuty findings",
+    "answer": "EventBridge numeric severity filter -> ticketing Lambda",
+    "service": "guardduty",
+    "caveat": "High is 7.0-8.9; use severity >=7 and <9 to exclude Medium and Critical (9.0-10.0). Match aws.guardduty/GuardDuty Finding, secure REST credentials, deduplicate finding updates, and configure retries/dead-letter handling. Severity >=7 alone incorrectly includes Critical.",
+    "reference": "Part B Q45",
+    "referenceUrl": "https://meetparag81.github.io/AWSdevopsprofessionalrepo/monitoring/AWS_DOP-C02_Monitoring_Logging_Master_PartB.html"
+  }
+];
 
-    <!-- Amazon EventBridge -->
-    <div class="card">
-        <h2 class="service-title">Amazon EventBridge (CloudWatch Events)</h2>
-        <span class="label">Function:</span>
-        <div class="content">A serverless event bus that routes state changes and API calls to specific targets (like Lambda or SNS).</div>
-        <span class="label">Why it's used:</span>
-        <div class="content">To build event-driven architectures, route alerts across different AWS accounts seamlessly, and trigger actions based on specific payload patterns.</div>
-        <span class="label-example">Simple Example:</span>
-        <div class="content">Think of it as a central post office. GuardDuty detects a threat (a letter) and sends it to the post office (EventBridge). EventBridge reads the zip code (event pattern) and instantly routes it to a specific delivery truck (Lambda) to create a Jira ticket.</div>
-        <span class="label">Exam Keywords:</span>
-        <div class="keyword-container">
-            <span class="keyword">event pattern</span>
-            <span class="keyword">cross-account event routing</span>
-            <span class="keyword">trigger a Lambda</span>
-            <span class="keyword">resource-based policy</span>
-        </div>
-    </div>
+    function el(tag, text, className) {
+      const node = document.createElement(tag);
+      if (text !== undefined) node.textContent = text;
+      if (className) node.className = className;
+      return node;
+    }
+    function link(text, id) {
+      const node = el("a", text);
+      node.href = "#" + id;
+      return node;
+    }
+    function table(headers, rows) {
+      const wrap = el("div", undefined, "table-wrap");
+      const node = el("table");
+      const head = el("thead");
+      const headRow = el("tr");
+      headers.forEach(value => headRow.append(el("th", value)));
+      head.append(headRow);
+      const body = el("tbody");
+      rows.forEach(values => {
+        const row = el("tr");
+        values.forEach(value => row.append(el("td", value)));
+        body.append(row);
+      });
+      node.append(head, body);
+      wrap.append(node);
+      return wrap;
+    }
+    function searchable(node, text) { node.dataset.search = text.toLowerCase(); }
 
-    <!-- AWS CloudTrail -->
-    <div class="card">
-        <h2 class="service-title">AWS CloudTrail</h2>
-        <span class="label">Function:</span>
-        <div class="content">Records AWS Management API calls and user activity across the account.</div>
-        <span class="label">Why it's used:</span>
-        <div class="content">For security auditing to know exactly who made an API call, what IP they used, and when they did it. Best enforced via Organization Trails.</div>
-        <span class="label-example">Simple Example:</span>
-        <div class="content">Like an itemized credit card bill for your AWS account. If an EC2 server is mysteriously deleted, CloudTrail tells you exactly which user clicked 'Delete', at what exact time, and from which IP address.</div>
-        <span class="label">Exam Keywords:</span>
-        <div class="keyword-container">
-            <span class="keyword">API activity</span>
-            <span class="keyword">audit trail</span>
-            <span class="keyword">who deleted/created</span>
-            <span class="keyword">Organization Trail</span>
-        </div>
-    </div>
+    const serviceList = document.getElementById("service-list");
+    const keywordRows = document.getElementById("keyword-rows");
+    const questionList = document.getElementById("question-list");
+    const byService = new Map(services.map(service => [service.id, service]));
+    services.forEach(service => {
+      const card = el("article", undefined, "service");
+      card.id = service.id;
+      searchable(card, [service.name, service.memory, service.purpose, service.why, ...service.questions.map(n => "Q" + n), ...service.examples.flat(), ...service.mappings.flat(), ...service.caveats, service.reference].join(" "));
+      card.append(el("h2", service.name), el("div", service.memory, "memory"));
+      const chips = el("div", undefined, "chips");
+      service.questions.forEach(n => chips.append(link("Q" + n, "q" + n)));
+      card.append(chips, el("h3", "What does it do?"), el("p", service.purpose), el("h3", "Why use it?"), el("p", service.why), el("h3", "Examples from our questions"));
+      const examples = el("ul", undefined, "examples");
+      service.examples.forEach(([n, text]) => {
+        const item = el("li");
+        item.append(link("Q" + n, "q" + n), document.createTextNode(" - " + text));
+        examples.append(item);
+      });
+      card.append(examples, el("pre", service.flow, "flow"), el("h3", "Exam keyword -> service mapping"), table(["If the requirement says...", "Think of..."], service.mappings));
+      const details = el("details");
+      details.append(el("summary", "Important caveats / exam traps"));
+      const list = el("ul");
+      service.caveats.forEach(text => list.append(el("li", text)));
+      details.append(list);
+      card.append(details);
+      serviceList.append(card);
 
-    <!-- Amazon CloudWatch Synthetics -->
-    <div class="card">
-        <h2 class="service-title">Amazon CloudWatch Synthetics</h2>
-        <span class="label">Function:</span>
-        <div class="content">Outside-in monitoring using programmable scripts (canaries).</div>
-        <span class="label">Why it's used:</span>
-        <div class="content">To actively simulate complex user workflows (logging in, clicking carts) and capture visual evidence if the UI or endpoint fails.</div>
-        <span class="label-example">Simple Example:</span>
-        <div class="content">Like hiring a mystery shopper. Every 5 minutes, a robot opens a hidden Chrome browser, navigates to your e-commerce website, clicks "Add to Cart," and tries to check out. If the button is broken, it takes a screenshot and alerts you.</div>
-        <span class="label">Exam Keywords:</span>
-        <div class="keyword-container">
-            <span class="keyword">simulate complex user behaviors</span>
-            <span class="keyword">capture screenshot</span>
-            <span class="keyword">canaries</span>
-            <span class="keyword">proactively monitor endpoints</span>
-        </div>
-    </div>
-
-    <!-- Amazon CloudWatch Container Insights -->
-    <div class="card">
-        <h2 class="service-title">Amazon CloudWatch Container Insights</h2>
-        <span class="label">Function:</span>
-        <div class="content">Automated performance monitoring for containerized applications.</div>
-        <span class="label">Why it's used:</span>
-        <div class="content">To extract CPU, memory, and network metrics at the task/container level without custom agents, especially for serverless containers like Fargate.</div>
-        <span class="label-example">Simple Example:</span>
-        <div class="content">Like a digital dashboard for a rental car fleet. Instead of checking under the hood of every single Fargate container to see how much RAM or CPU it's using, Container Insights automatically gathers all that telemetry into one central dashboard.</div>
-        <span class="label">Exam Keywords:</span>
-        <div class="keyword-container">
-            <span class="keyword">container-level metrics</span>
-            <span class="keyword">ECS cluster</span>
-            <span class="keyword">AWS Fargate</span>
-            <span class="keyword">EKS performance</span>
-        </div>
-    </div>
-
-    <!-- Amazon GuardDuty -->
-    <div class="card">
-        <h2 class="service-title">Amazon GuardDuty</h2>
-        <span class="label">Function:</span>
-        <div class="content">Intelligent threat detection service using machine learning.</div>
-        <span class="label">Why it's used:</span>
-        <div class="content">To continuously monitor network traffic, DNS logs, and CloudTrail for malicious activity, compromised credentials, and anomalous IAM behavior.</div>
-        <span class="label-example">Simple Example:</span>
-        <div class="content">Like an intelligent security guard patrolling your network. It automatically flags if a server suddenly starts communicating with a known bitcoin mining IP address, or if an employee logs in from a country they've never visited before.</div>
-        <span class="label">Exam Keywords:</span>
-        <div class="keyword-container">
-            <span class="keyword">unauthorized access</span>
-            <span class="keyword">anomalous IAM behavior</span>
-            <span class="keyword">threat detection</span>
-            <span class="keyword">finding severity</span>
-        </div>
-    </div>
-
-    <!-- Amazon Macie -->
-    <div class="card">
-        <h2 class="service-title">Amazon Macie</h2>
-        <span class="label">Function:</span>
-        <div class="content">Data security service specifically for Amazon S3.</div>
-        <span class="label">Why it's used:</span>
-        <div class="content">To automatically scan the inside of S3 objects and alert the security team if sensitive regulatory data is exposed.</div>
-        <span class="label-example">Simple Example:</span>
-        <div class="content">Like a highly trained auditor reading through millions of paper files. You point Macie at an S3 bucket, and it automatically reads the documents inside to alert you if someone accidentally uploaded an Excel sheet full of customer credit card numbers.</div>
-        <span class="label">Exam Keywords:</span>
-        <div class="keyword-container">
-            <span class="keyword">Personally Identifiable Information (PII)</span>
-            <span class="keyword">credit card / SSN</span>
-            <span class="keyword">S3 data discovery</span>
-        </div>
-    </div>
-
-    <!-- AWS Security Hub -->
-    <div class="card">
-        <h2 class="service-title">AWS Security Hub</h2>
-        <span class="label">Function:</span>
-        <div class="content">Cloud security posture management and alert aggregation.</div>
-        <span class="label">Why it's used:</span>
-        <div class="content">To provide a single compliance score against industry frameworks and centralize security alerts from GuardDuty, Macie, and Inspector.</div>
-        <span class="label-example">Simple Example:</span>
-        <div class="content">Like a school report card for your cloud security. It takes findings from GuardDuty, Macie, and firewall rules, grades them against industry standards (like CIS), and gives you an overall score (e.g., 85% compliant) with a list of failing grades to fix.</div>
-        <span class="label">Exam Keywords:</span>
-        <div class="keyword-container">
-            <span class="keyword">Center for Internet Security (CIS)</span>
-            <span class="keyword">compliance score</span>
-            <span class="keyword">Foundations Benchmark</span>
-            <span class="keyword">PCI DSS</span>
-        </div>
-    </div>
-
-    <!-- Amazon OpenSearch Service -->
-    <div class="card">
-        <h2 class="service-title">Amazon OpenSearch Service (Elasticsearch)</h2>
-        <span class="label">Function:</span>
-        <div class="content">Managed search and analytics suite.</div>
-        <span class="label">Why it's used:</span>
-        <div class="content">For high-speed, full-text log querying. Natively supports publishing internal diagnostic logs to CloudWatch to track down heavy CPU-intensive queries.</div>
-        <span class="label-example">Simple Example:</span>
-        <div class="content">Like a lightning-fast library catalog. If you pour millions of application logs into it, you can instantly search for the word "Error." If the search itself starts running slowly, you can turn on "slow logs" to see exactly which complex search query is causing the traffic jam.</div>
-        <span class="label">Exam Keywords:</span>
-        <div class="keyword-container">
-            <span class="keyword">slow log publishing</span>
-            <span class="keyword">complex queries timing out</span>
-            <span class="keyword">error log publishing</span>
-        </div>
-    </div>
-
-</div>
-
+      const row = el("tr");
+      const phrases = service.mappings.map(mapping => mapping[0]).join("; ");
+      searchable(row, [phrases, service.name, service.memory, ...service.questions.map(n => "Q" + n), service.reference].join(" "));
+      const mapped = el("td"); mapped.append(link(service.name, service.id));
+      const refs = el("td");
+      service.questions.forEach((n, index) => { if (index) refs.append(document.createTextNode(", ")); refs.append(link("Q" + n, "q" + n)); });
+      row.append(el("td", phrases), mapped, refs);
+      keywordRows.append(row);
+    });
+    questions.forEach(question => {
+      const item = el("details", undefined, "question");
+      item.id = "q" + question.id;
+      const service = byService.get(question.service);
+      searchable(item, ["Q" + question.id, question.requirement, question.answer, question.caveat, service.name, service.memory, question.reference].join(" "));
+      item.append(el("summary", "Q" + question.id + " - " + question.requirement));
+      item.append(el("p", "Reference key: Option" + (question.options.length > 1 ? "s " : " ") + question.options.join(", "), "answer"));
+      item.append(el("div", question.requirement + " -> " + question.answer, "memory"));
+      if (question.reference) {
+        const sourceRef = el("p");
+        const sourceLink = el("a", question.reference);
+        sourceLink.href = question.referenceUrl;
+        sourceRef.append(document.createTextNode("Source: "), sourceLink);
+        item.append(sourceRef);
+      }
+      const serviceRef = el("p"); serviceRef.append(document.createTextNode("Review service: "), link(service.name, service.id));
+      item.append(serviceRef, el("p", question.caveat, "caution"));
+      questionList.append(item);
+    });
+    const search = document.getElementById("search");
+    function matches(node, term) {
+      if (/^q\d+$/i.test(term)) return new RegExp("\\b" + term + "\\b", "i").test(node.dataset.search);
+      return node.dataset.search.includes(term);
+    }
+    function filter() {
+      const term = search.value.trim().toLowerCase();
+      const groups = [
+        [Array.from(serviceList.children), "empty-services"],
+        [Array.from(keywordRows.children), "empty-keywords"],
+        [Array.from(questionList.children), "empty-questions"]
+      ];
+      const counts = groups.map(([nodes, empty]) => {
+        let visible = 0;
+        nodes.forEach(node => { node.hidden = !matches(node, term); if (!node.hidden) visible++; });
+        document.getElementById(empty).hidden = visible !== 0;
+        return visible;
+      });
+      document.getElementById("status").textContent = counts[0] + " service cards / " + counts[2] + " questions" + (term ? " match" : "");
+    }
+    search.addEventListener("input", filter);
+    document.getElementById("clear").addEventListener("click", () => { search.value = ""; filter(); search.focus(); });
+    document.getElementById("expand").addEventListener("click", () => Array.from(questionList.children).forEach(node => { if (!node.hidden) node.open = true; }));
+    document.getElementById("collapse").addEventListener("click", () => Array.from(questionList.children).forEach(node => { node.open = false; }));
+    let printState;
+    window.addEventListener("beforeprint", () => {
+      printState = Array.from(document.querySelectorAll("details")).map(node => [node, node.open]);
+      printState.forEach(([node]) => { if (!node.hidden) node.open = true; });
+    });
+    window.addEventListener("afterprint", () => { if (printState) printState.forEach(([node, open]) => { node.open = open; }); });
+    document.getElementById("print").addEventListener("click", () => window.print());
+    function revealTarget() {
+      const target = document.getElementById(location.hash.slice(1));
+      if (!target) return;
+      if (target.hidden) { search.value = ""; filter(); }
+      if (target.matches("details")) target.open = true;
+      requestAnimationFrame(() => target.scrollIntoView({block:"start"}));
+    }
+    window.addEventListener("hashchange", revealTarget);
+    document.addEventListener("click", event => {
+      const anchor = event.target.closest("a");
+      if (anchor && anchor.getAttribute("href") === location.hash) revealTarget();
+    });
+    filter();
+    if (location.hash) revealTarget();
+  </script>
 </body>
 </html>
