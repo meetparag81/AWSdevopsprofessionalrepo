@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AWS DOP-C02 Security and Compliance: service functions, numbered examples, requirement-to-service shortcuts, comparisons, and caveats for 50 practice questions.">
+  <title>AWS DOP-C02 | Security &amp; Compliance Exam Memory</title>
+  <style>
+    :root { color-scheme: dark; --bg:#0b1220; --panel:#152133; --line:#334155; --text:#e2e8f0; --muted:#b4c2d5; --accent:#7dd3fc; --gold:#fbbf24; --green:#6ee7b7; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; scroll-padding-top:150px; }
+    body { margin:0; background:var(--bg); color:var(--text); font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:3px; }
+    a:hover { color:white; }
+    button,input { font:inherit; }
+    button { cursor:pointer; }
+    :focus-visible { outline:3px solid var(--gold); outline-offset:4px; }
+    .skip { position:absolute; left:12px; top:-80px; background:var(--panel); padding:8px; z-index:10; }
+    .skip:focus { top:12px; }
+    header,.wrap { max-width:1240px; margin:auto; padding:24px; }
+    header { padding-bottom:14px; }
+    h1 { font-size:clamp(1.8rem,4vw,2.8rem); line-height:1.2; margin:8px 0 16px; }
+    h2 { font-size:1.55rem; margin-top:0; line-height:1.35; }
+    h3 { color:var(--accent); font-size:1.08rem; margin:22px 0 8px; }
+    p { margin:8px 0 14px; }
+    .eyebrow,.tag { color:var(--gold); font-weight:700; }
+    .muted { color:var(--muted); }
+    .toolbar { position:sticky; top:0; z-index:3; background:#0b1220f5; border-block:1px solid var(--line); }
+    .tools { max-width:1240px; margin:auto; padding:12px 24px; display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+    input { min-width:160px; flex:1; background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:9px 12px; }
+    button,.nav a { border:1px solid var(--line); background:var(--panel); color:var(--text); border-radius:8px; padding:8px 12px; text-decoration:none; }
+    .nav { display:flex; flex-wrap:wrap; gap:8px; }
+    .nav a { display:inline-block; }
+    section { margin-bottom:32px; }
+    .panel,.service { background:var(--panel); border:1px solid var(--line); padding:24px; border-radius:14px; }
+    .service { margin-bottom:20px; }
+    .memory { border-left:4px solid var(--gold); padding:12px 16px; background:#fbbf2410; color:#fde68a; margin:14px 0; font-weight:650; }
+    .note { border-left:4px solid var(--accent); padding:10px 14px; background:#7dd3fc0b; }
+    .caution { border-left:4px solid var(--gold); padding:10px 14px; background:#fbbf240b; }
+    .flow { white-space:pre-wrap; font:14px/1.8 ui-monospace,Consolas,monospace; padding:14px; background:var(--bg); border:1px solid var(--line); border-radius:8px; overflow-wrap:anywhere; }
+    .table-wrap { overflow-x:auto; }
+    table { border-collapse:collapse; width:100%; font-size:.94rem; }
+    th,td { text-align:left; vertical-align:top; border-bottom:1px solid var(--line); padding:12px; }
+    th { color:var(--accent); background:#0b122070; }
+    tbody tr:last-child td { border-bottom:0; }
+    code { font: .9em ui-monospace,Consolas,monospace; color:#fde68a; overflow-wrap:anywhere; }
+    .chips { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+    .chips a { border:1px solid var(--line); padding:3px 10px; border-radius:20px; text-decoration:none; font-size:.9rem; }
+    .examples { padding-left:22px; }
+    .examples li { padding:5px 0; }
+    .badge { display:inline-block; font-size:.78rem; padding:2px 8px; border:1px solid var(--gold); color:var(--gold); border-radius:12px; margin-bottom:6px; }
+    .answer { color:var(--green); font-weight:650; }
+    details { border:1px solid var(--line); border-radius:8px; margin:12px 0; padding:10px 14px; }
+    summary { cursor:pointer; font-weight:650; color:var(--accent); }
+    .question { scroll-margin-top:160px; }
+    .question h3 { margin:12px 0 8px; }
+    .question p { margin:6px 0 12px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+    .grid .panel { padding:18px; }
+    [hidden] { display:none !important; }
+    .empty { padding:24px; border:1px dashed var(--gold); border-radius:10px; }
+    footer { border-top:1px solid var(--line); }
+    @media (max-width:640px) { header,.wrap { padding:16px; } .tools { padding:10px 16px; } .panel,.service { padding:16px; } th,td { padding:9px; } html { scroll-padding-top:200px; } }
+    @media print {
+      :root { color-scheme:light; --bg:white; --panel:white; --line:#bbb; --text:#111; --muted:#333; --accent:#164e63; --gold:#734b00; --green:#14532d; }
+      .toolbar,.skip,.no-print { display:none; }
+      body { font-size:11pt; }
+      .wrap,header { max-width:none; padding:12px; }
+      .service,.panel { border-radius:0; }
+      h2,h3,summary { break-after:avoid; }
+      tr,.memory,.examples li { break-inside:avoid; }
+      .flow,th { background:white; }
+      code,.memory { color:#333; }
+      a { color:#164e63; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to cheatsheet</a>
+  <header id="top">
+    <div class="eyebrow">AWS DOP-C02 / SECURITY &amp; COMPLIANCE</div>
+    <h1>Understand the service.<br>Recognize the requirement. Recall the answer.</h1>
+    <p>One consolidated revision sheet for <strong>50 verified reference questions</strong>: service functions first, numbered examples next, then keyword mappings and comparison tables.</p>
+    <p class="muted">Question numbers and option numbers refer to the supplied master questionnaire, not an official AWS exam. Prepared 9 November 2026. Option order can change in other quizzes.</p>
+    <p><a href="https://meetparag81.github.io/AWSdevopsprofessionalrepo/index.html">Study portal home</a> | <a href="https://meetparag81.github.io/AWSdevopsprofessionalrepo/security-compliance/index.html">Open the reference questionnaire</a> <span class="muted">(online links; internet connection required)</span></p>
+  </header>
+  <div class="toolbar">
+    <div class="tools">
+      <label for="search">Find a keyword:</label>
+      <input id="search" type="search" placeholder="e.g. PII, no port 22, Q34, WORM, rotation" autocomplete="off">
+      <button id="clear" type="button">Clear</button>
+      <button id="print" type="button">Print / save PDF</button>
+      <nav class="nav" aria-label="Cheatsheet sections">
+        <a href="#services">Services</a><a href="#keywords">Keywords</a><a href="#comparisons">Comparisons</a><a href="#questions">Q1-50</a>
+      </nav>
+      <span id="status" class="muted" role="status" aria-live="polite"></span>
+    </div>
+  </div>
+  <main id="main" class="wrap">
+    <section class="panel" id="how-to">
+      <h2>How to use this sheet</h2>
+      <div class="grid">
+        <div><h3>1. Identify the object</h3><p>Data contents? Permissions? Traffic? Credentials? Configuration? A log of actions?</p></div>
+        <div><h3>2. Identify the timing</h3><p>Prevent before creation, detect afterward, investigate history, or retain evidence?</p></div>
+        <div><h3>3. Identify the scope</h3><p>One object, one IAM role, a VPC, one Region, or all organization member accounts?</p></div>
+      </div>
+      <div class="memory">Choose by the required control, not a single word such as "attack", "logs", or "compliance".</div>
+      <p class="caution">A quiz-key answer can be the best available option without describing a complete solution. Amber notes flag those gaps. Timing such as "immediate", "exactly", or "zero downtime" must be verified rather than assumed.</p>
+    </section>
+    <section id="services">
+      <h2>Service functions + numbered examples</h2>
+      <p class="muted">Each card explains what the service does, why to use it, where it appears in these questions, and the requirement that should trigger recall.</p>
+      <div id="service-list"></div>
+      <p id="empty-services" class="empty" hidden>No matching service cards. Try a shorter keyword or a question number such as Q23.</p>
+    </section>
+    <section id="keywords" class="panel">
+      <h2>Exam requirement -&gt; service index</h2>
+      <div class="table-wrap">
+        <table><thead><tr><th>When the requirement says...</th><th>Recall this service / feature</th><th>Questions</th></tr></thead><tbody id="keyword-rows"></tbody></table>
+      </div>
+      <p id="empty-keywords" class="empty" hidden>No matching keyword mappings.</p>
+    </section>
+    <section id="comparisons" class="panel">
+      <h2>High-value comparison tables</h2>
+      <article class="comparison">
+        <h3>1. Data, access, activity, vulnerabilities, and findings</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>What must you discover?</th><th>Service</th><th>Memory phrase</th></tr></thead>
+          <tbody>
+            <tr><td>Sensitive information inside S3 files</td><td><a href="#macie">Macie</a></td><td>Sensitive DATA</td></tr>
+            <tr><td>Permissions that expose resources externally</td><td><a href="#access-analyzer">IAM Access Analyzer</a></td><td>Who CAN access?</td></tr>
+            <tr><td>Suspicious behavior or threats</td><td><a href="#guardduty">GuardDuty</a></td><td>Suspicious ACTIVITY</td></tr>
+            <tr><td>Vulnerable software / CVEs</td><td><a href="#inspector">Inspector</a></td><td>Software VULNERABILITIES</td></tr>
+            <tr><td>Findings from many security services</td><td><a href="#security-hub">Security Hub</a></td><td>Centralized FINDINGS</td></tr>
+            <tr><td>Who called an AWS API, and when</td><td><a href="#cloudtrail">CloudTrail</a></td><td>API HISTORY</td></tr>
+          </tbody>
+        </table></div>
+      </article>
+      <article class="comparison">
+        <h3>2. Prevent, detect, fix, or deploy a baseline?</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Requirement</th><th>Control</th><th>Question examples</th></tr></thead>
+          <tbody>
+            <tr><td>Deny forbidden creation across member accounts</td><td><a href="#scp">SCP</a></td><td>Q1 regions; Q14 missing tags; Q25 new IGWs</td></tr>
+            <tr><td>Automatically encrypt every new EBS volume</td><td><a href="#ebs">EBS Encryption by Default</a></td><td>Q38; per account, per Region</td></tr>
+            <tr><td>Detect configuration noncompliance</td><td><a href="#config">Config rule</a></td><td>Q12, Q21</td></tr>
+            <tr><td>Fix a failed Config check</td><td><a href="#automation">SSM Automation</a></td><td>Q12; validate runbook suitability in Q21</td></tr>
+            <tr><td>Bundle rules and remediation for all accounts</td><td><a href="#conformance">Organization Conformance Pack</a></td><td>Q19</td></tr>
+            <tr><td>Deploy infrastructure templates across accounts</td><td><a href="#cloudformation">CloudFormation StackSets</a></td><td>Useful deployment tool, not a universal preventive guardrail</td></tr>
+            <tr><td>See Config compliance across accounts</td><td>Config Aggregator</td><td>View data; does not deploy the baseline</td></tr>
+          </tbody>
+        </table></div>
+      </article>
+      <article class="comparison" id="permission-table">
+        <h3>3. Direct cross-account permission combinations</h3>
+        <p>Caller permission + resource-owner permission. If KMS encryption is involved, also unlock the key.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Operation</th><th>Caller IAM role policy</th><th>Resource-owner policies</th></tr></thead>
+          <tbody>
+            <tr><td>Read S3 objects</td><td><code>s3:GetObject</code></td><td>S3 bucket policy allows the source role</td></tr>
+            <tr><td>Decrypt with another account's KMS key</td><td><code>kms:Decrypt</code></td><td>KMS key policy authorizes source-account use (Q34)</td></tr>
+            <tr><td>Read SSE-KMS S3 objects</td><td><code>s3:GetObject</code> + <code>kms:Decrypt</code></td><td>Bucket policy + customer-managed KMS key policy (Q30)</td></tr>
+            <tr><td>Read a KMS-encrypted secret</td><td><code>secretsmanager:GetSecretValue</code> + <code>kms:Decrypt</code></td><td>Secret resource policy + KMS key policy (Q23: options 1, 2, 3)</td></tr>
+          </tbody>
+        </table></div>
+        <div class="memory">S3 = Role + Bucket. KMS = Role + Key. Encrypted S3 = Role + Bucket + Key. Encrypted secret = Role + Secret + Key.</div>
+        <p class="note">These are direct cross-account patterns with no overriding denies. Assuming a role in the destination account is a different pattern. Ordinary same-account S3 access does not always require a bucket policy.</p>
+        <p><strong>Policy placement:</strong> IAM policy = what I may do; bucket/secret policy = who may access me; key policy = who may use this key. A bucket policy cannot grant <code>kms:Decrypt</code>.</p>
+      </article>
+      <article class="comparison">
+        <h3>4. Encrypt, prove integrity, or preserve immutability?</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Requirement</th><th>Feature</th><th>Do not confuse with...</th></tr></thead>
+          <tbody>
+            <tr><td>Protect data travelling over the network</td><td>HTTPS/TLS; S3 deny <code>aws:SecureTransport=false</code> (Q46)</td><td>KMS encryption at rest</td></tr>
+            <tr><td>Encrypt stored S3 objects using a controlled key</td><td>SSE-KMS with a customer-managed key (Q12, Q18, Q30)</td><td>Restricting public access</td></tr>
+            <tr><td>Encrypt stored CloudWatch logs</td><td>Associate KMS key with log group (Q39)</td><td>Encrypting the source EBS disk</td></tr>
+            <tr><td>Prove CloudTrail logs were not altered</td><td>Log File Integrity Validation (Q10)</td><td>Encryption or Object Lock</td></tr>
+            <tr><td>Prevent deletion of retained versions, even by root</td><td>Object Lock Compliance mode (Q50)</td><td>Governance mode or Versioning alone</td></tr>
+            <tr><td>Rotate key material without breaking old decryption</td><td>KMS automatic rotation (Q29)</td><td>Rotating database passwords</td></tr>
+            <tr><td>Decrypt same ciphertext locally in another Region</td><td>KMS multi-Region primary/replica (Q13)</td><td>DynamoDB data replication alone</td></tr>
+          </tbody>
+        </table></div>
+        <p><strong>Hash:</strong> file fingerprint. <strong>Signature:</strong> authentic, unchanged signed record. <strong>Object Lock:</strong> retention protection. These solve different problems.</p>
+      </article>
+      <article class="comparison">
+        <h3>5. Web protection versus network protection</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Requirement</th><th>Choose</th><th>Recall</th></tr></thead>
+          <tbody>
+            <tr><td>HTTP requests exceed a per-IP time-window threshold</td><td><a href="#waf">WAF rate-based rule</a></td><td>Count requests (Q24)</td></tr>
+            <tr><td>Block a known list of web-client IPs</td><td>WAF IP Set referenced by a Block rule</td><td>Match listed IPs (Q43)</td></tr>
+            <tr><td>DDoS expertise and qualifying cost protection</td><td><a href="#shield">Shield Advanced</a></td><td>SRT + DDoS cost protection (Q48)</td></tr>
+            <tr><td>Apply WAF policy across accounts/new ALBs</td><td><a href="#firewall-manager">Firewall Manager</a></td><td>Central enforcement (Q4)</td></tr>
+            <tr><td>Explicitly deny subnet traffic to a malicious IP</td><td><a href="#network">Network ACL</a></td><td>Allow AND deny; stateless (Q33)</td></tr>
+            <tr><td>Allow traffic to an instance/network interface</td><td>Security group</td><td>Allow ONLY; stateful; cannot add an explicit IP deny</td></tr>
+          </tbody>
+        </table></div>
+        <p class="note">Shield and WAF overlap and can work together. Choose the specific control requested. WAF does not filter arbitrary outbound EC2 network traffic.</p>
+      </article>
+      <article class="comparison">
+        <h3>6. Credentials, URLs, and CloudFront origin access</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Requirement</th><th>Feature</th><th>Trap</th></tr></thead>
+          <tbody>
+            <tr><td>Encrypted values; no managed rotation needed</td><td><a href="#parameter-store">Parameter Store SecureString</a> (Q27)</td><td>KMS usage/advanced options can cost money</td></tr>
+            <tr><td>Database credential rotation</td><td><a href="#secrets">Secrets Manager</a> (Q5)</td><td>Not KMS key-material rotation</td></tr>
+            <tr><td>Temporary AWS credentials</td><td><a href="#sts">STS / IAM roles</a></td><td>Session expiry does not revoke the right to request another session</td></tr>
+            <tr><td>Temporary access link for specific S3 object</td><td><a href="#presigned">S3 presigned URL</a> (Q44)</td><td>Not general bucket access; signing credentials can expire earlier</td></tr>
+            <tr><td>Authenticate CloudFront to private S3</td><td><a href="#cloudfront">OAC</a> (Q32)</td><td>Signed origin request, not a published viewer URL</td></tr>
+            <tr><td>Restrict viewers using CloudFront links</td><td>CloudFront signed URLs/cookies</td><td>Viewer authorization, not origin protection</td></tr>
+            <tr><td>CloudFront viewer TLS certificate</td><td><a href="#acm">ACM in us-east-1</a> (Q36)</td><td>ALB certificate instead lives in ALB's Region</td></tr>
+          </tbody>
+        </table></div>
+      </article>
+      <article class="comparison">
+        <h3>7. Rotate, deactivate, delete, or identify unused keys?</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Term</th><th>Meaning</th><th>Recall</th></tr></thead>
+          <tbody>
+            <tr><td>Key age</td><td>Time since key creation</td><td>Config <code>access-keys-rotated</code>; Q21</td></tr>
+            <tr><td>Unused key</td><td>No use for the specified interval</td><td>IAM Credential Report last-used data; Q45</td></tr>
+            <tr><td>Inactive key</td><td>Disabled status, not just a long unused period</td><td><code>UpdateAccessKey</code> with Inactive</td></tr>
+            <tr><td>Delete key</td><td>Permanently remove the credential</td><td>Not the same as disabling it</td></tr>
+            <tr><td>Rotate access key</td><td>Create replacement, update consumers, retire old key</td><td>Disabling the old key alone is not rotation</td></tr>
+          </tbody>
+        </table></div>
+      </article>
+    </section>
+    <section id="questions" class="panel">
+      <h2>All 50 questions: recall and answer index</h2>
+      <p>Each entry includes the reference answer number, a requirement-based shortcut, and relevant technical corrections. Search Q followed by a number to jump between its examples and index entry.</p>
+      <button id="expand" class="no-print" type="button">Expand all question details</button>
+      <button id="collapse" class="no-print" type="button">Collapse all question details</button>
+      <div id="question-list"></div>
+      <p id="empty-questions" class="empty" hidden>No matching questions.</p>
+    </section>
+    <section class="panel" id="glossary">
+      <h2>Supporting services and terms seen in the options</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Service / term</th><th>Function and when to use it</th><th>Do not assume...</th></tr></thead>
+        <tbody>
+          <tr><td>Amazon EC2</td><td>Virtual machines; host applications, EKS nodes, or Image Builder test instances</td><td>An IAM role alone gives network connectivity</td></tr>
+          <tr><td>Amazon S3</td><td>Object storage for datasets, logs, and artifacts</td><td>Encryption prevents public access</td></tr>
+          <tr><td>Amazon RDS</td><td>Managed relational databases; Multi-AZ supports availability, snapshots support backup/copy</td><td>Performance Insights records snapshot-copy API history</td></tr>
+          <tr><td>Amazon DynamoDB</td><td>Managed NoSQL tables; global tables replicate data across Regions</td><td>Replicated data automatically replicates application KMS keys</td></tr>
+          <tr><td>Application Load Balancer</td><td>Distribute HTTP/HTTPS requests; supported WAF association target</td><td>Its TLS certificate must always be in us-east-1</td></tr>
+          <tr><td>API Gateway REST API</td><td>Expose/manage APIs; WAF can protect supported REST API stages</td><td>Any flood question must be answered with Shield</td></tr>
+          <tr><td>CodePipeline / CodeCommit / CodeDeploy</td><td>Orchestrate delivery / host source / deploy revisions; Q30</td><td>CodeDeploy service role is necessarily the EC2 agent's download identity</td></tr>
+          <tr><td>Amazon Detective</td><td>Investigate incidents and relationships using security telemetry; Q15 distractor</td><td>It replaces Security Hub findings aggregation</td></tr>
+          <tr><td>CloudTrail Insights</td><td>Detect unusual API call/error-rate patterns; Q15 distractor</td><td>It is a dashboard for all security findings</td></tr>
+          <tr><td>VPC Flow Logs</td><td>Network-flow metadata such as IPs, ports, and accepted/rejected traffic</td><td>They capture terminal commands or HTTP payload contents</td></tr>
+          <tr><td>EC2 Instance Connect</td><td>Facilitates SSH authentication/connectivity using supported access paths</td><td>It eliminates the need for SSH network access to port 22</td></tr>
+          <tr><td>AWS Client VPN</td><td>Connect user devices to private networks</td><td>It records terminal commands or replaces instance SSH authorization</td></tr>
+          <tr><td>Amazon Data Firehose</td><td>Managed streaming delivery to supported destinations such as S3</td><td>CloudWatch Logs is a supported delivery destination</td></tr>
+          <tr><td>Elastic Beanstalk managed updates</td><td>Manage platform updates in Beanstalk environments; Q3 distractor</td><td>They patch an arbitrary EC2 fleet</td></tr>
+          <tr><td>AWS Resource Access Manager</td><td>Share supported resources across accounts</td><td>KMS key access is configured through RAM instead of key policies</td></tr>
+          <tr><td>NAT Gateway / Internet Gateway</td><td>Outbound translation / VPC internet connectivity with appropriate routing</td><td>A private AWS service endpoint requires either one</td></tr>
+          <tr><td>VPC peering</td><td>Private routing between two VPCs</td><td>You can peer with a customer-accessible "DynamoDB service VPC"</td></tr>
+          <tr><td>CVE / PII / PHI</td><td>Known vulnerability identifier / personal information / protected health information</td><td>All PHI types are automatically identifiable without suitable data identifiers</td></tr>
+          <tr><td>SHA-256 / RSA signature</td><td>File fingerprint / authenticity and integrity of a signed digest</td><td>A hash encrypts the file, or a signature prevents deletion</td></tr>
+          <tr><td>ARN / CMK</td><td>AWS resource identifier / older terminology for customer-managed KMS key</td><td>An ARN is a secret or a KMS alias replicates keys</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+    <noscript><p class="caution">Enable JavaScript to display the service cards and all 50 question mappings. The static comparison tables and glossary remain available without JavaScript.</p></noscript>
+  </main>
+  <footer class="wrap">
+    <p><a href="#top">Back to top</a> | Standalone HTML: no CDN, login, analytics, or external dependencies.</p>
+    <p class="muted">Reference: MonitoringWebsite/security-compliance/index.html. This sheet preserves its answer key while explicitly documenting technical gaps; it does not modify the questionnaire. Upload this file as a static HTML page, for example cheatsheets/security-compliance.html, then add a matching link to the portal homepage. Portal and questionnaire links use full web addresses so they work regardless of this file's upload folder. All cheatsheet content, search, and internal navigation work offline.</p>
+  </footer>
+  <script>
+    "use strict";
+    const services = [
+      {
+        id:"macie", name:"Amazon Macie", memory:"Sensitive DATA in S3", questions:[9,35,17],
+        purpose:"Discover and classify sensitive information inside supported S3 objects using managed and custom data identifiers.",
+        why:"Find personal information or credit card numbers in datasets and archived logs without running your own scanning servers.",
+        examples:[[9,"Patient-record datasets: discover PII using suitable identifiers, then route findings to an alert."],[35,"Archived logs: inspect supported S3 files for accidentally recorded sensitive information."],[17,"Comparison: if the real question is who can access a bucket because of its policy, Access Analyzer is the more direct fit."]],
+        flow:"S3 files -> Macie discovery -> sensitive-data finding -> EventBridge -> SNS",
+        mappings:[["PII / credit cards / classify contents in S3","Macie"],["Public or cross-account permission exposure","IAM Access Analyzer"],["Suspicious access / possible data theft","GuardDuty"]],
+        caveats:["Macie does not require you to upload CloudTrail logs first; it examines supported objects already in S3.","Not a live CloudWatch log scanner or an instant scan of every upload. Configure discovery coverage/jobs; automatic discovery is not exhaustive inspection of all objects.","It can report bucket security risks, but does not automatically encrypt data or block access. PHI coverage depends on identifiers and formats."]
+      },
+      {
+        id:"guardduty", name:"Amazon GuardDuty", memory:"Suspicious ACTIVITY", questions:[22,33,15],
+        purpose:"Detect threats by analyzing supported AWS telemetry and protection-plan data.",
+        why:"Identify suspicious credentials, malicious communications, and other attack behavior; export findings or trigger response automation.",
+        examples:[[33,"High-severity malicious communication: match findings in EventBridge and trigger a network-appropriate IP block."],[22,"Five-year archive: configure native S3 findings export with KMS, then configure storage retention."],[15,"Send integrated findings to Security Hub for centralized review."]],
+        flow:"AWS telemetry -> GuardDuty finding -> EventBridge -> response / notification",
+        mappings:[["Suspicious behavior or malicious communication","GuardDuty"],["Archive GuardDuty findings with least custom code","Native S3 export + KMS"],["Scan software packages for CVEs","Inspector"]],
+        caveats:["Threat detection is not a complete API audit history, generic PII scanning, or proof of every permissive policy.","Native S3 export needs bucket/key permissions; it does not automatically enforce five-year retention.","Event delivery/response is near-real-time, not a guaranteed instantaneous block."]
+      },
+      {
+        id:"inspector", name:"Amazon Inspector", memory:"Software VULNERABILITIES", questions:[28,47,7],
+        purpose:"Assess supported workloads for known vulnerabilities; includes EC2 and ECR enhanced image scanning.",
+        why:"Identify vulnerable OS/software packages in compute instances and container images before or during use.",
+        examples:[[28,"One vulnerability assessment service for ECR images and supported EC2 EKS worker nodes."],[47,"Image Builder integration: assess the build/test instance and gate image distribution on completed scan results."],[7,"For ECR enhanced scanning, Inspector integrates without installing an Inspector sidecar in the image."]],
+        flow:"Supported EC2 / ECR workloads -> Inspector assessment -> findings -> gate or response",
+        mappings:[["EC2 + ECR + CVEs","Inspector"],["Install approved server updates","Patch Manager"],["Aggregate vulnerability findings with other findings","Security Hub"]],
+        caveats:["Inspector finds vulnerabilities; it does not itself patch all workloads or guarantee deployment blocking.","ECR basic scan-on-push is a separate native ECR capability. Configure enhanced/continuous scanning if that coverage is required.","Q47 must gate distribution, cover both High and Critical, and correlate findings to the correct build/image."]
+      },
+      {
+        id:"security-hub", name:"AWS Security Hub", memory:"Centralized FINDINGS", questions:[15,16],
+        purpose:"Bring integrated security findings together, normalize them, and support centralized security posture review.",
+        why:"Give teams a consolidated view instead of separate GuardDuty, Inspector, and Access Analyzer dashboards.",
+        examples:[[15,"Multiple services/accounts: aggregate findings in a central security view."],[16,"Select a finding manually, invoke a Custom Action, and send its event to a Step Functions workflow."]],
+        flow:"Security-service findings -> Security Hub -> Custom Action -> EventBridge -> workflow",
+        mappings:[["Single pane of glass / normalize security findings","Security Hub"],["Manually select finding and trigger workflow","Custom Action + EventBridge"],["Aggregate Config configuration/compliance data","Config Aggregator"]],
+        caveats:["Centralizing findings is not the same as performing every underlying scan.","Custom Actions are manually initiated; subsequent workflow steps can run automatically.","Configure organizational/Region aggregation and supported integrations; do not assume every account is enabled automatically."]
+      },
+      {
+        id:"access-analyzer", name:"AWS IAM Access Analyzer", memory:"Analyze PERMISSIONS: who CAN access?", questions:[17,49,15],
+        purpose:"Analyze supported resource policies for external exposure and validate/check IAM policy documents.",
+        why:"Find unintended external access or enforce specific policy requirements before deployment.",
+        examples:[[17,"Evaluate S3 policies/ACLs for access outside the trusted account or organization."],[49,"Extract resolved IAM policies from templates; run validation/custom checks in CodeBuild and fail unacceptable builds."],[15,"Aggregate Access Analyzer findings with other security findings in Security Hub."]],
+        flow:"Resource / policy document -> Access Analyzer -> finding or check result -> review / build gate",
+        mappings:[["Public / external-account access allowed by permissions","External-access analyzer"],["IAM policy review before stack deployment","Policy checks in CodeBuild"],["Actual suspicious activity","GuardDuty"]],
+        caveats:["An external-access finding is not automatically unauthorized; compare it with intended sharing. No access attempt is needed.","ValidatePolicy reports policy findings, but is not itself a custom policy-check API or a universal no-admin guarantee.","Use suitable checks such as CheckAccessNotGranted or CheckNoNewAccess, and explicitly fail the build."]
+      },
+      {
+        id:"cloudtrail", name:"AWS CloudTrail", memory:"Who did WHAT, and WHEN? API HISTORY", questions:[6,10,20,41],
+        purpose:"Record AWS API activity for audit and investigation; trails can deliver management-event logs to S3.",
+        why:"Investigate resource operations, trigger event-based responses, and validate integrity of delivered audit logs.",
+        examples:[[41,"Investigate CopyDBSnapshot requests and available evidence of copy completion; relevant recipient-account records may be needed."],[6,"Match PutBucketPolicy events through EventBridge and repair unintended public access."],[20,"Encrypted central delivery: CloudTrail service principal needs KMS data-key and S3 write permissions."],[10,"Validate signed digests and log hashes using aws cloudtrail validate-logs."]],
+        flow:"AWS API action -> CloudTrail record -> S3 audit archive / EventBridge response",
+        mappings:[["Who called an API / was a snapshot copy requested?","CloudTrail"],["Mathematical tamper evidence for delivered logs","Log File Integrity Validation"],["Complete shell commands/output","Session Manager session logging"]],
+        caveats:["CloudTrail does not record SSH keystrokes or full terminal content.","CopyDBSnapshot is asynchronous: accepted API request is not proof of successful completion. Cross-account evidence visibility must be verified.","Integrity validation must have been enabled for the period being checked; it cannot retroactively manufacture historical proof."]
+      },
+      {
+        id:"config", name:"AWS Config", memory:"Configuration COMPLIANCE CHECKER", questions:[12,21,19,14],
+        purpose:"Record supported resource configurations and evaluate compliance against rules.",
+        why:"Detect resources whose settings do not match your security policy and connect them to remediation.",
+        examples:[[12,"Detect a bucket whose default encryption does not meet the KMS requirement; invoke SSM Automation."],[21,"access-keys-rotated checks active key age against maxAccessKeyAge=90; choose remediation that actually enforces age."],[19,"Deploy groups of checks/remediation using an organization Conformance Pack."],[14,"Comparison: detecting missing tags after creation is not denying the creation API."]],
+        flow:"Resource configuration -> Config rule -> noncompliant result -> SSM Automation remediation",
+        mappings:[["Find noncompliant existing resource configuration","Config"],["Fix failed Config check automatically","SSM Automation"],["Deny creation before it succeeds","IAM / SCP preventive policy"]],
+        caveats:["Config and SSM are separate services. Configure remediation parameters, role, retries, and automatic execution explicitly.","Proactive evaluation can assess proposed supported configurations, but does not by itself block all provisioning or parse repository YAML.","The generic S3 encryption check may not enforce KMS specifically; use a rule suitable for the exact requirement."]
+      },
+      {
+        id:"conformance", name:"AWS Config Conformance Packs", memory:"Bundle CHECKS + remediation configurations", questions:[19],
+        purpose:"Package multiple Config rules and remediation configurations in a reusable template.",
+        why:"Deploy a consistent compliance baseline across organization accounts and applicable Regions.",
+        examples:[[19,"Standard EBS encryption/RDS availability baseline for current and future member accounts using organization-level deployment."]],
+        flow:"Conformance Pack -> organization deployment -> member-account checks -> configured remediation",
+        mappings:[["Standard collection of Config rules + fixes everywhere","Organization Conformance Pack"],["View all Config results in one place","Config Aggregator"],["Deploy arbitrary infrastructure templates","StackSets"]],
+        caveats:["Enable Config recording/organizational access in required accounts/Regions and configure remediation roles.","A rule alone checks; an appropriate runbook with automatic remediation enabled performs the fix.","Existing unencrypted EBS volumes cannot be encrypted in place; remediation may require replacement."]
+      },
+      {
+        id:"scp", name:"AWS Organizations + Service Control Policies", memory:"Organization permission GUARDRAIL", questions:[1,14,25,26],
+        purpose:"Organizations groups accounts/OUs; SCPs set permission limits for principals in member accounts.",
+        why:"Prevent local administrators from bypassing centrally imposed restrictions.",
+        examples:[[1,"Root-level deny outside approved requested Regions, with carefully selected global-service exceptions."],[14,"Reject supported creation requests missing CostCenter using request-tag conditions."],[25,"Development OU: deny only CreateInternetGateway so existing IGWs are unaffected."],[26,"Enable account-level S3 Block Public Access first, then restrict changes to the account setting."]],
+        flow:"Root / OU SCP -> inherited member-account guardrail -> prohibited API denied",
+        mappings:[["Deny across all member accounts","SCP at root"],["Deny only a specific group of accounts","SCP at OU"],["Grant a group access to selected accounts","Identity Center assignments"]],
+        caveats:["SCPs do not grant permissions and do not attach to IAM groups. They do not constrain the management account or service-linked roles.","aws:RequestedRegion is the request endpoint Region, not every Region affected. Global-service exceptions need careful maintenance.","Scope EC2 creation/tag checks to the correct resource types and cover alternate APIs/tag removal when required.","Protect central settings without accidentally blocking authorized bootstrap or remediation."]
+      },
+      {
+        id:"boundaries", name:"IAM permissions boundaries", memory:"Safe delegation: an enforced permission CEILING", questions:[2],
+        purpose:"Limit the permissions that identity-based policies can grant to a particular IAM user or role.",
+        why:"Delegate role creation while keeping newly created workload roles within an approved permissions ceiling.",
+        examples:[[2,"Require the approved boundary on every developer-created Lambda execution role, and prevent removal/replacement or boundary-policy edits."]],
+        flow:"Developer creates role with required boundary -> effective permissions limited by approved ceiling",
+        mappings:[["Delegate IAM role creation without administrative escalation","Enforce boundaries on created roles"],["Restrict all organization member accounts","SCP"],["Attach managed policy versus inline policy","AttachRolePolicy versus PutRolePolicy"]],
+        caveats:["Boundaries do not grant permissions and are not inherited from the creator.","A boundary on the developer alone does not cap the new roles. Enforce iam:PermissionsBoundary on creation and protect it afterward.","Denying AttachRolePolicy alone does not stop inline policy grants. Resource-based/session policy interactions require careful evaluation; a boundary is not a universal resource-policy firewall."]
+      },
+      {
+        id:"ssm", name:"AWS Systems Manager (SSM)", memory:"Central operations TOOLBOX", questions:[3,8,12,18,21,27,37],
+        purpose:"Manage supported EC2/hybrid nodes and automate operations through specialized capabilities.",
+        why:"Connect securely, run commands, patch servers, maintain desired state, execute runbooks, and store parameters.",
+        examples:[[8,"Session Manager replaces a bastion for native shell access."],[3,"Patch Manager selects/install patches; Maintenance Windows schedule tasks."],[12,"Automation performs Config remediation."],[27,"Parameter Store holds encrypted configuration values."]],
+        flow:"SSM toolbox: Session Manager | Run Command | Patch Manager | State Manager | Automation | Parameter Store",
+        mappings:[["Interactive terminal without inbound SSH","Session Manager"],["Commands on many managed servers","Run Command"],["Maintain desired server state","State Manager"]],
+        caveats:["SSM is not part of Config: Config can invoke SSM Automation.","Managed-node features generally need SSM Agent, IAM permissions, and service connectivity; Parameter Store is an API store and does not need a node agent.","CloudWatch Agent collects logs/metrics; SSM Agent receives and runs management tasks."]
+      },
+      {
+        id:"automation", name:"SSM Automation + Run Command + State Manager", memory:"Runbook FIXER / command EXECUTOR / state MAINTAINER", questions:[12,21,19,3],
+        purpose:"Automation runs multistep runbooks; Run Command executes managed-node commands; State Manager maintains desired configurations.",
+        why:"Use the right operational mechanism instead of writing an entire custom orchestration layer.",
+        examples:[[12,"Config's native remediation target is an SSM Automation document with appropriate parameters and IAM role."],[21,"A runbook targeting unused credentials must not be assumed to enforce creation-age rotation."],[3,"Patch installation can execute through SSM command documents scheduled in Maintenance Windows."]],
+        flow:"Config remediation -> Automation runbook -> API / operational steps -> result",
+        mappings:[["Config automatic fix","Automation runbook"],["Batch remote shell/PowerShell execution","Run Command"],["Ensure agent/configuration remains installed","State Manager"]],
+        caveats:["Config does not use Step Functions as a direct remediation target in the option described.","Run Command is not an interactive terminal. State Manager associations do not attach to the organization root like SCPs.","Surface failures and configure least-privilege execution roles; do not assume a runbook name matches the exact requirement."]
+      },
+      {
+        id:"session", name:"SSM Session Manager", memory:"No bastion + no inbound SSH + session LOGS", questions:[8,18],
+        purpose:"Provide IAM-controlled interactive access to managed instances without opening inbound SSH/RDP ports.",
+        why:"Remove bastions and capture native shell-session input/output in configured destinations.",
+        examples:[[8,"Use SSM Agent, instance permissions, required connectivity, and S3 session logging."],[18,"Store session logs in an S3 bucket using default SSE-KMS with a customer-managed key."]],
+        flow:"Admin -> Session Manager -> outbound SSM Agent connection -> native shell -> S3 logs",
+        mappings:[["Remove bastion / no port 22 / interactive access","Session Manager"],["Who started the session?","CloudTrail StartSession event"],["What happened inside the shell?","Session logging"]],
+        caveats:["SSH-over-Session-Manager and port-forwarding sessions do not support session-content logging; restrict those access paths if complete logging is mandatory.","Connection KMS encryption is distinct from S3 log encryption at rest. Configure the destination and permissions appropriately.","A private subnet still needs outbound HTTPS/service endpoints and logging-destination connectivity."]
+      },
+      {
+        id:"patch", name:"SSM Patch Manager + Baselines + Maintenance Windows", memory:"Patch Manager DOES; baseline WHAT; window WHEN", questions:[3,37],
+        purpose:"Scan/install approved OS patches on supported managed nodes using OS-specific approval baselines.",
+        why:"Automate Windows/Linux patching consistently during approved maintenance periods.",
+        examples:[[3,"Critical/security patches only: OS-specific baselines, target groups, and Sunday Maintenance Window installation task."],[37,"Isolated nodes with core IAM permissions: investigate SSM connectivity, S3 access, and patch-repository reachability."]],
+        flow:"Baseline approvals + targeted nodes + Maintenance Window -> patch installation task",
+        mappings:[["Approved security updates for EC2 fleet","Patch Manager"],["Which updates qualify?","Patch baseline"],["When may tasks run?","Maintenance Window"]],
+        caveats:["Baseline filters vary by OS/distribution. Inspector discovers vulnerabilities but is not the patch installer.","A window cutoff stops new tasks from starting; it does not necessarily kill already-running patch tasks. Configure timeouts/reboot behavior.","SSM endpoints do not provide every vendor patch download. NAT/proxy/private repositories or WSUS may still be needed."]
+      },
+      {
+        id:"parameter-store", name:"SSM Parameter Store", memory:"Secure configuration, no managed rotation needed", questions:[27],
+        purpose:"Store and retrieve named configuration values; SecureString encrypts sensitive values using KMS.",
+        why:"Keep API keys/connection strings out of code when managed secret rotation is unnecessary.",
+        examples:[[27,"Use SecureString for runtime CLI/SDK retrieval with decryption and appropriate IAM/KMS permissions."]],
+        flow:"Store SecureString -> KMS protection -> GetParameter with decryption -> authorized application",
+        mappings:[["Encrypted configuration / lower storage cost / no automatic rotation","Parameter Store SecureString"],["Automatic database password rotation","Secrets Manager"],["TLS certificate management","ACM"]],
+        caveats:["Standard parameters avoid per-parameter storage charges; advanced parameters, throughput options, and KMS usage may incur charges.","String and StringList are not SecureString encryption.","Parameter Store is a Systems Manager capability, not part of Config or a standalone KMS secret vault."]
+      },
+      {
+        id:"secrets", name:"AWS Secrets Manager", memory:"Secrets + managed credential ROTATION", questions:[5,23,40],
+        purpose:"Store secrets securely and support rotation workflows for supported credential integrations.",
+        why:"Manage database passwords and let applications retrieve current credentials instead of embedding them.",
+        examples:[[5,"Rotate PostgreSQL credentials every 30 days using an appropriate supported rotation workflow and runtime retrieval."],[23,"Account A Lambda reads Account B secret: role policy + secret policy + KMS key policy."],[40,"Comparison: storing long-lived EKS access keys here is not a substitute for temporary workload role credentials."]],
+        flow:"Secret -> scheduled rotation workflow -> updated database credential -> application refresh/retrieval",
+        mappings:[["Database credential automatic rotation","Secrets Manager"],["No rotation / encrypted configuration values","Parameter Store"],["Rotate KMS encryption key material","KMS rotation"]],
+        caveats:["Zero downtime is not guaranteed by enabling rotation alone. Consider alternating-users rotation where appropriate, cache refresh, connection behavior, network access, and testing.","KMS-generated symmetric key material cannot be exported into Secrets Manager.","Secrets Manager handles decryption via KMS for authorized retrieval; applications normally receive plaintext without a separate manual decrypt call."]
+      },
+      {
+        id:"kms", name:"AWS Key Management Service (KMS)", memory:"Manage cryptographic KEYS and their use", questions:[13,20,23,29,30,34,39],
+        purpose:"Manage encryption keys and authorize cryptographic operations; applications/services can use envelope encryption.",
+        why:"Control key access, rotate eligible key material, and support authorized cross-account/cross-Region encryption designs.",
+        examples:[[34,"IAM Decrypt permission alone is insufficient across accounts: the key owner's policy must authorize access."],[29,"Eligible symmetric key: automatic 365-day rotation preserves key ID/ARN and older material for decryption."],[13,"Related multi-Region keys use shared key material/ID with local regional ARNs."],[30,"Replace aws/s3 with customer-managed key for direct cross-account encrypted artifact access."]],
+        flow:"Encryption: GenerateDataKey -> protect data\nReading: authorized Decrypt -> plaintext access",
+        mappings:[["Encrypt stored data with controlled key","KMS / SSE-KMS integration"],["Same ciphertext, local decrypt in another Region","Multi-Region key + replica"],["IAM allows but cross-account decrypt denied","Check KMS key policy"],["Rotate key without breaking old data","Automatic KMS rotation"]],
+        caveats:["Customer-managed keys allow you to manage policy; AWS-managed aws/s3 policy cannot be edited for this cross-account sharing.","Automatic rotation applies to eligible keys and does not re-encrypt old objects; keep the key enabled and available.","Related multi-Region keys have separate policies/grants/aliases and Region-specific ARNs. Data replication alone does not establish these keys.","KMS is not an API-key/password configuration store; exported public keys are different from protected symmetric key material."]
+      },
+      {
+        id:"cloudwatch", name:"CloudWatch Agent + CloudWatch Logs", memory:"Agent COLLECTS; log group STORES and encrypts", questions:[39],
+        purpose:"Collect configured local log files/metrics and centralize logs in CloudWatch Logs.",
+        why:"Bring legacy application text-file logs into a managed logging destination with controlled encryption.",
+        examples:[[39,"Install/configure Agent, allow publishing, and associate a symmetric customer-managed KMS key with the destination log group."]],
+        flow:"EC2 text file -> CloudWatch Agent -> log group -> KMS-protected log storage",
+        mappings:[["Local file -> central CloudWatch logs","CloudWatch Agent"],["CMK encryption at rest in CloudWatch Logs","KMS association on log group"],["Encrypt local disk","EBS encryption"]],
+        caveats:["Encrypting EBS does not configure encryption of the copy in CloudWatch Logs.","An agent encryption_key property is not the log-group encryption mechanism.","Key policy must permit the regional Logs service; the association affects new ingestion, not retroactive re-encryption of old entries."]
+      },
+      {
+        id:"waf", name:"AWS WAF", memory:"Filter WEB REQUESTS", questions:[24,43,4,33],
+        purpose:"Inspect HTTP/HTTPS requests through Web ACL rules on supported application resources.",
+        why:"Block malicious request patterns, known IPs, or excessive per-IP request rates.",
+        examples:[[24,"More than 2,000 requests per five minutes per IP: rate-based rule with Block action."],[43,"500 IPs updated hourly: IP Set + Block rule, refreshed by scheduled Lambda."],[4,"Firewall Manager centrally applies WAF protections to in-scope ALBs."],[33,"Use WAF only for the applicable web-request path, not arbitrary EC2 outbound traffic."]],
+        flow:"Web request -> Web ACL -> IP / pattern / rate rule -> allow or block",
+        mappings:[["Per-IP request threshold in a time window","Rate-based rule"],["Known malicious IP blocklist","IP Set referenced by Block rule"],["Organization-wide WAF policy enforcement","Firewall Manager"]],
+        caveats:["Rate enforcement is approximate, not exact blocking of request 2,001. Rule changes take time to propagate.","An IP Set alone does nothing until a rule references it with an action.","Cannot attach WAF directly to S3 or use it as a generic VPC egress firewall."]
+      },
+      {
+        id:"shield", name:"AWS Shield / Shield Advanced", memory:"DDoS protection; Advanced = SRT + eligible cost protection", questions:[48,24],
+        purpose:"Provide managed DDoS protection; Advanced adds enhanced protections, response expertise, and qualifying cost-protection features.",
+        why:"Protect availability during large attacks and obtain support for managing covered DDoS incidents.",
+        examples:[[48,"Volumetric ALB attack + scaling charges + expert mitigation: Shield Advanced with the protected resource and required support/onboarding."],[24,"Comparison: an explicit per-IP HTTP request threshold points more directly to WAF rate-based rules."]],
+        flow:"Distributed attack -> protected resource -> Shield mitigation + response support",
+        mappings:[["Volumetric DDoS + expert help + cost protection","Shield Advanced"],["HTTP requests per IP per five minutes","WAF rate-based rule"]],
+        caveats:["DDoS means distributed traffic overwhelms availability; a single attacking IP does not by itself prove a distributed attack.","Cost protection is subject to eligibility/terms and a credit process, not automatic elimination of all scaling charges.","Configure resource protection and required support/response arrangements. Shield can integrate with WAF; the services are not mutually exclusive."]
+      },
+      {
+        id:"firewall-manager", name:"AWS Firewall Manager", memory:"Central security-policy ENFORCER", questions:[4],
+        purpose:"Centrally manage supported security policies across AWS Organizations accounts/resources.",
+        why:"Apply consistent WAF protection to existing and newly created in-scope resources without per-account manual association.",
+        examples:[[4,"Designate a security administrator; configure WAF policy scope and automatic remediation for the required ALBs."]],
+        flow:"Security account policy -> in-scope accounts/resources -> automatic WAF association/remediation",
+        mappings:[["WAF everywhere / new ALBs automatically protected","Firewall Manager"],["Block individual web requests","WAF"],["Deploy copies of templates","StackSets"]],
+        caveats:["Configure required Config recording, organizational setup, Regions, and automatic remediation.","Scope internet-facing ALBs appropriately; account-wide policy does not inherently distinguish all desired categories without suitable scoping.","WAF protects requests; Firewall Manager manages that protection."]
+      },
+      {
+        id:"eventbridge", name:"Amazon EventBridge + AWS Lambda + Amazon SNS", memory:"Event ROUTER -> code EXECUTOR -> message NOTIFIER", questions:[6,7,16,33,43],
+        purpose:"EventBridge matches/routes events or schedules work; Lambda runs code; SNS distributes messages to subscribers.",
+        why:"Build event-driven responses or periodic feed updates without managing servers.",
+        examples:[[6,"CloudTrail PutBucketPolicy event -> Lambda checks/removes public access."],[43,"Hourly event -> Lambda fetches and validates threat feed -> UpdateIPSet."],[16,"Security Hub Custom Action event -> Step Functions target; Lambda is not always necessary."],[7,"Scan-completion response must feed a pipeline gate that waits for results."]],
+        flow:"Event / schedule -> EventBridge -> Lambda or Step Functions -> corrective action / SNS",
+        mappings:[["When an event happens, trigger an action","EventBridge"],["Execute custom remediation code","Lambda"],["Send an alert","SNS"]],
+        caveats:["Events and execution are not zero-delay guarantees. Configure target permissions, retries, failure handling, and safe/idempotent changes.","SNS notification alone does not fix a resource.","A Step Functions state machine cannot directly subscribe to SNS; an intermediary is needed."]
+      },
+      {
+        id:"step-functions", name:"AWS Step Functions", memory:"Multistep workflow ORCHESTRATOR", questions:[16],
+        purpose:"Coordinate service calls, branches, retries, and operational steps in a state machine.",
+        why:"Run a structured remediation process after an authorized trigger.",
+        examples:[[16,"Manual Security Hub Custom Action -> EventBridge matching the action ARN -> Step Functions state machine."]],
+        flow:"Selected finding -> Custom Action event -> EventBridge -> state-machine steps",
+        mappings:[["Multiple remediation steps / decisions / retries","Step Functions"],["Native direct Config remediation target","SSM Automation"],["SNS subscriber state machine","Not a direct subscription target"]],
+        caveats:["Security Hub initiation in Q16 is manual; the workflow after initiation is automated.","Configure EventBridge's execution role to start the state machine.","Orchestration does not make the wrong detector or destructive action correct."]
+      },
+      {
+        id:"identity-center", name:"AWS IAM Identity Center", memory:"WHO + WHERE + WHAT workforce access", questions:[31,44],
+        purpose:"Centrally assign workforce users/groups access to AWS accounts through permission sets.",
+        why:"Reuse existing Active Directory integration and avoid manually maintaining federation roles in every account.",
+        examples:[[31,"WHO: AD group; WHERE: five accounts; WHAT: AdministratorAccess permission set."],[44,"Session duration can limit credential lifetime, but an assignment is not a one-time four-hour grant; presigned URLs are the quiz's intended object-access answer."]],
+        flow:"AD group -> selected AWS account assignments -> permission set -> provisioned IAM roles",
+        mappings:[["AD group + selected accounts + defined permissions","Permission set + account assignments"],["Limit organization permissions, not grant them","SCP"],["Application pod AWS access","IRSA / EKS Pod Identity"]],
+        caveats:["Account assignments provision corresponding IAM roles; they do not automatically grant the group all 200 accounts.","Credential expiry does not automatically remove the assignment or stop new sessions.","Identity provider authenticates the user; AWS authorization determines permitted actions."]
+      },
+      {
+        id:"sts", name:"AWS STS + role trust policies + External ID", memory:"Temporary credentials; vendor customer check = External ID", questions:[11,23,40,44],
+        purpose:"Issue temporary role/federation credentials; trust policies specify who may assume roles and under what conditions.",
+        why:"Avoid long-lived keys and safely delegate cross-account access.",
+        examples:[[11,"Vendor AssumeRole: trust approved principal and require the vendor-generated unique customer External ID."],[40,"IRSA exchanges a service-account token for temporary role credentials."],[44,"Comparison: expiring role credentials differ from expiring links and fixed permission deadlines."]],
+        flow:"Trusted identity + required conditions -> STS role session -> temporary credentials",
+        mappings:[["Temporary AWS access credentials","STS"],["Third-party vendor + confused deputy","sts:ExternalId in trust policy"],["One fixed access deadline","Policy date conditions / controlled access workflow"]],
+        caveats:["External ID is unique per customer, not a secret/password. Vendor must map it correctly and not accept arbitrary customer-supplied IDs.","Social login provider authenticates the person; Cognito Identity Pools/federation can obtain AWS credentials through STS.","AssumeRole uses DurationSeconds subject to role settings; role chaining has a one-hour limit. Session expiry does not stop renewal."]
+      },
+      {
+        id:"presigned", name:"Amazon S3 presigned URLs", memory:"Temporary private-object access LINK", questions:[44,30],
+        purpose:"Provide signed, time-limited access to a specific S3 operation/object using the signing identity's permissions.",
+        why:"Let someone download/upload a private file without giving them their own AWS credentials.",
+        examples:[[44,"Quiz key: GET presigned URLs expiring after four hours for the specific required training objects."],[30,"Comparison: CodePipeline/CodeDeploy normally uses role-based artifact access, not a custom link workaround."]],
+        flow:"Authorized signer -> expiring object URL -> holder performs allowed GET / PUT",
+        mappings:[["Temporary S3 file sharing without AWS credentials","Presigned URL"],["General authenticated bucket access","IAM role / account access"],["CloudFront access to private origin","OAC"]],
+        caveats:["Not a bucket-wide permission grant or a link tied to the recipient's Identity Center identity. Anyone with the URL can normally reuse it while valid.","Actual validity is bounded by signer credential expiry/revocation and policy conditions; not automatically exactly four hours.","Does not bypass KMS authorization; signer must have required access. A request started before expiry may continue."]
+      },
+      {
+        id:"cloudfront", name:"Amazon CloudFront + Origin Access Control", memory:"OAC protects the ORIGIN", questions:[32,36],
+        purpose:"Deliver content through edge locations; OAC signs CloudFront origin requests to authorized private S3 bucket origins.",
+        why:"Keep S3 private so viewers cannot bypass the intended CloudFront delivery path.",
+        examples:[[32,"Block public S3 access, enable OAC signing, and allow CloudFront service principal with aws:SourceArn equal to the distribution ARN."],[36,"Viewer HTTPS custom domain: ACM certificate must be in us-east-1."]],
+        flow:"Viewer -> normal CloudFront URL -> OAC-signed request -> private S3 bucket",
+        mappings:[["Private S3 accessible only through CloudFront","OAC + bucket policy + Block Public Access"],["Restrict viewer links","CloudFront signed URLs/cookies"],["Older origin mechanism","OAI"]],
+        caveats:["OAC signs the origin request; it does not publish an S3 presigned URL to the viewer.","CloudFront principal is cloudfront.amazonaws.com; distribution ARN belongs in a policy condition.","Use a supported S3 bucket origin, not its website endpoint. OAC supports SSE-KMS with required key permissions; OAI is older."]
+      },
+      {
+        id:"acm", name:"AWS Certificate Manager (ACM)", memory:"TLS CERTIFICATES; CloudFront = us-east-1", questions:[36],
+        purpose:"Provision/import and manage SSL/TLS certificates for supported integrations.",
+        why:"Serve an application's custom domain over HTTPS with the correct certificate placement.",
+        examples:[[36,"Request/import the CloudFront viewer certificate in us-east-1; cover app.example.com. An ALB certificate is instead in the ALB's Region."]],
+        flow:"Viewer HTTPS -> CloudFront certificate (us-east-1)\nOrigin HTTPS -> ALB certificate (ALB Region)",
+        mappings:[["ACM certificate attached to CloudFront","us-east-1"],["ACM certificate attached to regional ALB","ALB's Region"],["Rotate cryptographic key material","KMS, not ACM multi-Region key setting"]],
+        caveats:["This is an AWS service requirement, not a Region selected by application proximity. CloudFront serves viewers globally.","No manual certificate export is required for native ACM integration.","A certificate is not an application API-secret store."]
+      },
+      {
+        id:"ecr", name:"Amazon ECR + deployment gates", memory:"PUSH -> SCAN -> evaluate -> DEPLOY or FAIL", questions:[7,28],
+        purpose:"Store container images and provide native scan configuration; enhanced scanning integrates with Inspector.",
+        why:"Assess images on upload and prevent deploying images with disallowed findings.",
+        examples:[[7,"Enable scan on push and wait for the completed result; fail the image's deployment if Critical findings exist."],[28,"Use Inspector/ECR enhanced scanning for unified EC2 and ECR vulnerability assessment."]],
+        flow:"Build image -> push to ECR -> asynchronous scan -> digest-specific gate -> deploy / fail",
+        mappings:[["Scan immediately upon upload","Scan on push"],["Continuously reassess images as vulnerabilities emerge","Enhanced continuous scanning"],["Prevent vulnerable image deployment","Explicit pipeline gate"]],
+        caveats:["Push means upload. Scan starts asynchronously; it does not reject the pushed image or automatically stop deployment.","Match results to the exact image digest/pipeline execution and wait before deploying. Basic and enhanced scans have different event models.","Fix container vulnerabilities by updating/rebuilding images, not by Patch Manager altering registry layers."]
+      },
+      {
+        id:"eks", name:"Amazon EKS + IRSA", memory:"Pod-specific ROLE, not hardcoded keys", questions:[40,28],
+        purpose:"EKS manages Kubernetes control planes; IRSA maps Kubernetes service accounts to IAM role identities through OIDC.",
+        why:"Give applications temporary, least-privilege AWS access without shared node credentials or IAM user keys.",
+        examples:[[40,"Associate workload service account and role; supported SDK obtains/refreshes temporary credentials."],[28,"Inspector assesses supported EC2 worker-node workloads and ECR images, rather than acting as a Kubernetes runtime monitor."]],
+        flow:"Pod service account -> OIDC token -> STS AssumeRoleWithWebIdentity -> role credentials",
+        mappings:[["EKS application AWS access without static keys","IRSA"],["Alternative modern pod identity mechanism","EKS Pod Identity"],["Shared broad node role","Avoid as application least-privilege design"]],
+        caveats:["EKS Pod Identity is another native option; IRSA is the listed correct answer.","Configure role trust, service-account association, supported SDK credential chain, and prevent unintended node-credential access.","Secrets Manager storage does not convert long-lived IAM user keys into role credentials."]
+      },
+      {
+        id:"network", name:"VPC endpoints + network access controls", memory:"IAM = allowed; endpoint/routes = reachable", questions:[42,37,33,25],
+        purpose:"Provide private service paths and network traffic controls through routing/endpoints, security groups, and Network ACLs.",
+        why:"Reach AWS services privately, diagnose isolated-node failures, and choose the correct IP-blocking layer.",
+        examples:[[42,"Associate DynamoDB gateway endpoint with private subnet route tables for the regional service path."],[37,"Core SSM IAM permissions are present: check required interface endpoints, DNS, HTTPS, S3, and patch-source access."],[33,"NACL outbound deny for malicious EC2 destination; WAF only for applicable HTTP request paths."]],
+        flow:"EC2 -> route table / required endpoint -> private AWS service\nMalicious traffic -> applicable NACL deny",
+        mappings:[["Private DynamoDB access from VPC via routes","Gateway endpoint"],["Private connectivity to SSM service endpoints","Interface endpoints + HTTPS + DNS"],["Explicit subnet-level deny","Network ACL"],["Instance-level stateful allow rules","Security group"]],
+        caveats:["Gateway endpoints use route tables and do not have endpoint private IPs/security groups. Interface endpoints use private-IP interfaces and security groups.","Do not assert interface endpoint availability from an old mnemonic; verify current service/Region support. Gateway endpoint is the reference answer for Q42.","NACLs are stateless and rule-order dependent; update correct inbound/outbound direction. Private service access does not itself replace IAM authorization.","Use appropriate policy restrictions such as aws:SourceVpce if all access must require the intended endpoint."]
+      },
+      {
+        id:"ebs", name:"Amazon EBS encryption", memory:"New EBS volumes -> Encryption by Default", questions:[38,19,39],
+        purpose:"Encrypt EBS storage using KMS; the default setting enforces encryption on newly created volumes in its scope.",
+        why:"Cover Console/CLI/CloudFormation provisioning without relying on each developer to set Encrypted=true.",
+        examples:[[38,"Enable EBS Encryption by Default in every applicable account/Region and restrict disabling it."],[39,"Comparison: source EBS encryption does not protect the separate CloudWatch Logs copy."]],
+        flow:"Any supported provisioning path -> new EBS volume -> regional account encryption default",
+        mappings:[["All new volumes encrypted at creation","EBS Encryption by Default"],["Find existing unencrypted volumes","Config"],["Encrypt an existing unencrypted volume","Encrypted snapshot/copy and replacement workflow"]],
+        caveats:["Per account, per Region; existing volumes remain unchanged.","Prevent authorized users from disabling the default if strict enforcement is required.","An unencrypted volume cannot be encrypted in place; deleting/replacing production storage needs safe migration."]
+      },
+      {
+        id:"s3-security", name:"S3 Block Public Access + bucket policies", memory:"PUBLIC access prevention; HTTPS enforcement", questions:[6,12,26,32,46],
+        purpose:"Use Block Public Access to restrict public grants; bucket policies control resource access and request conditions.",
+        why:"Keep sensitive buckets private and reject insecure transport independently of stored-data encryption.",
+        examples:[[26,"Enable all four account-level Block Public Access settings in members; restrict changes with an SCP after bootstrap."],[46,"Bucket policy explicit deny when aws:SecureTransport is false rejects HTTP."],[6,"Reactive bucket-policy correction is different from preventive Block Public Access."],[32,"Private bucket policy permits the intended CloudFront OAC distribution."]],
+        flow:"Request -> public-access controls + bucket policy + IAM -> allow or explicit deny",
+        mappings:[["Prevent public exposure despite public policies/ACLs","Block Public Access"],["Reject unencrypted transport","Deny aws:SecureTransport=false"],["Encrypt stored new objects using KMS","Default SSE-KMS"]],
+        caveats:["SSE-S3/SSE-KMS protects data at rest, not transport or public-access authorization.","Default encryption changes do not retroactively re-encrypt existing objects.","A deny of s3:PutAccountPublicAccessBlock freezes changes, not initially enables the setting; plan authorized administration."]
+      },
+      {
+        id:"object-lock", name:"S3 Object Lock + retention", memory:"WORM + not even root -> COMPLIANCE", questions:[50,22,10],
+        purpose:"Protect object versions from permanent deletion/overwrite during retention; Compliance mode prevents privileged bypass.",
+        why:"Meet immutable audit retention requirements instead of relying only on permissions or recovery.",
+        examples:[[50,"Default seven-year Compliance retention for new audit logs; separately protect existing versions if necessary."],[22,"Archive five-year findings with appropriate lifecycle/retention; use Object Lock if immutable retention is required."],[10,"Comparison: integrity validation proves tamper evidence; Object Lock prevents retained-version deletion."]],
+        flow:"Write object version -> retain-until date -> read allowed; protected version cannot be removed early",
+        mappings:[["Nobody including root may bypass retention","Compliance mode"],["Specially authorized retention bypass allowed","Governance mode"],["Store multiple versions / recover ordinary deletes","Versioning"]],
+        caveats:["Object Lock requires versioning. It protects individual versions; a newer version/delete marker does not erase the retained original.","Compliance retention cannot be shortened or removed during retention; Governance permits authorized bypass.","Lifecycle transitions/expiry manage storage, not immutable protection by themselves. Preserve KMS key access so retained encrypted logs remain readable."]
+      },
+      {
+        id:"credential-report", name:"IAM Credential Report + Trusted Advisor", memory:"Credential INVENTORY versus best-practice ADVICE", questions:[45,21],
+        purpose:"Credential Report supplies account-wide IAM user credential metadata; Trusted Advisor provides broader AWS best-practice checks.",
+        why:"Quickly identify old or unused credentials using a native report, then choose a controlled disabling workflow.",
+        examples:[[45,"Generate/retrieve the credential report; inspect key last-used metadata to identify credentials unused for over 90 days."],[21,"Config checks creation-age rotation; unused and old are not interchangeable."]],
+        flow:"IAM Credential Report -> evaluate active status / last-used timestamps -> investigate -> disable appropriately",
+        mappings:[["Prebuilt report of all IAM user credential usage","IAM Credential Report"],["General security/cost/reliability recommendations","Trusted Advisor"],["Automated active key-age compliance","Config access-keys-rotated"]],
+        caveats:["The report identifies; it does not automatically disable credentials.","Inactive status means disabled, not merely unused. Account for missing/never-used metadata and report freshness.","Do not delete keys or break application access without matching the requested action and operational safeguards."]
+      },
+      {
+        id:"cloudformation", name:"CloudFormation + StackSets + CodeBuild", memory:"Templates DEPLOY; CodeBuild CHECKS before deployment", questions:[14,19,30,31,49],
+        purpose:"CloudFormation provisions template-defined infrastructure; StackSets distribute stacks; CodeBuild executes build/test/check commands.",
+        why:"Automate provisioning and add policy gates without confusing template deployment with account-wide authorization.",
+        examples:[[49,"In CodeBuild, evaluate resolved policy documents and fail before stack execution when checks violate requirements."],[19,"A native organization Conformance Pack is more direct for a collection of Config rules/remediations."],[31,"Identity Center already manages the group/account roles; manual StackSet federation roles add unnecessary work."]],
+        flow:"Template/source -> CodeBuild checks -> successful gate -> pipeline deploys stack/artifacts",
+        mappings:[["Deploy template stacks across accounts/Regions","StackSets"],["Run IAM policy validation before deployment","CodeBuild + Access Analyzer"],["Prevent every creation path in member accounts","SCP or native account control"]],
+        caveats:["Updating templates does not constrain separate Console/CLI creation.","Resolve references/intrinsics and extract actual IAM policy documents before checking; failing findings must result in a failed build.","A StackSet is not a periodic compliance-repair engine for arbitrary unmanaged resources."]
+      }
+    ];
+
+    // The option numbers below preserve the reference key, not an endorsement of incomplete wording.
+    const questions = [
+      [1,[1],"Restrict all member accounts to approved Regions","SCP deny + aws:RequestedRegion; root attachment","scp","Global-service exceptions via NotAction; management account exempt; endpoint Region is not every affected Region."],
+      [2,[1],"Delegate role creation without administrative escalation","Enforce approved permissions boundary on created roles","boundaries","Creator boundary is not inherited. Require/protect boundary on every new role; inline policies bypass an AttachRolePolicy-only deny."],
+      [3,[1],"Windows/Linux security patching on Sunday","Patch Manager + OS baselines + Maintenance Window","patch","Configure targets, task timeout/cutoff and reboot behavior; running tasks can outlast the window."],
+      [4,[1],"Standard WAF on current/new ALBs across accounts","Firewall Manager WAF policy + automatic remediation","firewall-manager","Configure administrator, Config recording, Region coverage and resource scope."],
+      [5,[1],"RDS PostgreSQL credential rotation every 30 days","Secrets Manager rotation + runtime retrieval","secrets","Zero downtime requires a suitable rotation strategy (e.g. alternating users where applicable), cache refresh and tested application behavior."],
+      [6,[1],"React to public S3 bucket-policy changes","CloudTrail PutBucketPolicy -> EventBridge -> Lambda","s3-security","Near-real-time, not immediate prevention. Preserve valid access; cover other exposure paths separately. Block Public Access is preventive."],
+      [7,[1],"Scan pushed images and block Critical deployment","ECR scan on push + event response + pipeline gate","ecr","Wait for completed results of the exact image digest before deployment; scanning alone does not block."],
+      [8,[1],"No bastion/port 22; shell session logs in S3","Session Manager native shell + S3 logging","session","SSM Agent, IAM and connectivity required. SSH/port-forwarding sessions do not support content logging."],
+      [9,[1],"Discover PII/PHI in S3 patient datasets","Macie sensitive-data discovery","macie","Supported identifiers/formats and asynchronous discovery; not instant exhaustive PHI recognition."],
+      [10,[1],"Mathematical tamper evidence for CloudTrail logs","CloudTrail Log File Integrity Validation","cloudtrail","SHA-256 hashes in RSA-signed digest files with chaining. Enable beforehand; validate-logs detects changes/missing files, not prevents them."],
+      [11,[1],"Vendor cross-account confused deputy protection","Trust policy requires sts:ExternalId","sts","Vendor-generated unique per-customer ID is not a secret. Trust approved vendor principal and require correct customer mapping."],
+      [12,[1],"Config detects S3 default encryption not using KMS","Config rule -> SSM Automation automatic remediation","config","Use KMS-specific compliance evaluation and appropriate runbook/role/parameters. Default changes affect new objects."],
+      [13,[1],"Same ciphertext decrypted locally in another Region","KMS multi-Region key + regional replica","kms","Same key material/ID, different regional ARNs and independent policies. Ordinary KMS symmetric material cannot be exported."],
+      [14,[1],"Deny EC2/RDS creation when CostCenter missing","SCP + Null check on aws:RequestTag/CostCenter","scp","Scope EC2 resource checks correctly; cover other creation paths and tag removal for comprehensive enforcement."],
+      [15,[1],"Single view of findings from multiple security services","Security Hub aggregation","security-hub","Config Aggregator collects Config data; Detective investigates; CloudTrail Insights detects unusual API rate patterns."],
+      [16,[2],"Select a Security Hub finding to run a workflow","Custom Action -> EventBridge -> Step Functions","security-hub","Manual initiation, automated execution. Match action ARN and configure target execution permissions."],
+      [17,[1],"Detect public/external permissions in S3 policies/ACLs","IAM Access Analyzer external-access findings","access-analyzer","Organization/account zone of trust; intended sharing still needs review. This is potential access, not observed attack activity."],
+      [18,[2],"Session logs in S3 encrypted with customer-managed key","Session Manager S3 logging + bucket SSE-KMS","session","Option mixes connection encryption with destination encryption. Set S3 default SSE-KMS; enabling session-connection KMS alone is insufficient."],
+      [19,[1],"Deploy Config rules and remediation baseline everywhere","Organization Config Conformance Packs","conformance","Current/future account deployment needs organizational setup, required Region coverage, Config recording and remediation permissions."],
+      [20,[1],"CloudTrail central S3 delivery with KMS encryption","CloudTrail principal: GenerateDataKey* + PutObject","cloudtrail","Also configure GetBucketAcl, correct prefixes, source-trail conditions and log-reader permissions as needed."],
+      [21,[1],"Detect active keys older than 90 days and disable","Config access-keys-rotated + age-appropriate Automation","config","Reference runbook targets unused credentials; age is not inactivity. Disable violating keys even if used; deactivation alone is not rotation."],
+      [22,[1],"Archive encrypted GuardDuty findings for five years","Native GuardDuty S3 export + KMS","guardduty","Export does not set retention. Configure lifecycle/storage retention, and Object Lock if immutability is required."],
+      [23,[1,2,3],"Lambda reads another account's KMS-encrypted secret","Role policy + secret policy + KMS key policy","secrets","Role needs GetSecretValue and Decrypt; secret allows retrieval; key authorizes decryption. Use execution role, not embedded user keys."],
+      [24,[1],"Block IP exceeding 2,000 HTTP requests in five minutes","WAF rate-based rule","waf","Set aggregation/window/Block and associate Web ACL with supported API stage. Enforcement is approximate."],
+      [25,[1],"No new IGWs in Development OU; keep existing ones","OU SCP denying ec2:CreateInternetGateway","scp","Creation denial does not remove existing IGWs or prevent their attachment via a different action."],
+      [26,[1],"No public S3 despite local policy/ACL changes","Account Block Public Access + SCP protects setting","s3-security","Enable all four settings first in member accounts; restrict changes with s3:PutAccountPublicAccessBlock, planning central admin access."],
+      [27,[1],"Encrypted API keys/config with no automatic rotation","Parameter Store SecureString","parameter-store","Standard tier suits lower storage cost; advanced/throughput/KMS charges can apply. Fetch with decryption and authorized permissions."],
+      [28,[1],"Unified ECR and EC2 node vulnerability scanning","Inspector + ECR enhanced scanning","inspector","Enable required scan types/coverage and continuous scanning when desired; Inspector identifies, not automatically fixes."],
+      [29,[1],"Rotate KMS material every 365 days, preserve old reads","Eligible KMS automatic rotation","kms","Same key ARN/ID; older material retained. Does not re-encrypt existing objects; key must remain enabled."],
+      [30,[1],"Cross-account artifacts encrypted by aws/s3 fail","Use customer-managed key + authorize downloader","kms","Option is incomplete: verify S3 GetObject and KMS Decrypt on both sides. EC2 agent normally downloads under instance profile role; re-encrypt/regenerate old artifacts."],
+      [31,[2],"AD group admin access to only five accounts","Identity Center permission set + selected assignments","identity-center","WHO group + WHERE five accounts + WHAT AdministratorAccess. Does not grant the other accounts; SCP cannot grant."],
+      [32,[2],"Prevent direct public S3 bypass of CloudFront","Private bucket + OAC + distribution-scoped policy","cloudfront","CloudFront service principal with aws:SourceArn condition, not ARN as principal. OAC signs origin requests; use bucket origin, not website endpoint."],
+      [33,[2],"GuardDuty malicious communication -> block IP","EventBridge -> Lambda -> appropriate IP deny","network","For arbitrary EC2 outbound traffic use NACL/network control, not WAF. Security groups are allow-only; NACL direction/order matters."],
+      [34,[2],"IAM allows cross-account Decrypt but still denied","Authorize caller in owner KMS key policy","kms","Caller IAM allowance does not let it grant itself access to another account's key; a bucket policy cannot grant KMS actions."],
+      [35,[1],"Find credit card/PII content in log archives","Macie on supported S3 log archives","macie","Question omits S3 destination. Macie is not a live CloudWatch stream scanner; ordinary Flow Logs contain metadata, not payload content."],
+      [36,[1],"CloudFront HTTPS with custom-domain ACM certificate","Request/import ACM certificate in us-east-1","acm","AWS service rule; cover domain. Origin ALB certificate is in ALB's Region, not necessarily us-east-1."],
+      [37,[1],"Isolated patching nodes; core SSM IAM verified","Check missing SSM endpoint/network connectivity","network","Check SSM Agent, required endpoints/DNS/HTTPS, S3 and patch repositories. An Internet Gateway is not mandatory."],
+      [38,[1],"Encrypt all new EBS volumes across provisioning tools","EBS Encryption by Default","ebs","Enable in every applicable Region; existing volumes unchanged. Restrict DisableEbsEncryptionByDefault if necessary."],
+      [39,[1],"Local text logs -> KMS-encrypted CloudWatch storage","CloudWatch Agent + KMS association on log group","cloudwatch","Set key policy for regional Logs service and log-publishing permissions. Source EBS encryption does not configure destination encryption."],
+      [40,[1],"EKS apps need rotating temporary AWS credentials","IRSA IAM role per Kubernetes service account","eks","OIDC/STS + supported SDK refresh. EKS Pod Identity is another native option, not listed; do not replace roles with long-lived keys."],
+      [41,[1],"Investigate whether contractor copied shared snapshot","CloudTrail CopyDBSnapshot evidence","cloudtrail","Accepted async call is not completed copy. Verify evidence visibility/recipient logs and completion; revoking sharing does not delete existing copies."],
+      [42,[1],"Private EC2-to-DynamoDB network path","DynamoDB gateway endpoint + route tables","network","Regional prefix-list route; no NAT needed. Endpoint path plus IAM; policy restrictions can require SourceVpce. Verify current alternatives before declaring interface support impossible."],
+      [43,[1],"500 malicious web-client IPs refreshed hourly","WAF IP Set + scheduled Lambda update","waf","IP Set must be referenced by Block rule. Validate CIDRs/feed and safe updates; WAF does not query DynamoDB per request."],
+      [44,[3],"Four-hour temporary access to training data","Quiz key: S3 GET presigned URLs","presigned","Ambiguous bucket-wide wording: URLs are object/operation scoped, bearer links, and may expire earlier with signer credentials. Exact deadline/general access needs different controls."],
+      [45,[1],"Prebuilt report finds credentials unused over 90 days","IAM Credential Report","credential-report","Last-used data versus key status versus creation age. Report does not automatically disable credentials."],
+      [46,[1],"Reject all unencrypted S3 transport requests","Bucket deny aws:SecureTransport=false","s3-security","HTTPS/TLS is in-transit encryption; default SSE-KMS is at-rest encryption. Correctly scope bucket/object resources and service interactions."],
+      [47,[1],"Golden AMI must pass High/Critical CVE gate","Image Builder + Inspector + gated response","inspector","Option mentions Critical only. Wait for complete scan before sharing, cover High too, deregister bad AMI and clean eligible snapshots; not zero-delay deletion."],
+      [48,[1],"DDoS scaling charges + 24/7 expert mitigation","Shield Advanced + protected ALB + SRT arrangements","shield","Qualifying cost protection/credits and response support have conditions; not automatically free scaling or universal reimbursement."],
+      [49,[1],"Reject overly permissive IAM before stack execution","Access Analyzer checks inside CodeBuild","access-analyzer","ValidatePolicy is not a custom check. Resolve/extract policies; use suitable explicit checks and fail the build on unacceptable results."],
+      [50,[1],"Seven-year WORM; nobody including root can delete","S3 Object Lock Compliance retention","object-lock","Protect object versions, not a mutable latest-name view. Governance has authorized bypass; versioning/policy alone is not WORM. Apply retention to existing data separately."]
+    ].map(([id, options, requirement, answer, service, caveat]) => ({id, options, requirement, answer, service, caveat}));
+
+    function el(tag, text, className) {
+      const node = document.createElement(tag);
+      if (text !== undefined) node.textContent = text;
+      if (className) node.className = className;
+      return node;
+    }
+    function link(text, id) {
+      const node = el("a", text);
+      node.href = "#" + id;
+      return node;
+    }
+    function table(headers, rows) {
+      const wrap = el("div", undefined, "table-wrap");
+      const node = el("table");
+      const head = el("thead");
+      const headRow = el("tr");
+      headers.forEach(value => headRow.append(el("th", value)));
+      head.append(headRow);
+      const body = el("tbody");
+      rows.forEach(values => {
+        const row = el("tr");
+        values.forEach(value => row.append(el("td", value)));
+        body.append(row);
+      });
+      node.append(head, body);
+      wrap.append(node);
+      return wrap;
+    }
+    function searchable(node, text) { node.dataset.search = text.toLowerCase(); }
+
+    const serviceList = document.getElementById("service-list");
+    const keywordRows = document.getElementById("keyword-rows");
+    const questionList = document.getElementById("question-list");
+    const byService = new Map(services.map(service => [service.id, service]));
+    services.forEach(service => {
+      const card = el("article", undefined, "service");
+      card.id = service.id;
+      searchable(card, [service.name, service.memory, service.purpose, service.why, ...service.questions.map(n => "Q" + n), ...service.examples.flat(), ...service.mappings.flat(), ...service.caveats].join(" "));
+      card.append(el("h2", service.name), el("div", service.memory, "memory"));
+      const chips = el("div", undefined, "chips");
+      service.questions.forEach(n => chips.append(link("Q" + n, "q" + n)));
+      card.append(chips, el("h3", "What does it do?"), el("p", service.purpose), el("h3", "Why use it?"), el("p", service.why), el("h3", "Examples from our questions"));
+      const examples = el("ul", undefined, "examples");
+      service.examples.forEach(([n, text]) => {
+        const item = el("li");
+        item.append(link("Q" + n, "q" + n), document.createTextNode(" - " + text));
+        examples.append(item);
+      });
+      card.append(examples, el("pre", service.flow, "flow"), el("h3", "Exam keyword -> service mapping"), table(["If the requirement says...", "Think of..."], service.mappings));
+      const details = el("details");
+      details.append(el("summary", "Important caveats / exam traps"));
+      const list = el("ul");
+      service.caveats.forEach(text => list.append(el("li", text)));
+      details.append(list);
+      card.append(details);
+      serviceList.append(card);
+
+      const row = el("tr");
+      const phrases = service.mappings.map(mapping => mapping[0]).join("; ");
+      searchable(row, [phrases, service.name, service.memory, ...service.questions.map(n => "Q" + n)].join(" "));
+      const mapped = el("td"); mapped.append(link(service.name, service.id));
+      const refs = el("td");
+      service.questions.forEach((n, index) => { if (index) refs.append(document.createTextNode(", ")); refs.append(link("Q" + n, "q" + n)); });
+      row.append(el("td", phrases), mapped, refs);
+      keywordRows.append(row);
+    });
+    questions.forEach(question => {
+      const item = el("details", undefined, "question");
+      item.id = "q" + question.id;
+      const service = byService.get(question.service);
+      searchable(item, ["Q" + question.id, question.requirement, question.answer, question.caveat, service.name, service.memory].join(" "));
+      item.append(el("summary", "Q" + question.id + " - " + question.requirement));
+      item.append(el("p", "Reference key: Option" + (question.options.length > 1 ? "s " : " ") + question.options.join(", "), "answer"));
+      item.append(el("div", question.requirement + " -> " + question.answer, "memory"));
+      const serviceRef = el("p"); serviceRef.append(document.createTextNode("Review service: "), link(service.name, service.id));
+      item.append(serviceRef, el("p", question.caveat, "caution"));
+      questionList.append(item);
+    });
+    const search = document.getElementById("search");
+    function matches(node, term) {
+      if (/^q\d+$/i.test(term)) return new RegExp("\\b" + term + "\\b", "i").test(node.dataset.search);
+      return node.dataset.search.includes(term);
+    }
+    function filter() {
+      const term = search.value.trim().toLowerCase();
+      const groups = [
+        [Array.from(serviceList.children), "empty-services"],
+        [Array.from(keywordRows.children), "empty-keywords"],
+        [Array.from(questionList.children), "empty-questions"]
+      ];
+      const counts = groups.map(([nodes, empty]) => {
+        let visible = 0;
+        nodes.forEach(node => { node.hidden = !matches(node, term); if (!node.hidden) visible++; });
+        document.getElementById(empty).hidden = visible !== 0;
+        return visible;
+      });
+      document.getElementById("status").textContent = counts[0] + " service cards / " + counts[2] + " questions" + (term ? " match" : "");
+    }
+    search.addEventListener("input", filter);
+    document.getElementById("clear").addEventListener("click", () => { search.value = ""; filter(); search.focus(); });
+    document.getElementById("expand").addEventListener("click", () => Array.from(questionList.children).forEach(node => { if (!node.hidden) node.open = true; }));
+    document.getElementById("collapse").addEventListener("click", () => Array.from(questionList.children).forEach(node => { node.open = false; }));
+    let printState;
+    window.addEventListener("beforeprint", () => {
+      printState = Array.from(document.querySelectorAll("details")).map(node => [node, node.open]);
+      printState.forEach(([node]) => { if (!node.hidden) node.open = true; });
+    });
+    window.addEventListener("afterprint", () => { if (printState) printState.forEach(([node, open]) => { node.open = open; }); });
+    document.getElementById("print").addEventListener("click", () => window.print());
+    function revealTarget() {
+      const target = document.getElementById(location.hash.slice(1));
+      if (!target) return;
+      if (target.hidden) { search.value = ""; filter(); }
+      if (target.matches("details")) target.open = true;
+      requestAnimationFrame(() => target.scrollIntoView({block:"start"}));
+    }
+    window.addEventListener("hashchange", revealTarget);
+    document.addEventListener("click", event => {
+      const anchor = event.target.closest("a");
+      if (anchor && anchor.getAttribute("href") === location.hash) revealTarget();
+    });
+    filter();
+    if (location.hash) revealTarget();
+  </script>
+</body>
+</html>
